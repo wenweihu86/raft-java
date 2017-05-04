@@ -1,16 +1,18 @@
 package com.wenweihu86.raft.storage;
 
+import com.google.protobuf.*;
 import com.wenweihu86.raft.proto.Raft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.lang.reflect.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.CRC32;
 
 /**
  * Created by wenweihu86 on 2017/5/3.
@@ -76,13 +78,46 @@ public class SegmentedLog {
         String filePath = logDir + File.pathSeparator + fileName;
         try {
             File file = new File(getClass().getResource(filePath).getFile());
-            FileInputStream inputStream = new FileInputStream(file);
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
             // TODO
         } catch (FileNotFoundException ex) {
             LOG.warn("meta file not exist, name={}", filePath);
             return null;
         }
         return null;
+    }
+
+    public <T extends GeneratedMessageV3> T readProtoFromFile(RandomAccessFile raf, Class<T> clazz) {
+        try {
+            long checksum = raf.readLong();
+            int dataLen = raf.readInt();
+            int hasReadLen = Long.SIZE / Byte.SIZE + Integer.SIZE / Byte.SIZE;
+
+            if (raf.length() - hasReadLen < dataLen) {
+                LOG.warn("file remainLength < dataLen");
+                return null;
+            }
+            byte[] data = new byte[dataLen];
+            int readLen = raf.read(data);
+            if (readLen != dataLen) {
+                LOG.warn("readLen != dataLen");
+                return null;
+            }
+
+            CRC32 crc32Obj = new CRC32();
+            crc32Obj.update(data);
+            if (crc32Obj.getValue() != checksum) {
+                LOG.warn("crc32 check failed");
+                return null;
+            }
+
+            Method method = clazz.getMethod("parseFrom", byte[].class);
+            T message = (T) method.invoke(clazz, data);
+            return message;
+        } catch (Exception ex) {
+            LOG.warn("readProtoFromFile meet exception, {}", ex.getMessage());
+            return null;
+        }
     }
 
 }
