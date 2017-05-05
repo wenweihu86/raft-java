@@ -1,7 +1,11 @@
 package com.wenweihu86.raft;
 
 import com.wenweihu86.raft.proto.Raft;
+import com.wenweihu86.raft.storage.SegmentedLog;
+import com.wenweihu86.rpc.client.RPCClient;
+import sun.plugin.javascript.navig.AnchorArray;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
@@ -19,41 +23,56 @@ public class RaftNode {
     }
 
     private Lock lock = new ReentrantLock();
-
     private NodeState state = NodeState.STATE_FOLLOWER;
-
     // 服务器最后一次知道的任期号（初始化为 0，持续递增）
-    private long currentTerm = 0;
+    private long currentTerm;
     // 在当前获得选票的候选人的Id
-    private int votedFor = -1;
+    private int votedFor;
     private List<Raft.LogEntry> entries;
-
     // 已知的最大的已经被提交的日志条目的索引值
-    private long commitIndex = 0;
+    private long commitIndex;
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
     private long lastApplied;
-
-    // 对于每一个服务器，需要发送给他的下一个日志条目的索引值（初始化为领导人最后索引值加一）
-    private List<Long> nextIndex;
-    // 对于每一个服务器，已经复制给他的日志的最高索引值
-    private List<Long> matchIndex;
-
-    private int nodeId;
-    private int leaderId;
+    private List<Peer> peers;
+    private ServerAddress localServer;
+    private int leaderId; // leader节点id
+    private SegmentedLog raftLog;
 
     private ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture voteScheduledFuture;
 
-    public RaftNode() {
+    public RaftNode(int localServerId, List<ServerAddress> servers) {
+        for (ServerAddress server : servers) {
+            if (server.getServerId() == localServerId) {
+                this.localServer = server;
+            } else {
+                Peer peer = new Peer(server);
+                peers.add(peer);
+            }
+        }
+
+        raftLog = new SegmentedLog();
         voteScheduledFuture = scheduledExecutor.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 // TODO
             }
         }, 0, getElectionTimeoutMs(), TimeUnit.MILLISECONDS);
+        stepDown(1);
     }
 
-    public void init() {}
+    public void init() {
+        this.currentTerm = raftLog.getMetaData().getCurrentTerm();
+        this.votedFor = raftLog.getMetaData().getVotedFor();
+    }
+
+    public void startNewElection() {
+        currentTerm++;
+        state = NodeState.STATE_CANDIDATE;
+        leaderId = 0;
+        votedFor = localServer.getServerId();
+        // TODO: requestVote to peers
+    }
 
 
     public void stepDown(long newTerm) {
@@ -63,6 +82,7 @@ public class RaftNode {
             leaderId = -1;
             votedFor = -1;
             state = NodeState.STATE_FOLLOWER;
+            raftLog.updateMetaData(currentTerm, votedFor, null);
         } else {
             if (state != NodeState.STATE_FOLLOWER) {
                 state = NodeState.STATE_FOLLOWER;
@@ -131,21 +151,5 @@ public class RaftNode {
 
     public void setLastApplied(long lastApplied) {
         this.lastApplied = lastApplied;
-    }
-
-    public List<Long> getNextIndex() {
-        return nextIndex;
-    }
-
-    public void setNextIndex(List<Long> nextIndex) {
-        this.nextIndex = nextIndex;
-    }
-
-    public List<Long> getMatchIndex() {
-        return matchIndex;
-    }
-
-    public void setMatchIndex(List<Long> matchIndex) {
-        this.matchIndex = matchIndex;
     }
 }

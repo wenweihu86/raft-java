@@ -3646,14 +3646,14 @@ public final class Raft {
     long getCurrentTerm();
 
     /**
-     * <code>optional uint64 voted_for = 2;</code>
+     * <code>optional uint32 voted_for = 2;</code>
      */
-    long getVotedFor();
+    int getVotedFor();
 
     /**
-     * <code>optional uint64 entries_start = 3;</code>
+     * <code>optional uint64 start_log_index = 3;</code>
      */
-    long getEntriesStart();
+    long getStartLogIndex();
   }
   /**
    * Protobuf type {@code raft.LogMetaData}
@@ -3668,8 +3668,8 @@ public final class Raft {
     }
     private LogMetaData() {
       currentTerm_ = 0L;
-      votedFor_ = 0L;
-      entriesStart_ = 0L;
+      votedFor_ = 0;
+      startLogIndex_ = 0L;
     }
 
     @java.lang.Override
@@ -3704,12 +3704,12 @@ public final class Raft {
             }
             case 16: {
 
-              votedFor_ = input.readUInt64();
+              votedFor_ = input.readUInt32();
               break;
             }
             case 24: {
 
-              entriesStart_ = input.readUInt64();
+              startLogIndex_ = input.readUInt64();
               break;
             }
           }
@@ -3745,21 +3745,21 @@ public final class Raft {
     }
 
     public static final int VOTED_FOR_FIELD_NUMBER = 2;
-    private long votedFor_;
+    private int votedFor_;
     /**
-     * <code>optional uint64 voted_for = 2;</code>
+     * <code>optional uint32 voted_for = 2;</code>
      */
-    public long getVotedFor() {
+    public int getVotedFor() {
       return votedFor_;
     }
 
-    public static final int ENTRIES_START_FIELD_NUMBER = 3;
-    private long entriesStart_;
+    public static final int START_LOG_INDEX_FIELD_NUMBER = 3;
+    private long startLogIndex_;
     /**
-     * <code>optional uint64 entries_start = 3;</code>
+     * <code>optional uint64 start_log_index = 3;</code>
      */
-    public long getEntriesStart() {
-      return entriesStart_;
+    public long getStartLogIndex() {
+      return startLogIndex_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3777,11 +3777,11 @@ public final class Raft {
       if (currentTerm_ != 0L) {
         output.writeUInt64(1, currentTerm_);
       }
-      if (votedFor_ != 0L) {
-        output.writeUInt64(2, votedFor_);
+      if (votedFor_ != 0) {
+        output.writeUInt32(2, votedFor_);
       }
-      if (entriesStart_ != 0L) {
-        output.writeUInt64(3, entriesStart_);
+      if (startLogIndex_ != 0L) {
+        output.writeUInt64(3, startLogIndex_);
       }
     }
 
@@ -3794,13 +3794,13 @@ public final class Raft {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(1, currentTerm_);
       }
-      if (votedFor_ != 0L) {
+      if (votedFor_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(2, votedFor_);
+          .computeUInt32Size(2, votedFor_);
       }
-      if (entriesStart_ != 0L) {
+      if (startLogIndex_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, entriesStart_);
+          .computeUInt64Size(3, startLogIndex_);
       }
       memoizedSize = size;
       return size;
@@ -3822,8 +3822,8 @@ public final class Raft {
           == other.getCurrentTerm());
       result = result && (getVotedFor()
           == other.getVotedFor());
-      result = result && (getEntriesStart()
-          == other.getEntriesStart());
+      result = result && (getStartLogIndex()
+          == other.getStartLogIndex());
       return result;
     }
 
@@ -3838,11 +3838,10 @@ public final class Raft {
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCurrentTerm());
       hash = (37 * hash) + VOTED_FOR_FIELD_NUMBER;
+      hash = (53 * hash) + getVotedFor();
+      hash = (37 * hash) + START_LOG_INDEX_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getVotedFor());
-      hash = (37 * hash) + ENTRIES_START_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getEntriesStart());
+          getStartLogIndex());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3963,9 +3962,9 @@ public final class Raft {
         super.clear();
         currentTerm_ = 0L;
 
-        votedFor_ = 0L;
+        votedFor_ = 0;
 
-        entriesStart_ = 0L;
+        startLogIndex_ = 0L;
 
         return this;
       }
@@ -3991,7 +3990,7 @@ public final class Raft {
         com.wenweihu86.raft.proto.Raft.LogMetaData result = new com.wenweihu86.raft.proto.Raft.LogMetaData(this);
         result.currentTerm_ = currentTerm_;
         result.votedFor_ = votedFor_;
-        result.entriesStart_ = entriesStart_;
+        result.startLogIndex_ = startLogIndex_;
         onBuilt();
         return result;
       }
@@ -4036,11 +4035,11 @@ public final class Raft {
         if (other.getCurrentTerm() != 0L) {
           setCurrentTerm(other.getCurrentTerm());
         }
-        if (other.getVotedFor() != 0L) {
+        if (other.getVotedFor() != 0) {
           setVotedFor(other.getVotedFor());
         }
-        if (other.getEntriesStart() != 0L) {
-          setEntriesStart(other.getEntriesStart());
+        if (other.getStartLogIndex() != 0L) {
+          setStartLogIndex(other.getStartLogIndex());
         }
         onChanged();
         return this;
@@ -4094,54 +4093,54 @@ public final class Raft {
         return this;
       }
 
-      private long votedFor_ ;
+      private int votedFor_ ;
       /**
-       * <code>optional uint64 voted_for = 2;</code>
+       * <code>optional uint32 voted_for = 2;</code>
        */
-      public long getVotedFor() {
+      public int getVotedFor() {
         return votedFor_;
       }
       /**
-       * <code>optional uint64 voted_for = 2;</code>
+       * <code>optional uint32 voted_for = 2;</code>
        */
-      public Builder setVotedFor(long value) {
+      public Builder setVotedFor(int value) {
         
         votedFor_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint64 voted_for = 2;</code>
+       * <code>optional uint32 voted_for = 2;</code>
        */
       public Builder clearVotedFor() {
         
-        votedFor_ = 0L;
+        votedFor_ = 0;
         onChanged();
         return this;
       }
 
-      private long entriesStart_ ;
+      private long startLogIndex_ ;
       /**
-       * <code>optional uint64 entries_start = 3;</code>
+       * <code>optional uint64 start_log_index = 3;</code>
        */
-      public long getEntriesStart() {
-        return entriesStart_;
+      public long getStartLogIndex() {
+        return startLogIndex_;
       }
       /**
-       * <code>optional uint64 entries_start = 3;</code>
+       * <code>optional uint64 start_log_index = 3;</code>
        */
-      public Builder setEntriesStart(long value) {
+      public Builder setStartLogIndex(long value) {
         
-        entriesStart_ = value;
+        startLogIndex_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint64 entries_start = 3;</code>
+       * <code>optional uint64 start_log_index = 3;</code>
        */
-      public Builder clearEntriesStart() {
+      public Builder clearStartLogIndex() {
         
-        entriesStart_ = 0L;
+        startLogIndex_ = 0L;
         onChanged();
         return this;
       }
@@ -4245,12 +4244,12 @@ public final class Raft {
       "\n\rprev_log_term\030\004 \001(\003\022\037\n\007entries\030\005 \001(\0132\016",
       ".raft.LogEntry\022\036\n\026leader_committed_index" +
       "\030\006 \001(\003\"6\n\025AppendEntriesResponse\022\014\n\004term\030" +
-      "\001 \001(\003\022\017\n\007success\030\002 \001(\010\"M\n\013LogMetaData\022\024\n" +
-      "\014current_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\004\022\025" +
-      "\n\rentries_start\030\003 \001(\004*>\n\tEntryType\022\023\n\017EN" +
-      "TRY_TYPE_DATA\020\000\022\034\n\030ENTRY_TYPE_CONFIGURAT" +
-      "ION\020\001B!\n\031com.wenweihu86.raft.protoB\004Raft" +
-      "b\006proto3"
+      "\001 \001(\003\022\017\n\007success\030\002 \001(\010\"O\n\013LogMetaData\022\024\n" +
+      "\014current_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027" +
+      "\n\017start_log_index\030\003 \001(\004*>\n\tEntryType\022\023\n\017" +
+      "ENTRY_TYPE_DATA\020\000\022\034\n\030ENTRY_TYPE_CONFIGUR" +
+      "ATION\020\001B!\n\031com.wenweihu86.raft.protoB\004Ra" +
+      "ftb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4299,7 +4298,7 @@ public final class Raft {
     internal_static_raft_LogMetaData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_LogMetaData_descriptor,
-        new java.lang.String[] { "CurrentTerm", "VotedFor", "EntriesStart", });
+        new java.lang.String[] { "CurrentTerm", "VotedFor", "StartLogIndex", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -1,7 +1,5 @@
 package com.wenweihu86.raft;
 
-import java.io.File;
-
 /**
  * Created by wenweihu86 on 2017/5/2.
  */
@@ -22,7 +20,6 @@ public class RaftOption {
     // 单个segment文件大小，默认100m
     public static int maxSegmentFileSize = 100 * 1000 * 1000;
 
-    // data目录，绝对路径
-    public static String dataDir = System.getProperty("com.wenweihu86.raft.home")
-            + File.pathSeparator + "data";
+    // raft的log和snapshot父目录，绝对路径
+    public static String dataDir = System.getProperty("com.wenweihu86.raft.data.dir");
 }

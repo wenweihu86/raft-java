@@ -45,7 +45,7 @@ message AppendEntriesResponse {
 
 message LogMetaData {
     uint64 current_term = 1;
-    uint64 voted_for = 2;
-    uint64 entries_start = 3;
+    uint32 voted_for = 2;
+    uint64 start_log_index = 3;
 }
 

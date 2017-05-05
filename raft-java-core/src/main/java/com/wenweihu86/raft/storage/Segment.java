@@ -29,7 +29,7 @@ public class Segment {
     private List<Record> entries = new ArrayList<>();
 
     public Raft.LogEntry getEntry(long index) {
-        if (startIndex == -1 || endIndex == -1) {
+        if (startIndex == 0 || endIndex == 0) {
             return null;
         }
         if (index < startIndex || index > endIndex) {

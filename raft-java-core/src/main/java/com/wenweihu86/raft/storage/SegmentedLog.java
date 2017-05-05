@@ -26,18 +26,22 @@ public class SegmentedLog {
     private AtomicLong openedSegmentIndex = new AtomicLong(0);
 
     public SegmentedLog() {
+        File file = new File(logDir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
         segments = this.readSegments();
         for (Segment segment : segments) {
             this.loadSegmentData(segment);
         }
 
-        metaData = this.readLastestMetaData();
+        metaData = this.readMetaData();
         if (metaData == null) {
             if (segments.size() > 0) {
                 LOG.error("No readable metadata file but found segments in {}", logDir);
                 throw new RuntimeException("No readable metadata file but found segments");
             }
-            metaData = Raft.LogMetaData.newBuilder().setEntriesStart(1).build();
+            metaData = Raft.LogMetaData.newBuilder().setStartLogIndex(0).build();
         }
     }
 
@@ -55,7 +59,7 @@ public class SegmentedLog {
 
     public long getStartLogIndex() {
         if (startLogIndexSegmentMap.size() == 0) {
-            return -1;
+            return 0;
         }
         Segment firstSegment = startLogIndexSegmentMap.firstEntry().getValue();
         return firstSegment.getStartIndex();
@@ -63,7 +67,7 @@ public class SegmentedLog {
 
     public long getLastLogIndex() {
         if (startLogIndexSegmentMap.size() == 0) {
-            return -1;
+            return 0;
         }
         Segment lastSegment = startLogIndexSegmentMap.lastEntry().getValue();
         return lastSegment.getEndIndex();
@@ -104,8 +108,8 @@ public class SegmentedLog {
                     newSegmentFile.createNewFile();
                     Segment segment = new Segment();
                     segment.setCanWrite(true);
-                    segment.setStartIndex(-1);
-                    segment.setEndIndex(-1);
+                    segment.setStartIndex(0);
+                    segment.setEndIndex(0);
                     segment.setFileName(newSegmentFileName);
                     segment.setRandomAccessFile(this.openLogFile(newSegmentFileName, "rw"));
                     segments.add(segment);
@@ -113,7 +117,7 @@ public class SegmentedLog {
                 // 写proto到segment中
                 segmentSize = segments.size();
                 Segment segment = segments.get(segmentSize - 1);
-                if (segment.getStartIndex() == -1) {
+                if (segment.getStartIndex() == 0) {
                     segment.setStartIndex(entry.getLogIndex());
                     startLogIndexSegmentMap.put(segment.getStartIndex(), segment);
                 }
@@ -207,18 +211,42 @@ public class SegmentedLog {
         return segments;
     }
 
-    public Raft.LogMetaData readLastestMetaData() {
-        String metaFilePath1 = logDir + File.pathSeparator + "metadata1";
-        String metaFilePath2 = logDir + File.pathSeparator + "metadata2";
-        long metaFileTimestamp1 = this.getFileTimestamp(metaFilePath1);
-        long metaFileTimestamp2 = this.getFileTimestamp(metaFilePath2);
 
-        if (metaFileTimestamp1 == 0 && metaFileTimestamp2 == 0) {
+    public Raft.LogMetaData getMetaData() {
+        return metaData;
+    }
+
+    public Raft.LogMetaData readMetaData() {
+        String fileName = logDir + File.pathSeparator + "metadata";
+        File file = new File(fileName);
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+            Raft.LogMetaData metadata = this.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
+            return metadata;
+        } catch (IOException ex) {
+            LOG.warn("meta file not exist, name={}", fileName);
             return null;
-        } else if (metaFileTimestamp1 > metaFileTimestamp2) {
-            return this.readMetaData(metaFilePath1);
-        } else {
-            return this.readMetaData(metaFilePath2);
+        }
+    }
+
+    public void updateMetaData(Long currentTerm, Integer votedFor, Long startLogIndex) {
+        Raft.LogMetaData.Builder builder = Raft.LogMetaData.newBuilder(this.metaData);
+        if (currentTerm != null) {
+            builder.setCurrentTerm(currentTerm);
+        }
+        if (votedFor != null) {
+            builder.setVotedFor(votedFor);
+        }
+        if (startLogIndex != null) {
+            builder.setStartLogIndex(startLogIndex);
+        }
+        this.metaData = builder.build();
+
+        String fileName = logDir + File.pathSeparator + "metadata";
+        File file = new File(fileName);
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
+            this.writeProtoToFile(randomAccessFile, metaData);
+        } catch (IOException ex) {
+            LOG.warn("meta file not exist, name={}", fileName);
         }
     }
 
@@ -230,23 +258,6 @@ public class SegmentedLog {
         } catch (FileNotFoundException ex) {
             LOG.warn("file not fount, file={}", fileName);
             throw new RuntimeException("file not found, file={}" + fileName);
-        }
-    }
-
-    public long getFileTimestamp(String fileName) {
-        File file = new File(fileName);
-        long fileTimestamp = file.lastModified();
-        return fileTimestamp;
-    }
-
-    public Raft.LogMetaData readMetaData(String fileName) {
-        File file = new File(fileName);
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            Raft.LogMetaData metadata = this.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
-            return metadata;
-        } catch (IOException ex) {
-            LOG.warn("meta file not exist, name={}", fileName);
-            return null;
         }
     }
 
