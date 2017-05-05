@@ -41,8 +41,6 @@ public class RaftNode {
     private int nodeId;
     private int leaderId;
 
-    private RaftOption raftOption;
-
     private ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture voteScheduledFuture;
 
@@ -74,8 +72,8 @@ public class RaftNode {
 
     public int getElectionTimeoutMs() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int randomElectionTimeout = raftOption.getElectionTimeoutMilliseconds()
-                + random.nextInt(0, raftOption.getElectionTimeoutMilliseconds());
+        int randomElectionTimeout = RaftOption.electionTimeoutMilliseconds
+                + random.nextInt(0, RaftOption.electionTimeoutMilliseconds);
         return randomElectionTimeout;
     }
 

@@ -1,17 +1,15 @@
 package com.wenweihu86.raft.storage;
 
 import com.google.protobuf.*;
+import com.wenweihu86.raft.RaftOption;
 import com.wenweihu86.raft.proto.Raft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.lang.reflect.*;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.CRC32;
 
 /**
@@ -21,10 +19,140 @@ public class SegmentedLog {
 
     private static Logger LOG = LoggerFactory.getLogger(SegmentedLog.class);
 
-    private String logDir;
+    private String logDir = RaftOption.dataDir + File.pathSeparator + "log";
+    private Raft.LogMetaData metaData;
+    private List<Segment> segments = new ArrayList<>();
+    private TreeMap<Long, Segment> startLogIndexSegmentMap = new TreeMap<>();
+    private AtomicLong openedSegmentIndex = new AtomicLong(0);
+
+    public SegmentedLog() {
+        segments = this.readSegments();
+        for (Segment segment : segments) {
+            this.loadSegmentData(segment);
+        }
+
+        metaData = this.readLastestMetaData();
+        if (metaData == null) {
+            if (segments.size() > 0) {
+                LOG.error("No readable metadata file but found segments in {}", logDir);
+                throw new RuntimeException("No readable metadata file but found segments");
+            }
+            metaData = Raft.LogMetaData.newBuilder().setEntriesStart(1).build();
+        }
+    }
+
+    public Raft.LogEntry getEntry(long index) {
+        long startLogIndex = getStartLogIndex();
+        long lastLogIndex = getLastLogIndex();
+        if (index < startLogIndex || index > lastLogIndex) {
+            LOG.warn("index out of range, index={}, startLogIndex={}, lastLogIndex={}",
+                    index, startLogIndex, lastLogIndex);
+            return null;
+        }
+        Segment segment = startLogIndexSegmentMap.lowerEntry(index).getValue();
+        return segment.getEntry(index);
+    }
+
+    public long getStartLogIndex() {
+        if (startLogIndexSegmentMap.size() == 0) {
+            return -1;
+        }
+        Segment firstSegment = startLogIndexSegmentMap.firstEntry().getValue();
+        return firstSegment.getStartIndex();
+    }
+
+    public long getLastLogIndex() {
+        if (startLogIndexSegmentMap.size() == 0) {
+            return -1;
+        }
+        Segment lastSegment = startLogIndexSegmentMap.lastEntry().getValue();
+        return lastSegment.getEndIndex();
+    }
+
+    public void append(List<Raft.LogEntry> entries) {
+        for (Raft.LogEntry entry : entries) {
+            int entrySize = entry.getSerializedSize();
+            int segmentSize = segments.size();
+            boolean isNeedNewSegmentFile = false;
+            try {
+                if (segmentSize == 0) {
+                    isNeedNewSegmentFile = true;
+                } else {
+                    Segment segment = segments.get(segmentSize - 1);
+                    if (!segment.isCanWrite()) {
+                        isNeedNewSegmentFile = true;
+                    } else if (segment.getFileSize() + entrySize >= RaftOption.maxSegmentFileSize) {
+                        isNeedNewSegmentFile = true;
+                        // 最后一个segment的文件close并改名
+                        segment.getRandomAccessFile().close();
+                        segment.setCanWrite(false);
+                        String newFileName = String.format("%020d-%020d",
+                                segment.getStartIndex(), segment.getEndIndex());
+                        File newFile = new File(newFileName);
+                        newFile.createNewFile();
+                        File oldFile = new File(segment.getFileName());
+                        oldFile.renameTo(newFile);
+                        segment.setFileName(newFileName);
+                        segment.setRandomAccessFile(this.openLogFile(newFileName, "r"));
+                    }
+                }
+                // 新建segment文件
+                if (isNeedNewSegmentFile) {
+                    // open new segment file
+                    String newSegmentFileName = String.format("open-%d", openedSegmentIndex.getAndIncrement());
+                    File newSegmentFile = new File(newSegmentFileName);
+                    newSegmentFile.createNewFile();
+                    Segment segment = new Segment();
+                    segment.setCanWrite(true);
+                    segment.setStartIndex(-1);
+                    segment.setEndIndex(-1);
+                    segment.setFileName(newSegmentFileName);
+                    segment.setRandomAccessFile(this.openLogFile(newSegmentFileName, "rw"));
+                    segments.add(segment);
+                }
+                // 写proto到segment中
+                segmentSize = segments.size();
+                Segment segment = segments.get(segmentSize - 1);
+                if (segment.getStartIndex() == -1) {
+                    segment.setStartIndex(entry.getLogIndex());
+                    startLogIndexSegmentMap.put(segment.getStartIndex(), segment);
+                }
+                segment.setEndIndex(entry.getLogIndex());
+                segment.getEntries().add(new Segment.Record(
+                        segment.getRandomAccessFile().getFilePointer(), entry));
+                writeProtoToFile(segment.getRandomAccessFile(), entry);
+                segment.setFileSize(segment.getRandomAccessFile().length());
+            }  catch (IOException ex) {
+                throw new RuntimeException("meet exception, msg=" + ex.getMessage());
+            }
+        }
+    }
+
+    public void loadSegmentData(Segment segment) {
+        try {
+            RandomAccessFile randomAccessFile = segment.getRandomAccessFile();
+            long totalLength = segment.getFileSize();
+            long offset = 0;
+            while (offset < totalLength) {
+                Raft.LogEntry entry = this.readProtoFromFile(randomAccessFile, Raft.LogEntry.class);
+                Segment.Record record = new Segment.Record(offset, entry);
+                segment.getEntries().add(record);
+                offset = randomAccessFile.getFilePointer();
+            }
+        } catch (Exception ex) {
+            LOG.error("read segment meet exception, msg={}", ex.getMessage());
+            throw new RuntimeException("file not found");
+        }
+
+        int entrySize = segment.getEntries().size();
+        if (entrySize > 0) {
+            segment.setStartIndex(segment.getEntries().get(0).entry.getLogIndex());
+            segment.setEndIndex(segment.getEntries().get(entrySize - 1).entry.getLogIndex());
+        }
+    }
 
     public List<Segment> readSegments() {
-        File dir = new File(getClass().getResource(logDir).getFile());
+        File dir = new File(logDir);
         File[] files = dir.listFiles();
         Arrays.sort(files, new Comparator<File>() {
             @Override
@@ -39,7 +167,6 @@ public class SegmentedLog {
             }
         });
 
-        List<Segment> segments = new ArrayList<>();
         for (File file : files) {
             if (file.getName().equals("metadata1")
                     || file.getName().equals("metadata2")) {
@@ -52,39 +179,75 @@ public class SegmentedLog {
                 continue;
             }
             Segment segment = new Segment();
-            segment.setFileName(file.getName());
-            segment.setFileSize(0);
-            if (splitArray[0].equals("open")) {
-                segment.setOpen(true);
-                segment.setStartIndex(-1);
-                segment.setEndIndex(-1);
-                segments.add(segment);
-            } else {
-                try {
-                    segment.setStartIndex(Long.parseLong(splitArray[0]));
-                    segment.setEndIndex(Long.parseLong(splitArray[1]));
-                    segment.setOpen(false);
-                    segments.add(segment);
-                } catch (NumberFormatException ex) {
-                    LOG.warn("segment filename[{}] is not valid", fileName);
-                    continue;
+            segment.setFileName(fileName);
+            try {
+                if (splitArray[0].equals("open")) {
+                    segment.setCanWrite(true);
+                    segment.setStartIndex(-1);
+                    segment.setEndIndex(-1);
+                } else {
+                    try {
+                        segment.setCanWrite(false);
+                        segment.setStartIndex(Long.parseLong(splitArray[0]));
+                        segment.setEndIndex(Long.parseLong(splitArray[1]));
+                    } catch (NumberFormatException ex) {
+                        LOG.warn("segment filename[{}] is not valid", fileName);
+                        continue;
+                    }
                 }
+                segment.setRandomAccessFile(this.openLogFile(fileName, "r"));
+                segment.setFileSize(segment.getRandomAccessFile().length());
+                segments.add(segment);
+            } catch (IOException ioException) {
+                LOG.warn("open segment file error, file={}, msg={}",
+                        fileName, ioException.getMessage());
+                throw new RuntimeException("open segment file error");
             }
         }
         return segments;
     }
 
-    public Raft.Metadata readMetadata(String fileName) {
-        String filePath = logDir + File.pathSeparator + fileName;
+    public Raft.LogMetaData readLastestMetaData() {
+        String metaFilePath1 = logDir + File.pathSeparator + "metadata1";
+        String metaFilePath2 = logDir + File.pathSeparator + "metadata2";
+        long metaFileTimestamp1 = this.getFileTimestamp(metaFilePath1);
+        long metaFileTimestamp2 = this.getFileTimestamp(metaFilePath2);
+
+        if (metaFileTimestamp1 == 0 && metaFileTimestamp2 == 0) {
+            return null;
+        } else if (metaFileTimestamp1 > metaFileTimestamp2) {
+            return this.readMetaData(metaFilePath1);
+        } else {
+            return this.readMetaData(metaFilePath2);
+        }
+    }
+
+    public RandomAccessFile openLogFile(String fileName, String mode) {
         try {
-            File file = new File(getClass().getResource(filePath).getFile());
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            // TODO
+            String fullFileName = this.logDir + File.pathSeparator + fileName;
+            File file = new File(fullFileName);
+            return new RandomAccessFile(file, mode);
         } catch (FileNotFoundException ex) {
-            LOG.warn("meta file not exist, name={}", filePath);
+            LOG.warn("file not fount, file={}", fileName);
+            throw new RuntimeException("file not found, file={}" + fileName);
+        }
+    }
+
+    public long getFileTimestamp(String fileName) {
+        File file = new File(fileName);
+        long fileTimestamp = file.lastModified();
+        return fileTimestamp;
+    }
+
+    public Raft.LogMetaData readMetaData(String fileName) {
+        File file = new File(fileName);
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+            Raft.LogMetaData metadata = this.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
+            return metadata;
+        } catch (IOException ex) {
+            LOG.warn("meta file not exist, name={}", fileName);
             return null;
         }
-        return null;
     }
 
     public <T extends GeneratedMessageV3> T readProtoFromFile(RandomAccessFile raf, Class<T> clazz) {
@@ -117,6 +280,21 @@ public class SegmentedLog {
         } catch (Exception ex) {
             LOG.warn("readProtoFromFile meet exception, {}", ex.getMessage());
             return null;
+        }
+    }
+
+    public <T extends GeneratedMessageV3> void writeProtoToFile(RandomAccessFile raf, T message) {
+        byte[] messageBytes = message.toByteArray();
+        CRC32 crc32Obj = new CRC32();
+        crc32Obj.update(messageBytes);
+        long crc32 = crc32Obj.getValue();
+        try {
+            raf.writeLong(crc32);
+            raf.writeInt(messageBytes.length);
+            raf.write(messageBytes);
+        } catch (IOException ex) {
+            LOG.warn("write proto to file error, msg={}", ex.getMessage());
+            throw new RuntimeException("write proto to file error");
         }
     }
 

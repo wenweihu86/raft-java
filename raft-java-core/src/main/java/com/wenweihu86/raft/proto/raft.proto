@@ -17,11 +17,6 @@ message LogEntry {
     bytes data = 5;
 };
 
-message Metadata {
-    uint64 current_term = 1;
-    uint64 voted_for = 2;
-}
-
 message VoteRequest {
     int64 term = 1; // 候选人的任期号
     int32 candidate_id = 2; // 请求选票的候选人的 Id
@@ -47,4 +42,10 @@ message AppendEntriesResponse {
     int64 term = 1; // 当前的任期号，用于领导人去更新自己
     bool success = 2; // 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
 };
+
+message LogMetaData {
+    uint64 current_term = 1;
+    uint64 voted_for = 2;
+    uint64 entries_start = 3;
+}
 
