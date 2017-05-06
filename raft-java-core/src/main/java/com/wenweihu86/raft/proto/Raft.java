@@ -117,14 +117,14 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int64 log_index = 1;</code>
-     */
-    long getLogIndex();
-
-    /**
-     * <code>optional int64 term = 2;</code>
+     * <code>optional uint64 term = 1;</code>
      */
     long getTerm();
+
+    /**
+     * <code>optional uint64 index = 2;</code>
+     */
+    long getIndex();
 
     /**
      * <code>optional .raft.EntryType type = 3;</code>
@@ -136,12 +136,7 @@ public final class Raft {
     com.wenweihu86.raft.proto.Raft.EntryType getType();
 
     /**
-     * <code>optional int64 data_len = 4;</code>
-     */
-    long getDataLen();
-
-    /**
-     * <code>optional bytes data = 5;</code>
+     * <code>optional bytes data = 4;</code>
      */
     com.google.protobuf.ByteString getData();
   }
@@ -157,10 +152,9 @@ public final class Raft {
       super(builder);
     }
     private LogEntry() {
-      logIndex_ = 0L;
       term_ = 0L;
+      index_ = 0L;
       type_ = 0;
-      dataLen_ = 0L;
       data_ = com.google.protobuf.ByteString.EMPTY;
     }
 
@@ -191,12 +185,12 @@ public final class Raft {
             }
             case 8: {
 
-              logIndex_ = input.readInt64();
+              term_ = input.readUInt64();
               break;
             }
             case 16: {
 
-              term_ = input.readInt64();
+              index_ = input.readUInt64();
               break;
             }
             case 24: {
@@ -205,12 +199,7 @@ public final class Raft {
               type_ = rawValue;
               break;
             }
-            case 32: {
-
-              dataLen_ = input.readInt64();
-              break;
-            }
-            case 42: {
+            case 34: {
 
               data_ = input.readBytes();
               break;
@@ -238,22 +227,22 @@ public final class Raft {
               com.wenweihu86.raft.proto.Raft.LogEntry.class, com.wenweihu86.raft.proto.Raft.LogEntry.Builder.class);
     }
 
-    public static final int LOG_INDEX_FIELD_NUMBER = 1;
-    private long logIndex_;
-    /**
-     * <code>optional int64 log_index = 1;</code>
-     */
-    public long getLogIndex() {
-      return logIndex_;
-    }
-
-    public static final int TERM_FIELD_NUMBER = 2;
+    public static final int TERM_FIELD_NUMBER = 1;
     private long term_;
     /**
-     * <code>optional int64 term = 2;</code>
+     * <code>optional uint64 term = 1;</code>
      */
     public long getTerm() {
       return term_;
+    }
+
+    public static final int INDEX_FIELD_NUMBER = 2;
+    private long index_;
+    /**
+     * <code>optional uint64 index = 2;</code>
+     */
+    public long getIndex() {
+      return index_;
     }
 
     public static final int TYPE_FIELD_NUMBER = 3;
@@ -272,19 +261,10 @@ public final class Raft {
       return result == null ? com.wenweihu86.raft.proto.Raft.EntryType.UNRECOGNIZED : result;
     }
 
-    public static final int DATA_LEN_FIELD_NUMBER = 4;
-    private long dataLen_;
-    /**
-     * <code>optional int64 data_len = 4;</code>
-     */
-    public long getDataLen() {
-      return dataLen_;
-    }
-
-    public static final int DATA_FIELD_NUMBER = 5;
+    public static final int DATA_FIELD_NUMBER = 4;
     private com.google.protobuf.ByteString data_;
     /**
-     * <code>optional bytes data = 5;</code>
+     * <code>optional bytes data = 4;</code>
      */
     public com.google.protobuf.ByteString getData() {
       return data_;
@@ -302,20 +282,17 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (logIndex_ != 0L) {
-        output.writeInt64(1, logIndex_);
-      }
       if (term_ != 0L) {
-        output.writeInt64(2, term_);
+        output.writeUInt64(1, term_);
+      }
+      if (index_ != 0L) {
+        output.writeUInt64(2, index_);
       }
       if (type_ != com.wenweihu86.raft.proto.Raft.EntryType.ENTRY_TYPE_DATA.getNumber()) {
         output.writeEnum(3, type_);
       }
-      if (dataLen_ != 0L) {
-        output.writeInt64(4, dataLen_);
-      }
       if (!data_.isEmpty()) {
-        output.writeBytes(5, data_);
+        output.writeBytes(4, data_);
       }
     }
 
@@ -324,25 +301,21 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (logIndex_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, logIndex_);
-      }
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, term_);
+          .computeUInt64Size(1, term_);
+      }
+      if (index_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, index_);
       }
       if (type_ != com.wenweihu86.raft.proto.Raft.EntryType.ENTRY_TYPE_DATA.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, type_);
       }
-      if (dataLen_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, dataLen_);
-      }
       if (!data_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, data_);
+          .computeBytesSize(4, data_);
       }
       memoizedSize = size;
       return size;
@@ -360,13 +333,11 @@ public final class Raft {
       com.wenweihu86.raft.proto.Raft.LogEntry other = (com.wenweihu86.raft.proto.Raft.LogEntry) obj;
 
       boolean result = true;
-      result = result && (getLogIndex()
-          == other.getLogIndex());
       result = result && (getTerm()
           == other.getTerm());
+      result = result && (getIndex()
+          == other.getIndex());
       result = result && type_ == other.type_;
-      result = result && (getDataLen()
-          == other.getDataLen());
       result = result && getData()
           .equals(other.getData());
       return result;
@@ -379,17 +350,14 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + LOG_INDEX_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getLogIndex());
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTerm());
+      hash = (37 * hash) + INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getIndex());
       hash = (37 * hash) + TYPE_FIELD_NUMBER;
       hash = (53 * hash) + type_;
-      hash = (37 * hash) + DATA_LEN_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getDataLen());
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getData().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
@@ -510,13 +478,11 @@ public final class Raft {
       }
       public Builder clear() {
         super.clear();
-        logIndex_ = 0L;
-
         term_ = 0L;
 
-        type_ = 0;
+        index_ = 0L;
 
-        dataLen_ = 0L;
+        type_ = 0;
 
         data_ = com.google.protobuf.ByteString.EMPTY;
 
@@ -542,10 +508,9 @@ public final class Raft {
 
       public com.wenweihu86.raft.proto.Raft.LogEntry buildPartial() {
         com.wenweihu86.raft.proto.Raft.LogEntry result = new com.wenweihu86.raft.proto.Raft.LogEntry(this);
-        result.logIndex_ = logIndex_;
         result.term_ = term_;
+        result.index_ = index_;
         result.type_ = type_;
-        result.dataLen_ = dataLen_;
         result.data_ = data_;
         onBuilt();
         return result;
@@ -588,17 +553,14 @@ public final class Raft {
 
       public Builder mergeFrom(com.wenweihu86.raft.proto.Raft.LogEntry other) {
         if (other == com.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance()) return this;
-        if (other.getLogIndex() != 0L) {
-          setLogIndex(other.getLogIndex());
-        }
         if (other.getTerm() != 0L) {
           setTerm(other.getTerm());
         }
+        if (other.getIndex() != 0L) {
+          setIndex(other.getIndex());
+        }
         if (other.type_ != 0) {
           setTypeValue(other.getTypeValue());
-        }
-        if (other.getDataLen() != 0L) {
-          setDataLen(other.getDataLen());
         }
         if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
           setData(other.getData());
@@ -629,41 +591,15 @@ public final class Raft {
         return this;
       }
 
-      private long logIndex_ ;
-      /**
-       * <code>optional int64 log_index = 1;</code>
-       */
-      public long getLogIndex() {
-        return logIndex_;
-      }
-      /**
-       * <code>optional int64 log_index = 1;</code>
-       */
-      public Builder setLogIndex(long value) {
-        
-        logIndex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 log_index = 1;</code>
-       */
-      public Builder clearLogIndex() {
-        
-        logIndex_ = 0L;
-        onChanged();
-        return this;
-      }
-
       private long term_ ;
       /**
-       * <code>optional int64 term = 2;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public long getTerm() {
         return term_;
       }
       /**
-       * <code>optional int64 term = 2;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public Builder setTerm(long value) {
         
@@ -672,11 +608,37 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional int64 term = 2;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public Builder clearTerm() {
         
         term_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long index_ ;
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public long getIndex() {
+        return index_;
+      }
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public Builder setIndex(long value) {
+        
+        index_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 index = 2;</code>
+       */
+      public Builder clearIndex() {
+        
+        index_ = 0L;
         onChanged();
         return this;
       }
@@ -725,41 +687,15 @@ public final class Raft {
         return this;
       }
 
-      private long dataLen_ ;
-      /**
-       * <code>optional int64 data_len = 4;</code>
-       */
-      public long getDataLen() {
-        return dataLen_;
-      }
-      /**
-       * <code>optional int64 data_len = 4;</code>
-       */
-      public Builder setDataLen(long value) {
-        
-        dataLen_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 data_len = 4;</code>
-       */
-      public Builder clearDataLen() {
-        
-        dataLen_ = 0L;
-        onChanged();
-        return this;
-      }
-
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>optional bytes data = 5;</code>
+       * <code>optional bytes data = 4;</code>
        */
       public com.google.protobuf.ByteString getData() {
         return data_;
       }
       /**
-       * <code>optional bytes data = 5;</code>
+       * <code>optional bytes data = 4;</code>
        */
       public Builder setData(com.google.protobuf.ByteString value) {
         if (value == null) {
@@ -771,7 +707,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional bytes data = 5;</code>
+       * <code>optional bytes data = 4;</code>
        */
       public Builder clearData() {
         
@@ -837,7 +773,7 @@ public final class Raft {
      * 请求选票的候选人的 Id
      * </pre>
      *
-     * <code>optional int32 server_id = 1;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
     int getServerId();
 
@@ -846,7 +782,7 @@ public final class Raft {
      * 候选人的任期号
      * </pre>
      *
-     * <code>optional int64 term = 2;</code>
+     * <code>optional uint64 term = 2;</code>
      */
     long getTerm();
 
@@ -855,7 +791,7 @@ public final class Raft {
      * 候选人的最后日志条目的索引值
      * </pre>
      *
-     * <code>optional int64 last_log_term = 3;</code>
+     * <code>optional uint64 last_log_term = 3;</code>
      */
     long getLastLogTerm();
 
@@ -864,7 +800,7 @@ public final class Raft {
      * 候选人最后日志条目的任期号
      * </pre>
      *
-     * <code>optional int64 last_log_index = 4;</code>
+     * <code>optional uint64 last_log_index = 4;</code>
      */
     long getLastLogIndex();
   }
@@ -913,22 +849,22 @@ public final class Raft {
             }
             case 8: {
 
-              serverId_ = input.readInt32();
+              serverId_ = input.readUInt32();
               break;
             }
             case 16: {
 
-              term_ = input.readInt64();
+              term_ = input.readUInt64();
               break;
             }
             case 24: {
 
-              lastLogTerm_ = input.readInt64();
+              lastLogTerm_ = input.readUInt64();
               break;
             }
             case 32: {
 
-              lastLogIndex_ = input.readInt64();
+              lastLogIndex_ = input.readUInt64();
               break;
             }
           }
@@ -961,7 +897,7 @@ public final class Raft {
      * 请求选票的候选人的 Id
      * </pre>
      *
-     * <code>optional int32 server_id = 1;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
     public int getServerId() {
       return serverId_;
@@ -974,7 +910,7 @@ public final class Raft {
      * 候选人的任期号
      * </pre>
      *
-     * <code>optional int64 term = 2;</code>
+     * <code>optional uint64 term = 2;</code>
      */
     public long getTerm() {
       return term_;
@@ -987,7 +923,7 @@ public final class Raft {
      * 候选人的最后日志条目的索引值
      * </pre>
      *
-     * <code>optional int64 last_log_term = 3;</code>
+     * <code>optional uint64 last_log_term = 3;</code>
      */
     public long getLastLogTerm() {
       return lastLogTerm_;
@@ -1000,7 +936,7 @@ public final class Raft {
      * 候选人最后日志条目的任期号
      * </pre>
      *
-     * <code>optional int64 last_log_index = 4;</code>
+     * <code>optional uint64 last_log_index = 4;</code>
      */
     public long getLastLogIndex() {
       return lastLogIndex_;
@@ -1019,16 +955,16 @@ public final class Raft {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (serverId_ != 0) {
-        output.writeInt32(1, serverId_);
+        output.writeUInt32(1, serverId_);
       }
       if (term_ != 0L) {
-        output.writeInt64(2, term_);
+        output.writeUInt64(2, term_);
       }
       if (lastLogTerm_ != 0L) {
-        output.writeInt64(3, lastLogTerm_);
+        output.writeUInt64(3, lastLogTerm_);
       }
       if (lastLogIndex_ != 0L) {
-        output.writeInt64(4, lastLogIndex_);
+        output.writeUInt64(4, lastLogIndex_);
       }
     }
 
@@ -1039,19 +975,19 @@ public final class Raft {
       size = 0;
       if (serverId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, serverId_);
+          .computeUInt32Size(1, serverId_);
       }
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, term_);
+          .computeUInt64Size(2, term_);
       }
       if (lastLogTerm_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, lastLogTerm_);
+          .computeUInt64Size(3, lastLogTerm_);
       }
       if (lastLogIndex_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, lastLogIndex_);
+          .computeUInt64Size(4, lastLogIndex_);
       }
       memoizedSize = size;
       return size;
@@ -1335,7 +1271,7 @@ public final class Raft {
        * 请求选票的候选人的 Id
        * </pre>
        *
-       * <code>optional int32 server_id = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public int getServerId() {
         return serverId_;
@@ -1345,7 +1281,7 @@ public final class Raft {
        * 请求选票的候选人的 Id
        * </pre>
        *
-       * <code>optional int32 server_id = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public Builder setServerId(int value) {
         
@@ -1358,7 +1294,7 @@ public final class Raft {
        * 请求选票的候选人的 Id
        * </pre>
        *
-       * <code>optional int32 server_id = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public Builder clearServerId() {
         
@@ -1373,7 +1309,7 @@ public final class Raft {
        * 候选人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 2;</code>
+       * <code>optional uint64 term = 2;</code>
        */
       public long getTerm() {
         return term_;
@@ -1383,7 +1319,7 @@ public final class Raft {
        * 候选人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 2;</code>
+       * <code>optional uint64 term = 2;</code>
        */
       public Builder setTerm(long value) {
         
@@ -1396,7 +1332,7 @@ public final class Raft {
        * 候选人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 2;</code>
+       * <code>optional uint64 term = 2;</code>
        */
       public Builder clearTerm() {
         
@@ -1411,7 +1347,7 @@ public final class Raft {
        * 候选人的最后日志条目的索引值
        * </pre>
        *
-       * <code>optional int64 last_log_term = 3;</code>
+       * <code>optional uint64 last_log_term = 3;</code>
        */
       public long getLastLogTerm() {
         return lastLogTerm_;
@@ -1421,7 +1357,7 @@ public final class Raft {
        * 候选人的最后日志条目的索引值
        * </pre>
        *
-       * <code>optional int64 last_log_term = 3;</code>
+       * <code>optional uint64 last_log_term = 3;</code>
        */
       public Builder setLastLogTerm(long value) {
         
@@ -1434,7 +1370,7 @@ public final class Raft {
        * 候选人的最后日志条目的索引值
        * </pre>
        *
-       * <code>optional int64 last_log_term = 3;</code>
+       * <code>optional uint64 last_log_term = 3;</code>
        */
       public Builder clearLastLogTerm() {
         
@@ -1449,7 +1385,7 @@ public final class Raft {
        * 候选人最后日志条目的任期号
        * </pre>
        *
-       * <code>optional int64 last_log_index = 4;</code>
+       * <code>optional uint64 last_log_index = 4;</code>
        */
       public long getLastLogIndex() {
         return lastLogIndex_;
@@ -1459,7 +1395,7 @@ public final class Raft {
        * 候选人最后日志条目的任期号
        * </pre>
        *
-       * <code>optional int64 last_log_index = 4;</code>
+       * <code>optional uint64 last_log_index = 4;</code>
        */
       public Builder setLastLogIndex(long value) {
         
@@ -1472,7 +1408,7 @@ public final class Raft {
        * 候选人最后日志条目的任期号
        * </pre>
        *
-       * <code>optional int64 last_log_index = 4;</code>
+       * <code>optional uint64 last_log_index = 4;</code>
        */
       public Builder clearLastLogIndex() {
         
@@ -1538,7 +1474,7 @@ public final class Raft {
      * 当前任期号，以便于候选人去更新自己的任期号
      * </pre>
      *
-     * <code>optional int64 term = 1;</code>
+     * <code>optional uint64 term = 1;</code>
      */
     long getTerm();
 
@@ -1594,7 +1530,7 @@ public final class Raft {
             }
             case 8: {
 
-              term_ = input.readInt64();
+              term_ = input.readUInt64();
               break;
             }
             case 16: {
@@ -1632,7 +1568,7 @@ public final class Raft {
      * 当前任期号，以便于候选人去更新自己的任期号
      * </pre>
      *
-     * <code>optional int64 term = 1;</code>
+     * <code>optional uint64 term = 1;</code>
      */
     public long getTerm() {
       return term_;
@@ -1664,7 +1600,7 @@ public final class Raft {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (term_ != 0L) {
-        output.writeInt64(1, term_);
+        output.writeUInt64(1, term_);
       }
       if (granted_ != false) {
         output.writeBool(2, granted_);
@@ -1678,7 +1614,7 @@ public final class Raft {
       size = 0;
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, term_);
+          .computeUInt64Size(1, term_);
       }
       if (granted_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -1945,7 +1881,7 @@ public final class Raft {
        * 当前任期号，以便于候选人去更新自己的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public long getTerm() {
         return term_;
@@ -1955,7 +1891,7 @@ public final class Raft {
        * 当前任期号，以便于候选人去更新自己的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public Builder setTerm(long value) {
         
@@ -1968,7 +1904,7 @@ public final class Raft {
        * 当前任期号，以便于候选人去更新自己的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public Builder clearTerm() {
         
@@ -2069,28 +2005,28 @@ public final class Raft {
 
     /**
      * <pre>
-     * 领导人的任期号
-     * </pre>
-     *
-     * <code>optional int64 term = 1;</code>
-     */
-    long getTerm();
-
-    /**
-     * <pre>
      * 领导人的Id
      * </pre>
      *
-     * <code>optional int32 leader_id = 2;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
-    int getLeaderId();
+    int getServerId();
+
+    /**
+     * <pre>
+     * 领导人的任期号
+     * </pre>
+     *
+     * <code>optional uint64 term = 2;</code>
+     */
+    long getTerm();
 
     /**
      * <pre>
      * 新的日志条目紧随之前的索引值
      * </pre>
      *
-     * <code>optional int64 prev_log_index = 3;</code>
+     * <code>optional uint64 prev_log_index = 3;</code>
      */
     long getPrevLogIndex();
 
@@ -2099,7 +2035,7 @@ public final class Raft {
      * prev_log_index条目的任期号
      * </pre>
      *
-     * <code>optional int64 prev_log_term = 4;</code>
+     * <code>optional uint64 prev_log_term = 4;</code>
      */
     long getPrevLogTerm();
 
@@ -2108,34 +2044,53 @@ public final class Raft {
      * 准备存储的日志条目（表示心跳时为空）
      * </pre>
      *
-     * <code>optional .raft.LogEntry entries = 5;</code>
+     * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    boolean hasEntries();
+    java.util.List<com.wenweihu86.raft.proto.Raft.LogEntry> 
+        getEntriesList();
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
      * </pre>
      *
-     * <code>optional .raft.LogEntry entries = 5;</code>
+     * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    com.wenweihu86.raft.proto.Raft.LogEntry getEntries();
+    com.wenweihu86.raft.proto.Raft.LogEntry getEntries(int index);
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
      * </pre>
      *
-     * <code>optional .raft.LogEntry entries = 5;</code>
+     * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder();
+    int getEntriesCount();
+    /**
+     * <pre>
+     * 准备存储的日志条目（表示心跳时为空）
+     * </pre>
+     *
+     * <code>repeated .raft.LogEntry entries = 5;</code>
+     */
+    java.util.List<? extends com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+        getEntriesOrBuilderList();
+    /**
+     * <pre>
+     * 准备存储的日志条目（表示心跳时为空）
+     * </pre>
+     *
+     * <code>repeated .raft.LogEntry entries = 5;</code>
+     */
+    com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder(
+        int index);
 
     /**
      * <pre>
      * 领导人已经提交的日志的索引值
      * </pre>
      *
-     * <code>optional int64 leader_committed_index = 6;</code>
+     * <code>optional uint64 commit_index = 6;</code>
      */
-    long getLeaderCommittedIndex();
+    long getCommitIndex();
   }
   /**
    * Protobuf type {@code raft.AppendEntriesRequest}
@@ -2149,11 +2104,12 @@ public final class Raft {
       super(builder);
     }
     private AppendEntriesRequest() {
+      serverId_ = 0;
       term_ = 0L;
-      leaderId_ = 0;
       prevLogIndex_ = 0L;
       prevLogTerm_ = 0L;
-      leaderCommittedIndex_ = 0L;
+      entries_ = java.util.Collections.emptyList();
+      commitIndex_ = 0L;
     }
 
     @java.lang.Override
@@ -2183,40 +2139,36 @@ public final class Raft {
             }
             case 8: {
 
-              term_ = input.readInt64();
+              serverId_ = input.readUInt32();
               break;
             }
             case 16: {
 
-              leaderId_ = input.readInt32();
+              term_ = input.readUInt64();
               break;
             }
             case 24: {
 
-              prevLogIndex_ = input.readInt64();
+              prevLogIndex_ = input.readUInt64();
               break;
             }
             case 32: {
 
-              prevLogTerm_ = input.readInt64();
+              prevLogTerm_ = input.readUInt64();
               break;
             }
             case 42: {
-              com.wenweihu86.raft.proto.Raft.LogEntry.Builder subBuilder = null;
-              if (entries_ != null) {
-                subBuilder = entries_.toBuilder();
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                entries_ = new java.util.ArrayList<com.wenweihu86.raft.proto.Raft.LogEntry>();
+                mutable_bitField0_ |= 0x00000010;
               }
-              entries_ = input.readMessage(com.wenweihu86.raft.proto.Raft.LogEntry.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(entries_);
-                entries_ = subBuilder.buildPartial();
-              }
-
+              entries_.add(
+                  input.readMessage(com.wenweihu86.raft.proto.Raft.LogEntry.parser(), extensionRegistry));
               break;
             }
             case 48: {
 
-              leaderCommittedIndex_ = input.readInt64();
+              commitIndex_ = input.readUInt64();
               break;
             }
           }
@@ -2227,6 +2179,9 @@ public final class Raft {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+          entries_ = java.util.Collections.unmodifiableList(entries_);
+        }
         makeExtensionsImmutable();
       }
     }
@@ -2242,30 +2197,31 @@ public final class Raft {
               com.wenweihu86.raft.proto.Raft.AppendEntriesRequest.class, com.wenweihu86.raft.proto.Raft.AppendEntriesRequest.Builder.class);
     }
 
-    public static final int TERM_FIELD_NUMBER = 1;
+    private int bitField0_;
+    public static final int SERVER_ID_FIELD_NUMBER = 1;
+    private int serverId_;
+    /**
+     * <pre>
+     * 领导人的Id
+     * </pre>
+     *
+     * <code>optional uint32 server_id = 1;</code>
+     */
+    public int getServerId() {
+      return serverId_;
+    }
+
+    public static final int TERM_FIELD_NUMBER = 2;
     private long term_;
     /**
      * <pre>
      * 领导人的任期号
      * </pre>
      *
-     * <code>optional int64 term = 1;</code>
+     * <code>optional uint64 term = 2;</code>
      */
     public long getTerm() {
       return term_;
-    }
-
-    public static final int LEADER_ID_FIELD_NUMBER = 2;
-    private int leaderId_;
-    /**
-     * <pre>
-     * 领导人的Id
-     * </pre>
-     *
-     * <code>optional int32 leader_id = 2;</code>
-     */
-    public int getLeaderId() {
-      return leaderId_;
     }
 
     public static final int PREV_LOG_INDEX_FIELD_NUMBER = 3;
@@ -2275,7 +2231,7 @@ public final class Raft {
      * 新的日志条目紧随之前的索引值
      * </pre>
      *
-     * <code>optional int64 prev_log_index = 3;</code>
+     * <code>optional uint64 prev_log_index = 3;</code>
      */
     public long getPrevLogIndex() {
       return prevLogIndex_;
@@ -2288,56 +2244,78 @@ public final class Raft {
      * prev_log_index条目的任期号
      * </pre>
      *
-     * <code>optional int64 prev_log_term = 4;</code>
+     * <code>optional uint64 prev_log_term = 4;</code>
      */
     public long getPrevLogTerm() {
       return prevLogTerm_;
     }
 
     public static final int ENTRIES_FIELD_NUMBER = 5;
-    private com.wenweihu86.raft.proto.Raft.LogEntry entries_;
+    private java.util.List<com.wenweihu86.raft.proto.Raft.LogEntry> entries_;
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
      * </pre>
      *
-     * <code>optional .raft.LogEntry entries = 5;</code>
+     * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public boolean hasEntries() {
-      return entries_ != null;
+    public java.util.List<com.wenweihu86.raft.proto.Raft.LogEntry> getEntriesList() {
+      return entries_;
     }
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
      * </pre>
      *
-     * <code>optional .raft.LogEntry entries = 5;</code>
+     * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public com.wenweihu86.raft.proto.Raft.LogEntry getEntries() {
-      return entries_ == null ? com.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance() : entries_;
+    public java.util.List<? extends com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+        getEntriesOrBuilderList() {
+      return entries_;
     }
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
      * </pre>
      *
-     * <code>optional .raft.LogEntry entries = 5;</code>
+     * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder() {
-      return getEntries();
+    public int getEntriesCount() {
+      return entries_.size();
+    }
+    /**
+     * <pre>
+     * 准备存储的日志条目（表示心跳时为空）
+     * </pre>
+     *
+     * <code>repeated .raft.LogEntry entries = 5;</code>
+     */
+    public com.wenweihu86.raft.proto.Raft.LogEntry getEntries(int index) {
+      return entries_.get(index);
+    }
+    /**
+     * <pre>
+     * 准备存储的日志条目（表示心跳时为空）
+     * </pre>
+     *
+     * <code>repeated .raft.LogEntry entries = 5;</code>
+     */
+    public com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder(
+        int index) {
+      return entries_.get(index);
     }
 
-    public static final int LEADER_COMMITTED_INDEX_FIELD_NUMBER = 6;
-    private long leaderCommittedIndex_;
+    public static final int COMMIT_INDEX_FIELD_NUMBER = 6;
+    private long commitIndex_;
     /**
      * <pre>
      * 领导人已经提交的日志的索引值
      * </pre>
      *
-     * <code>optional int64 leader_committed_index = 6;</code>
+     * <code>optional uint64 commit_index = 6;</code>
      */
-    public long getLeaderCommittedIndex() {
-      return leaderCommittedIndex_;
+    public long getCommitIndex() {
+      return commitIndex_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2352,23 +2330,23 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (term_ != 0L) {
-        output.writeInt64(1, term_);
+      if (serverId_ != 0) {
+        output.writeUInt32(1, serverId_);
       }
-      if (leaderId_ != 0) {
-        output.writeInt32(2, leaderId_);
+      if (term_ != 0L) {
+        output.writeUInt64(2, term_);
       }
       if (prevLogIndex_ != 0L) {
-        output.writeInt64(3, prevLogIndex_);
+        output.writeUInt64(3, prevLogIndex_);
       }
       if (prevLogTerm_ != 0L) {
-        output.writeInt64(4, prevLogTerm_);
+        output.writeUInt64(4, prevLogTerm_);
       }
-      if (entries_ != null) {
-        output.writeMessage(5, getEntries());
+      for (int i = 0; i < entries_.size(); i++) {
+        output.writeMessage(5, entries_.get(i));
       }
-      if (leaderCommittedIndex_ != 0L) {
-        output.writeInt64(6, leaderCommittedIndex_);
+      if (commitIndex_ != 0L) {
+        output.writeUInt64(6, commitIndex_);
       }
     }
 
@@ -2377,29 +2355,29 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
+      if (serverId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, serverId_);
+      }
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, term_);
-      }
-      if (leaderId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, leaderId_);
+          .computeUInt64Size(2, term_);
       }
       if (prevLogIndex_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, prevLogIndex_);
+          .computeUInt64Size(3, prevLogIndex_);
       }
       if (prevLogTerm_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, prevLogTerm_);
+          .computeUInt64Size(4, prevLogTerm_);
       }
-      if (entries_ != null) {
+      for (int i = 0; i < entries_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getEntries());
+          .computeMessageSize(5, entries_.get(i));
       }
-      if (leaderCommittedIndex_ != 0L) {
+      if (commitIndex_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(6, leaderCommittedIndex_);
+          .computeUInt64Size(6, commitIndex_);
       }
       memoizedSize = size;
       return size;
@@ -2417,21 +2395,18 @@ public final class Raft {
       com.wenweihu86.raft.proto.Raft.AppendEntriesRequest other = (com.wenweihu86.raft.proto.Raft.AppendEntriesRequest) obj;
 
       boolean result = true;
+      result = result && (getServerId()
+          == other.getServerId());
       result = result && (getTerm()
           == other.getTerm());
-      result = result && (getLeaderId()
-          == other.getLeaderId());
       result = result && (getPrevLogIndex()
           == other.getPrevLogIndex());
       result = result && (getPrevLogTerm()
           == other.getPrevLogTerm());
-      result = result && (hasEntries() == other.hasEntries());
-      if (hasEntries()) {
-        result = result && getEntries()
-            .equals(other.getEntries());
-      }
-      result = result && (getLeaderCommittedIndex()
-          == other.getLeaderCommittedIndex());
+      result = result && getEntriesList()
+          .equals(other.getEntriesList());
+      result = result && (getCommitIndex()
+          == other.getCommitIndex());
       return result;
     }
 
@@ -2442,24 +2417,24 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + SERVER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getServerId();
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTerm());
-      hash = (37 * hash) + LEADER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getLeaderId();
       hash = (37 * hash) + PREV_LOG_INDEX_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getPrevLogIndex());
       hash = (37 * hash) + PREV_LOG_TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getPrevLogTerm());
-      if (hasEntries()) {
+      if (getEntriesCount() > 0) {
         hash = (37 * hash) + ENTRIES_FIELD_NUMBER;
-        hash = (53 * hash) + getEntries().hashCode();
+        hash = (53 * hash) + getEntriesList().hashCode();
       }
-      hash = (37 * hash) + LEADER_COMMITTED_INDEX_FIELD_NUMBER;
+      hash = (37 * hash) + COMMIT_INDEX_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getLeaderCommittedIndex());
+          getCommitIndex());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2574,25 +2549,26 @@ public final class Raft {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getEntriesFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
-        term_ = 0L;
+        serverId_ = 0;
 
-        leaderId_ = 0;
+        term_ = 0L;
 
         prevLogIndex_ = 0L;
 
         prevLogTerm_ = 0L;
 
         if (entriesBuilder_ == null) {
-          entries_ = null;
+          entries_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
         } else {
-          entries_ = null;
-          entriesBuilder_ = null;
+          entriesBuilder_.clear();
         }
-        leaderCommittedIndex_ = 0L;
+        commitIndex_ = 0L;
 
         return this;
       }
@@ -2616,16 +2592,23 @@ public final class Raft {
 
       public com.wenweihu86.raft.proto.Raft.AppendEntriesRequest buildPartial() {
         com.wenweihu86.raft.proto.Raft.AppendEntriesRequest result = new com.wenweihu86.raft.proto.Raft.AppendEntriesRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        result.serverId_ = serverId_;
         result.term_ = term_;
-        result.leaderId_ = leaderId_;
         result.prevLogIndex_ = prevLogIndex_;
         result.prevLogTerm_ = prevLogTerm_;
         if (entriesBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) == 0x00000010)) {
+            entries_ = java.util.Collections.unmodifiableList(entries_);
+            bitField0_ = (bitField0_ & ~0x00000010);
+          }
           result.entries_ = entries_;
         } else {
           result.entries_ = entriesBuilder_.build();
         }
-        result.leaderCommittedIndex_ = leaderCommittedIndex_;
+        result.commitIndex_ = commitIndex_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -2667,11 +2650,11 @@ public final class Raft {
 
       public Builder mergeFrom(com.wenweihu86.raft.proto.Raft.AppendEntriesRequest other) {
         if (other == com.wenweihu86.raft.proto.Raft.AppendEntriesRequest.getDefaultInstance()) return this;
+        if (other.getServerId() != 0) {
+          setServerId(other.getServerId());
+        }
         if (other.getTerm() != 0L) {
           setTerm(other.getTerm());
-        }
-        if (other.getLeaderId() != 0) {
-          setLeaderId(other.getLeaderId());
         }
         if (other.getPrevLogIndex() != 0L) {
           setPrevLogIndex(other.getPrevLogIndex());
@@ -2679,11 +2662,34 @@ public final class Raft {
         if (other.getPrevLogTerm() != 0L) {
           setPrevLogTerm(other.getPrevLogTerm());
         }
-        if (other.hasEntries()) {
-          mergeEntries(other.getEntries());
+        if (entriesBuilder_ == null) {
+          if (!other.entries_.isEmpty()) {
+            if (entries_.isEmpty()) {
+              entries_ = other.entries_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+            } else {
+              ensureEntriesIsMutable();
+              entries_.addAll(other.entries_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.entries_.isEmpty()) {
+            if (entriesBuilder_.isEmpty()) {
+              entriesBuilder_.dispose();
+              entriesBuilder_ = null;
+              entries_ = other.entries_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+              entriesBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getEntriesFieldBuilder() : null;
+            } else {
+              entriesBuilder_.addAllMessages(other.entries_);
+            }
+          }
         }
-        if (other.getLeaderCommittedIndex() != 0L) {
-          setLeaderCommittedIndex(other.getLeaderCommittedIndex());
+        if (other.getCommitIndex() != 0L) {
+          setCommitIndex(other.getCommitIndex());
         }
         onChanged();
         return this;
@@ -2710,6 +2716,45 @@ public final class Raft {
         }
         return this;
       }
+      private int bitField0_;
+
+      private int serverId_ ;
+      /**
+       * <pre>
+       * 领导人的Id
+       * </pre>
+       *
+       * <code>optional uint32 server_id = 1;</code>
+       */
+      public int getServerId() {
+        return serverId_;
+      }
+      /**
+       * <pre>
+       * 领导人的Id
+       * </pre>
+       *
+       * <code>optional uint32 server_id = 1;</code>
+       */
+      public Builder setServerId(int value) {
+        
+        serverId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 领导人的Id
+       * </pre>
+       *
+       * <code>optional uint32 server_id = 1;</code>
+       */
+      public Builder clearServerId() {
+        
+        serverId_ = 0;
+        onChanged();
+        return this;
+      }
 
       private long term_ ;
       /**
@@ -2717,7 +2762,7 @@ public final class Raft {
        * 领导人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 2;</code>
        */
       public long getTerm() {
         return term_;
@@ -2727,7 +2772,7 @@ public final class Raft {
        * 领导人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 2;</code>
        */
       public Builder setTerm(long value) {
         
@@ -2740,49 +2785,11 @@ public final class Raft {
        * 领导人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 2;</code>
        */
       public Builder clearTerm() {
         
         term_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int leaderId_ ;
-      /**
-       * <pre>
-       * 领导人的Id
-       * </pre>
-       *
-       * <code>optional int32 leader_id = 2;</code>
-       */
-      public int getLeaderId() {
-        return leaderId_;
-      }
-      /**
-       * <pre>
-       * 领导人的Id
-       * </pre>
-       *
-       * <code>optional int32 leader_id = 2;</code>
-       */
-      public Builder setLeaderId(int value) {
-        
-        leaderId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 领导人的Id
-       * </pre>
-       *
-       * <code>optional int32 leader_id = 2;</code>
-       */
-      public Builder clearLeaderId() {
-        
-        leaderId_ = 0;
         onChanged();
         return this;
       }
@@ -2793,7 +2800,7 @@ public final class Raft {
        * 新的日志条目紧随之前的索引值
        * </pre>
        *
-       * <code>optional int64 prev_log_index = 3;</code>
+       * <code>optional uint64 prev_log_index = 3;</code>
        */
       public long getPrevLogIndex() {
         return prevLogIndex_;
@@ -2803,7 +2810,7 @@ public final class Raft {
        * 新的日志条目紧随之前的索引值
        * </pre>
        *
-       * <code>optional int64 prev_log_index = 3;</code>
+       * <code>optional uint64 prev_log_index = 3;</code>
        */
       public Builder setPrevLogIndex(long value) {
         
@@ -2816,7 +2823,7 @@ public final class Raft {
        * 新的日志条目紧随之前的索引值
        * </pre>
        *
-       * <code>optional int64 prev_log_index = 3;</code>
+       * <code>optional uint64 prev_log_index = 3;</code>
        */
       public Builder clearPrevLogIndex() {
         
@@ -2831,7 +2838,7 @@ public final class Raft {
        * prev_log_index条目的任期号
        * </pre>
        *
-       * <code>optional int64 prev_log_term = 4;</code>
+       * <code>optional uint64 prev_log_term = 4;</code>
        */
       public long getPrevLogTerm() {
         return prevLogTerm_;
@@ -2841,7 +2848,7 @@ public final class Raft {
        * prev_log_index条目的任期号
        * </pre>
        *
-       * <code>optional int64 prev_log_term = 4;</code>
+       * <code>optional uint64 prev_log_term = 4;</code>
        */
       public Builder setPrevLogTerm(long value) {
         
@@ -2854,7 +2861,7 @@ public final class Raft {
        * prev_log_index条目的任期号
        * </pre>
        *
-       * <code>optional int64 prev_log_term = 4;</code>
+       * <code>optional uint64 prev_log_term = 4;</code>
        */
       public Builder clearPrevLogTerm() {
         
@@ -2863,31 +2870,30 @@ public final class Raft {
         return this;
       }
 
-      private com.wenweihu86.raft.proto.Raft.LogEntry entries_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          com.wenweihu86.raft.proto.Raft.LogEntry, com.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> entriesBuilder_;
-      /**
-       * <pre>
-       * 准备存储的日志条目（表示心跳时为空）
-       * </pre>
-       *
-       * <code>optional .raft.LogEntry entries = 5;</code>
-       */
-      public boolean hasEntries() {
-        return entriesBuilder_ != null || entries_ != null;
+      private java.util.List<com.wenweihu86.raft.proto.Raft.LogEntry> entries_ =
+        java.util.Collections.emptyList();
+      private void ensureEntriesIsMutable() {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          entries_ = new java.util.ArrayList<com.wenweihu86.raft.proto.Raft.LogEntry>(entries_);
+          bitField0_ |= 0x00000010;
+         }
       }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          com.wenweihu86.raft.proto.Raft.LogEntry, com.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> entriesBuilder_;
+
       /**
        * <pre>
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.wenweihu86.raft.proto.Raft.LogEntry getEntries() {
+      public java.util.List<com.wenweihu86.raft.proto.Raft.LogEntry> getEntriesList() {
         if (entriesBuilder_ == null) {
-          return entries_ == null ? com.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance() : entries_;
+          return java.util.Collections.unmodifiableList(entries_);
         } else {
-          return entriesBuilder_.getMessage();
+          return entriesBuilder_.getMessageList();
         }
       }
       /**
@@ -2895,19 +2901,48 @@ public final class Raft {
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public Builder setEntries(com.wenweihu86.raft.proto.Raft.LogEntry value) {
+      public int getEntriesCount() {
+        if (entriesBuilder_ == null) {
+          return entries_.size();
+        } else {
+          return entriesBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public com.wenweihu86.raft.proto.Raft.LogEntry getEntries(int index) {
+        if (entriesBuilder_ == null) {
+          return entries_.get(index);
+        } else {
+          return entriesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public Builder setEntries(
+          int index, com.wenweihu86.raft.proto.Raft.LogEntry value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          entries_ = value;
+          ensureEntriesIsMutable();
+          entries_.set(index, value);
           onChanged();
         } else {
-          entriesBuilder_.setMessage(value);
+          entriesBuilder_.setMessage(index, value);
         }
-
         return this;
       }
       /**
@@ -2915,17 +2950,76 @@ public final class Raft {
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder setEntries(
+          int index, com.wenweihu86.raft.proto.Raft.LogEntry.Builder builderForValue) {
+        if (entriesBuilder_ == null) {
+          ensureEntriesIsMutable();
+          entries_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          entriesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public Builder addEntries(com.wenweihu86.raft.proto.Raft.LogEntry value) {
+        if (entriesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEntriesIsMutable();
+          entries_.add(value);
+          onChanged();
+        } else {
+          entriesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public Builder addEntries(
+          int index, com.wenweihu86.raft.proto.Raft.LogEntry value) {
+        if (entriesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEntriesIsMutable();
+          entries_.add(index, value);
+          onChanged();
+        } else {
+          entriesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public Builder addEntries(
           com.wenweihu86.raft.proto.Raft.LogEntry.Builder builderForValue) {
         if (entriesBuilder_ == null) {
-          entries_ = builderForValue.build();
+          ensureEntriesIsMutable();
+          entries_.add(builderForValue.build());
           onChanged();
         } else {
-          entriesBuilder_.setMessage(builderForValue.build());
+          entriesBuilder_.addMessage(builderForValue.build());
         }
-
         return this;
       }
       /**
@@ -2933,21 +3027,17 @@ public final class Raft {
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public Builder mergeEntries(com.wenweihu86.raft.proto.Raft.LogEntry value) {
+      public Builder addEntries(
+          int index, com.wenweihu86.raft.proto.Raft.LogEntry.Builder builderForValue) {
         if (entriesBuilder_ == null) {
-          if (entries_ != null) {
-            entries_ =
-              com.wenweihu86.raft.proto.Raft.LogEntry.newBuilder(entries_).mergeFrom(value).buildPartial();
-          } else {
-            entries_ = value;
-          }
+          ensureEntriesIsMutable();
+          entries_.add(index, builderForValue.build());
           onChanged();
         } else {
-          entriesBuilder_.mergeFrom(value);
+          entriesBuilder_.addMessage(index, builderForValue.build());
         }
-
         return this;
       }
       /**
@@ -2955,17 +3045,35 @@ public final class Raft {
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public Builder addAllEntries(
+          java.lang.Iterable<? extends com.wenweihu86.raft.proto.Raft.LogEntry> values) {
+        if (entriesBuilder_ == null) {
+          ensureEntriesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, entries_);
+          onChanged();
+        } else {
+          entriesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder clearEntries() {
         if (entriesBuilder_ == null) {
-          entries_ = null;
+          entries_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
           onChanged();
         } else {
-          entries_ = null;
-          entriesBuilder_ = null;
+          entriesBuilder_.clear();
         }
-
         return this;
       }
       /**
@@ -2973,26 +3081,41 @@ public final class Raft {
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.wenweihu86.raft.proto.Raft.LogEntry.Builder getEntriesBuilder() {
-        
-        onChanged();
-        return getEntriesFieldBuilder().getBuilder();
+      public Builder removeEntries(int index) {
+        if (entriesBuilder_ == null) {
+          ensureEntriesIsMutable();
+          entries_.remove(index);
+          onChanged();
+        } else {
+          entriesBuilder_.remove(index);
+        }
+        return this;
       }
       /**
        * <pre>
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder() {
-        if (entriesBuilder_ != null) {
-          return entriesBuilder_.getMessageOrBuilder();
-        } else {
-          return entries_ == null ?
-              com.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance() : entries_;
+      public com.wenweihu86.raft.proto.Raft.LogEntry.Builder getEntriesBuilder(
+          int index) {
+        return getEntriesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder(
+          int index) {
+        if (entriesBuilder_ == null) {
+          return entries_.get(index);  } else {
+          return entriesBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
@@ -3000,15 +3123,58 @@ public final class Raft {
        * 准备存储的日志条目（表示心跳时为空）
        * </pre>
        *
-       * <code>optional .raft.LogEntry entries = 5;</code>
+       * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      public java.util.List<? extends com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+           getEntriesOrBuilderList() {
+        if (entriesBuilder_ != null) {
+          return entriesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(entries_);
+        }
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public com.wenweihu86.raft.proto.Raft.LogEntry.Builder addEntriesBuilder() {
+        return getEntriesFieldBuilder().addBuilder(
+            com.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public com.wenweihu86.raft.proto.Raft.LogEntry.Builder addEntriesBuilder(
+          int index) {
+        return getEntriesFieldBuilder().addBuilder(
+            index, com.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * 准备存储的日志条目（表示心跳时为空）
+       * </pre>
+       *
+       * <code>repeated .raft.LogEntry entries = 5;</code>
+       */
+      public java.util.List<com.wenweihu86.raft.proto.Raft.LogEntry.Builder> 
+           getEntriesBuilderList() {
+        return getEntriesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           com.wenweihu86.raft.proto.Raft.LogEntry, com.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
           getEntriesFieldBuilder() {
         if (entriesBuilder_ == null) {
-          entriesBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          entriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.wenweihu86.raft.proto.Raft.LogEntry, com.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.wenweihu86.raft.proto.Raft.LogEntryOrBuilder>(
-                  getEntries(),
+                  entries_,
+                  ((bitField0_ & 0x00000010) == 0x00000010),
                   getParentForChildren(),
                   isClean());
           entries_ = null;
@@ -3016,27 +3182,27 @@ public final class Raft {
         return entriesBuilder_;
       }
 
-      private long leaderCommittedIndex_ ;
+      private long commitIndex_ ;
       /**
        * <pre>
        * 领导人已经提交的日志的索引值
        * </pre>
        *
-       * <code>optional int64 leader_committed_index = 6;</code>
+       * <code>optional uint64 commit_index = 6;</code>
        */
-      public long getLeaderCommittedIndex() {
-        return leaderCommittedIndex_;
+      public long getCommitIndex() {
+        return commitIndex_;
       }
       /**
        * <pre>
        * 领导人已经提交的日志的索引值
        * </pre>
        *
-       * <code>optional int64 leader_committed_index = 6;</code>
+       * <code>optional uint64 commit_index = 6;</code>
        */
-      public Builder setLeaderCommittedIndex(long value) {
+      public Builder setCommitIndex(long value) {
         
-        leaderCommittedIndex_ = value;
+        commitIndex_ = value;
         onChanged();
         return this;
       }
@@ -3045,11 +3211,11 @@ public final class Raft {
        * 领导人已经提交的日志的索引值
        * </pre>
        *
-       * <code>optional int64 leader_committed_index = 6;</code>
+       * <code>optional uint64 commit_index = 6;</code>
        */
-      public Builder clearLeaderCommittedIndex() {
+      public Builder clearCommitIndex() {
         
-        leaderCommittedIndex_ = 0L;
+        commitIndex_ = 0L;
         onChanged();
         return this;
       }
@@ -3111,7 +3277,7 @@ public final class Raft {
      * 当前的任期号，用于领导人去更新自己
      * </pre>
      *
-     * <code>optional int64 term = 1;</code>
+     * <code>optional uint64 term = 1;</code>
      */
     long getTerm();
 
@@ -3123,6 +3289,11 @@ public final class Raft {
      * <code>optional bool success = 2;</code>
      */
     boolean getSuccess();
+
+    /**
+     * <code>optional uint64 last_log_index = 3;</code>
+     */
+    long getLastLogIndex();
   }
   /**
    * Protobuf type {@code raft.AppendEntriesResponse}
@@ -3138,6 +3309,7 @@ public final class Raft {
     private AppendEntriesResponse() {
       term_ = 0L;
       success_ = false;
+      lastLogIndex_ = 0L;
     }
 
     @java.lang.Override
@@ -3167,12 +3339,17 @@ public final class Raft {
             }
             case 8: {
 
-              term_ = input.readInt64();
+              term_ = input.readUInt64();
               break;
             }
             case 16: {
 
               success_ = input.readBool();
+              break;
+            }
+            case 24: {
+
+              lastLogIndex_ = input.readUInt64();
               break;
             }
           }
@@ -3205,7 +3382,7 @@ public final class Raft {
      * 当前的任期号，用于领导人去更新自己
      * </pre>
      *
-     * <code>optional int64 term = 1;</code>
+     * <code>optional uint64 term = 1;</code>
      */
     public long getTerm() {
       return term_;
@@ -3224,6 +3401,15 @@ public final class Raft {
       return success_;
     }
 
+    public static final int LAST_LOG_INDEX_FIELD_NUMBER = 3;
+    private long lastLogIndex_;
+    /**
+     * <code>optional uint64 last_log_index = 3;</code>
+     */
+    public long getLastLogIndex() {
+      return lastLogIndex_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -3237,10 +3423,13 @@ public final class Raft {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (term_ != 0L) {
-        output.writeInt64(1, term_);
+        output.writeUInt64(1, term_);
       }
       if (success_ != false) {
         output.writeBool(2, success_);
+      }
+      if (lastLogIndex_ != 0L) {
+        output.writeUInt64(3, lastLogIndex_);
       }
     }
 
@@ -3251,11 +3440,15 @@ public final class Raft {
       size = 0;
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, term_);
+          .computeUInt64Size(1, term_);
       }
       if (success_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, success_);
+      }
+      if (lastLogIndex_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, lastLogIndex_);
       }
       memoizedSize = size;
       return size;
@@ -3277,6 +3470,8 @@ public final class Raft {
           == other.getTerm());
       result = result && (getSuccess()
           == other.getSuccess());
+      result = result && (getLastLogIndex()
+          == other.getLastLogIndex());
       return result;
     }
 
@@ -3293,6 +3488,9 @@ public final class Raft {
       hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getSuccess());
+      hash = (37 * hash) + LAST_LOG_INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLastLogIndex());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3415,6 +3613,8 @@ public final class Raft {
 
         success_ = false;
 
+        lastLogIndex_ = 0L;
+
         return this;
       }
 
@@ -3439,6 +3639,7 @@ public final class Raft {
         com.wenweihu86.raft.proto.Raft.AppendEntriesResponse result = new com.wenweihu86.raft.proto.Raft.AppendEntriesResponse(this);
         result.term_ = term_;
         result.success_ = success_;
+        result.lastLogIndex_ = lastLogIndex_;
         onBuilt();
         return result;
       }
@@ -3486,6 +3687,9 @@ public final class Raft {
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
         }
+        if (other.getLastLogIndex() != 0L) {
+          setLastLogIndex(other.getLastLogIndex());
+        }
         onChanged();
         return this;
       }
@@ -3518,7 +3722,7 @@ public final class Raft {
        * 当前的任期号，用于领导人去更新自己
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public long getTerm() {
         return term_;
@@ -3528,7 +3732,7 @@ public final class Raft {
        * 当前的任期号，用于领导人去更新自己
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public Builder setTerm(long value) {
         
@@ -3541,7 +3745,7 @@ public final class Raft {
        * 当前的任期号，用于领导人去更新自己
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional uint64 term = 1;</code>
        */
       public Builder clearTerm() {
         
@@ -3584,6 +3788,32 @@ public final class Raft {
       public Builder clearSuccess() {
         
         success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long lastLogIndex_ ;
+      /**
+       * <code>optional uint64 last_log_index = 3;</code>
+       */
+      public long getLastLogIndex() {
+        return lastLogIndex_;
+      }
+      /**
+       * <code>optional uint64 last_log_index = 3;</code>
+       */
+      public Builder setLastLogIndex(long value) {
+        
+        lastLogIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 last_log_index = 3;</code>
+       */
+      public Builder clearLastLogIndex() {
+        
+        lastLogIndex_ = 0L;
         onChanged();
         return this;
       }
@@ -4232,24 +4462,23 @@ public final class Raft {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\nraft.proto\022\004raft\"j\n\010LogEntry\022\021\n\tlog_in" +
-      "dex\030\001 \001(\003\022\014\n\004term\030\002 \001(\003\022\035\n\004type\030\003 \001(\0162\017." +
-      "raft.EntryType\022\020\n\010data_len\030\004 \001(\003\022\014\n\004data" +
-      "\030\005 \001(\014\"]\n\013VoteRequest\022\021\n\tserver_id\030\001 \001(\005" +
-      "\022\014\n\004term\030\002 \001(\003\022\025\n\rlast_log_term\030\003 \001(\003\022\026\n" +
-      "\016last_log_index\030\004 \001(\003\"-\n\014VoteResponse\022\014\n" +
-      "\004term\030\001 \001(\003\022\017\n\007granted\030\002 \001(\010\"\247\001\n\024AppendE" +
-      "ntriesRequest\022\014\n\004term\030\001 \001(\003\022\021\n\tleader_id" +
-      "\030\002 \001(\005\022\026\n\016prev_log_index\030\003 \001(\003\022\025\n\rprev_l" +
-      "og_term\030\004 \001(\003\022\037\n\007entries\030\005 \001(\0132\016.raft.Lo",
-      "gEntry\022\036\n\026leader_committed_index\030\006 \001(\003\"6" +
-      "\n\025AppendEntriesResponse\022\014\n\004term\030\001 \001(\003\022\017\n" +
-      "\007success\030\002 \001(\010\"O\n\013LogMetaData\022\024\n\014current" +
-      "_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017start_" +
-      "log_index\030\003 \001(\004*>\n\tEntryType\022\023\n\017ENTRY_TY" +
-      "PE_DATA\020\000\022\034\n\030ENTRY_TYPE_CONFIGURATION\020\001B" +
-      "!\n\031com.wenweihu86.raft.protoB\004Raftb\006prot" +
-      "o3"
+      "\n\nraft.proto\022\004raft\"T\n\010LogEntry\022\014\n\004term\030\001" +
+      " \001(\004\022\r\n\005index\030\002 \001(\004\022\035\n\004type\030\003 \001(\0162\017.raft" +
+      ".EntryType\022\014\n\004data\030\004 \001(\014\"]\n\013VoteRequest\022" +
+      "\021\n\tserver_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\022\025\n\rlast" +
+      "_log_term\030\003 \001(\004\022\026\n\016last_log_index\030\004 \001(\004\"" +
+      "-\n\014VoteResponse\022\014\n\004term\030\001 \001(\004\022\017\n\007granted" +
+      "\030\002 \001(\010\"\235\001\n\024AppendEntriesRequest\022\021\n\tserve" +
+      "r_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\022\026\n\016prev_log_ind" +
+      "ex\030\003 \001(\004\022\025\n\rprev_log_term\030\004 \001(\004\022\037\n\007entri" +
+      "es\030\005 \003(\0132\016.raft.LogEntry\022\024\n\014commit_index",
+      "\030\006 \001(\004\"N\n\025AppendEntriesResponse\022\014\n\004term\030" +
+      "\001 \001(\004\022\017\n\007success\030\002 \001(\010\022\026\n\016last_log_index" +
+      "\030\003 \001(\004\"O\n\013LogMetaData\022\024\n\014current_term\030\001 " +
+      "\001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017start_log_inde" +
+      "x\030\003 \001(\004*>\n\tEntryType\022\023\n\017ENTRY_TYPE_DATA\020" +
+      "\000\022\034\n\030ENTRY_TYPE_CONFIGURATION\020\001B!\n\031com.w" +
+      "enweihu86.raft.protoB\004Raftb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4268,7 +4497,7 @@ public final class Raft {
     internal_static_raft_LogEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_LogEntry_descriptor,
-        new java.lang.String[] { "LogIndex", "Term", "Type", "DataLen", "Data", });
+        new java.lang.String[] { "Term", "Index", "Type", "Data", });
     internal_static_raft_VoteRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_raft_VoteRequest_fieldAccessorTable = new
@@ -4286,13 +4515,13 @@ public final class Raft {
     internal_static_raft_AppendEntriesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_AppendEntriesRequest_descriptor,
-        new java.lang.String[] { "Term", "LeaderId", "PrevLogIndex", "PrevLogTerm", "Entries", "LeaderCommittedIndex", });
+        new java.lang.String[] { "ServerId", "Term", "PrevLogIndex", "PrevLogTerm", "Entries", "CommitIndex", });
     internal_static_raft_AppendEntriesResponse_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_raft_AppendEntriesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_AppendEntriesResponse_descriptor,
-        new java.lang.String[] { "Term", "Success", });
+        new java.lang.String[] { "Term", "Success", "LastLogIndex", });
     internal_static_raft_LogMetaData_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_raft_LogMetaData_fieldAccessorTable = new

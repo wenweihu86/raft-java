@@ -118,10 +118,10 @@ public class SegmentedLog {
                 segmentSize = segments.size();
                 Segment segment = segments.get(segmentSize - 1);
                 if (segment.getStartIndex() == 0) {
-                    segment.setStartIndex(entry.getLogIndex());
+                    segment.setStartIndex(entry.getIndex());
                     startLogIndexSegmentMap.put(segment.getStartIndex(), segment);
                 }
-                segment.setEndIndex(entry.getLogIndex());
+                segment.setEndIndex(entry.getIndex());
                 segment.getEntries().add(new Segment.Record(
                         segment.getRandomAccessFile().getFilePointer(), entry));
                 writeProtoToFile(segment.getRandomAccessFile(), entry);
@@ -150,8 +150,8 @@ public class SegmentedLog {
 
         int entrySize = segment.getEntries().size();
         if (entrySize > 0) {
-            segment.setStartIndex(segment.getEntries().get(0).entry.getLogIndex());
-            segment.setEndIndex(segment.getEntries().get(entrySize - 1).entry.getLogIndex());
+            segment.setStartIndex(segment.getEntries().get(0).entry.getIndex());
+            segment.setEndIndex(segment.getEntries().get(entrySize - 1).entry.getIndex());
         }
     }
 

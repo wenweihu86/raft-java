@@ -35,6 +35,8 @@ public class RaftNode {
     private long commitIndex;
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
     private long lastApplied;
+    private long lastSnapshotIndex;
+    private long lastSnapshotTerm;
     private List<Peer> peers;
     private ServerAddress localServer;
     private int leaderId; // leader节点id
@@ -132,6 +134,82 @@ public class RaftNode {
                     peer.getServerAddress().getPort());
         }
 
+    }
+
+    public void appendEntries(Peer peer) {
+        long startLogIndex = raftLog.getStartLogIndex();
+        if (peer.getNextIndex() < startLogIndex) {
+            this.installSnapshot(peer);
+            return;
+        }
+
+        long lastLogIndex = this.getLastLogIndex();
+        long prevLogIndex = peer.getNextIndex() - 1;
+        long prevLogTerm = 0;
+        if (prevLogIndex >= startLogIndex) {
+            prevLogTerm = raftLog.getEntry(prevLogIndex).getTerm();
+        } else if (prevLogIndex == 0) {
+            prevLogTerm = 0;
+        } else if (prevLogIndex == lastSnapshotIndex) {
+            prevLogTerm = lastSnapshotTerm;
+        } else {
+            installSnapshot(peer);
+            return;
+        }
+
+        Raft.AppendEntriesRequest.Builder requestBuilder = Raft.AppendEntriesRequest.newBuilder();
+        requestBuilder.setServerId(localServer.getServerId());
+        requestBuilder.setTerm(currentTerm);
+        requestBuilder.setPrevLogTerm(prevLogTerm);
+        requestBuilder.setPrevLogIndex(prevLogIndex);
+        long numEntries = packEntries(peer.getNextIndex(), requestBuilder);
+        requestBuilder.setCommitIndex(Math.min(commitIndex, prevLogIndex + numEntries));
+        Raft.AppendEntriesRequest request = requestBuilder.build();
+
+        Raft.AppendEntriesResponse response = peer.getRaftApi().appendEntries(request);
+        if (response == null) {
+            LOG.warn("appendEntries with peer[{}:{}] failed",
+                    peer.getServerAddress().getHost(),
+                    peer.getServerAddress().getPort());
+            return;
+        }
+        if (response.getTerm() > currentTerm) {
+            LOG.info("Received AppendEntries response from server {} " +
+                    "in term {} (this server's term was {})",
+                    peer.getServerAddress().getServerId(),
+                    response.getTerm(), currentTerm);
+            stepDown(response.getTerm());
+        } else {
+            if (response.getSuccess()) {
+                peer.setMatchIndex(prevLogIndex + numEntries);
+                advanceCommitIndex();
+                peer.setNextIndex(peer.getMatchIndex() + 1);
+            } else {
+                if (peer.getNextIndex() > 1) {
+                    peer.setNextIndex(peer.getNextIndex() - 1);
+                }
+                if (response.getLastLogIndex() != 0
+                        && peer.getNextIndex() > response.getLastLogIndex() + 1) {
+                    peer.setNextIndex(response.getLastLogIndex() + 1);
+                }
+            }
+        }
+    }
+
+    public void advanceCommitIndex() {
+    }
+
+    public long packEntries(long nextIndex, Raft.AppendEntriesRequest.Builder requestBuilder) {
+        long lastIndex = Math.min(raftLog.getLastLogIndex(),
+                nextIndex + RaftOption.maxLogEntriesPerRequest - 1);
+        for (long index = nextIndex; index <= lastIndex; index++) {
+            Raft.LogEntry entry = raftLog.getEntry(index);
+            requestBuilder.addEntries(entry);
+        }
+        return lastIndex - nextIndex + 1;
+    }
+
+    public void installSnapshot(Peer peer) {
     }
 
     public void becomeLeader() {
