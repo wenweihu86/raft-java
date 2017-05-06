@@ -16,6 +16,8 @@ public class Peer {
     private long nextIndex;
     // 已复制日志的最高索引值
     private long matchIndex;
+    private String lastSnapshotFileName;
+    private long lastSnapshotFileOffset;
     private long lastSnapshotIndex;
     private volatile boolean voteGranted;
 
@@ -59,6 +61,22 @@ public class Peer {
 
     public void setMatchIndex(long matchIndex) {
         this.matchIndex = matchIndex;
+    }
+
+    public String getLastSnapshotFileName() {
+        return lastSnapshotFileName;
+    }
+
+    public void setLastSnapshotFileName(String lastSnapshotFileName) {
+        this.lastSnapshotFileName = lastSnapshotFileName;
+    }
+
+    public long getLastSnapshotFileOffset() {
+        return lastSnapshotFileOffset;
+    }
+
+    public void setLastSnapshotFileOffset(long lastSnapshotFileOffset) {
+        this.lastSnapshotFileOffset = lastSnapshotFileOffset;
     }
 
     public long getLastSnapshotIndex() {

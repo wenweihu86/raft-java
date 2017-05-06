@@ -110,4 +110,9 @@ public class RaftApiImpl implements RaftApi {
         return responseBuilder.build();
     }
 
+    @Override
+    public Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request) {
+        return null;
+    }
+
 }

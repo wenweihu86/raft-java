@@ -10,4 +10,6 @@ public interface RaftApi {
     Raft.VoteResponse requestVote(Raft.VoteRequest request);
 
     Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request);
+
+    Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request);
 }

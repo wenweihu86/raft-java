@@ -4,6 +4,17 @@ package raft;
 option java_package = "com.wenweihu86.raft.proto";
 option java_outer_classname = "Raft";
 
+message LogMetaData {
+    uint64 current_term = 1;
+    uint32 voted_for = 2;
+    uint64 start_log_index = 3;
+}
+
+message SnapshotMetaData {
+    uint64 last_included_index = 1;
+    uint64 last_included_term = 2;
+}
+
 enum EntryType {
     ENTRY_TYPE_DATA = 0;
     ENTRY_TYPE_CONFIGURATION= 1;
@@ -43,9 +54,17 @@ message AppendEntriesResponse {
     uint64 last_log_index = 3;
 };
 
-message LogMetaData {
-    uint64 current_term = 1;
-    uint32 voted_for = 2;
-    uint64 start_log_index = 3;
+message InstallSnapshotRequest {
+    uint64 server_id = 1;
+    uint64 term = 2;
+    uint64 last_snapshot_index = 3;
+    string file_name = 4;
+    uint64 offset = 5;
+    bytes data = 6;
+    bool is_last = 7;
 }
 
+message InstallSnapshotResponse {
+    uint64 term = 1;
+    bool success = 2;
+}

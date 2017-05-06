@@ -1,16 +1,18 @@
 package com.wenweihu86.raft.storage;
 
-import com.google.protobuf.*;
 import com.wenweihu86.raft.RaftOption;
 import com.wenweihu86.raft.proto.Raft;
+import com.wenweihu86.raft.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.io.File;
+import java.io.RandomAccessFile;
+import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.zip.CRC32;
 
 /**
  * Created by wenweihu86 on 2017/5/3.
@@ -102,7 +104,7 @@ public class SegmentedLog {
                         File oldFile = new File(segment.getFileName());
                         oldFile.renameTo(newFile);
                         segment.setFileName(newFileName);
-                        segment.setRandomAccessFile(this.openLogFile(newFileName, "r"));
+                        segment.setRandomAccessFile(FileUtil.openFile(logDir, newFileName, "r"));
                     }
                 }
                 // 新建segment文件
@@ -116,7 +118,7 @@ public class SegmentedLog {
                     segment.setStartIndex(0);
                     segment.setEndIndex(0);
                     segment.setFileName(newSegmentFileName);
-                    segment.setRandomAccessFile(this.openLogFile(newSegmentFileName, "rw"));
+                    segment.setRandomAccessFile(FileUtil.openFile(logDir, newSegmentFileName, "rw"));
                     segments.add(segment);
                 }
                 // 写proto到segment中
@@ -129,7 +131,7 @@ public class SegmentedLog {
                 segment.setEndIndex(entry.getIndex());
                 segment.getEntries().add(new Segment.Record(
                         segment.getRandomAccessFile().getFilePointer(), entry));
-                writeProtoToFile(segment.getRandomAccessFile(), entry);
+                FileUtil.writeProtoToFile(segment.getRandomAccessFile(), entry);
                 segment.setFileSize(segment.getRandomAccessFile().length());
             }  catch (IOException ex) {
                 throw new RuntimeException("meet exception, msg=" + ex.getMessage());
@@ -143,7 +145,7 @@ public class SegmentedLog {
             long totalLength = segment.getFileSize();
             long offset = 0;
             while (offset < totalLength) {
-                Raft.LogEntry entry = this.readProtoFromFile(randomAccessFile, Raft.LogEntry.class);
+                Raft.LogEntry entry = FileUtil.readProtoFromFile(randomAccessFile, Raft.LogEntry.class);
                 Segment.Record record = new Segment.Record(offset, entry);
                 segment.getEntries().add(record);
                 offset = randomAccessFile.getFilePointer();
@@ -161,27 +163,11 @@ public class SegmentedLog {
     }
 
     public List<Segment> readSegments() {
-        File dir = new File(logDir);
-        File[] files = dir.listFiles();
-        Arrays.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                if (o1.isDirectory() && o2.isFile()) {
-                    return -1;
-                }
-                if (o1.isFile() && o2.isDirectory()) {
-                    return 1;
-                }
-                return o2.getName().compareTo(o1.getName());
-            }
-        });
-
-        for (File file : files) {
-            if (file.getName().equals("metadata1")
-                    || file.getName().equals("metadata2")) {
+        List<String> fileNames = FileUtil.getSortedFilesInDirectory(logDir);
+        for (String fileName: fileNames) {
+            if (fileName.equals("metadata")) {
                 continue;
             }
-            String fileName = file.getName();
             String[] splitArray = fileName.split("-");
             if (splitArray.length != 2) {
                 LOG.warn("segment filename[{}] is not valid", fileName);
@@ -204,7 +190,7 @@ public class SegmentedLog {
                         continue;
                     }
                 }
-                segment.setRandomAccessFile(this.openLogFile(fileName, "r"));
+                segment.setRandomAccessFile(FileUtil.openFile(logDir, fileName, "r"));
                 segment.setFileSize(segment.getRandomAccessFile().length());
                 segments.add(segment);
             } catch (IOException ioException) {
@@ -225,7 +211,7 @@ public class SegmentedLog {
         String fileName = logDir + File.pathSeparator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            Raft.LogMetaData metadata = this.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
+            Raft.LogMetaData metadata = FileUtil.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
             return metadata;
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
@@ -249,68 +235,9 @@ public class SegmentedLog {
         String fileName = logDir + File.pathSeparator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
-            this.writeProtoToFile(randomAccessFile, metaData);
+            FileUtil.writeProtoToFile(randomAccessFile, metaData);
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
-        }
-    }
-
-    public RandomAccessFile openLogFile(String fileName, String mode) {
-        try {
-            String fullFileName = this.logDir + File.pathSeparator + fileName;
-            File file = new File(fullFileName);
-            return new RandomAccessFile(file, mode);
-        } catch (FileNotFoundException ex) {
-            LOG.warn("file not fount, file={}", fileName);
-            throw new RuntimeException("file not found, file={}" + fileName);
-        }
-    }
-
-    public <T extends GeneratedMessageV3> T readProtoFromFile(RandomAccessFile raf, Class<T> clazz) {
-        try {
-            long checksum = raf.readLong();
-            int dataLen = raf.readInt();
-            int hasReadLen = Long.SIZE / Byte.SIZE + Integer.SIZE / Byte.SIZE;
-
-            if (raf.length() - hasReadLen < dataLen) {
-                LOG.warn("file remainLength < dataLen");
-                return null;
-            }
-            byte[] data = new byte[dataLen];
-            int readLen = raf.read(data);
-            if (readLen != dataLen) {
-                LOG.warn("readLen != dataLen");
-                return null;
-            }
-
-            CRC32 crc32Obj = new CRC32();
-            crc32Obj.update(data);
-            if (crc32Obj.getValue() != checksum) {
-                LOG.warn("crc32 check failed");
-                return null;
-            }
-
-            Method method = clazz.getMethod("parseFrom", byte[].class);
-            T message = (T) method.invoke(clazz, data);
-            return message;
-        } catch (Exception ex) {
-            LOG.warn("readProtoFromFile meet exception, {}", ex.getMessage());
-            return null;
-        }
-    }
-
-    public <T extends GeneratedMessageV3> void writeProtoToFile(RandomAccessFile raf, T message) {
-        byte[] messageBytes = message.toByteArray();
-        CRC32 crc32Obj = new CRC32();
-        crc32Obj.update(messageBytes);
-        long crc32 = crc32Obj.getValue();
-        try {
-            raf.writeLong(crc32);
-            raf.writeInt(messageBytes.length);
-            raf.write(messageBytes);
-        } catch (IOException ex) {
-            LOG.warn("write proto to file error, msg={}", ex.getMessage());
-            throw new RuntimeException("write proto to file error");
         }
     }
 

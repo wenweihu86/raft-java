@@ -2,6 +2,7 @@ package com.wenweihu86.raft;
 
 import com.wenweihu86.raft.proto.Raft;
 import com.wenweihu86.raft.storage.SegmentedLog;
+import com.wenweihu86.raft.storage.Snapshot;
 import com.wenweihu86.rpc.client.RPCCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,7 @@ public class RaftNode {
     private ServerAddress localServer;
     private int leaderId; // leader节点id
     private SegmentedLog raftLog;
+    private Snapshot snapshot;
 
     private ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture voteScheduledFuture;
@@ -60,6 +62,7 @@ public class RaftNode {
         }
         resetElectionTimer();
         raftLog = new SegmentedLog();
+        snapshot = new Snapshot();
         stepDown(1);
     }
 
@@ -238,6 +241,9 @@ public class RaftNode {
     }
 
     public void installSnapshot(Peer peer) {
+        Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
+        requestBuilder.setServerId(localServer.getServerId());
+        requestBuilder.setTerm(currentTerm);
     }
 
     public void becomeLeader() {
@@ -245,23 +251,6 @@ public class RaftNode {
         leaderId = localServer.getServerId();
         // TODO: send AppendEntries to peers
     }
-
-//    public long getStartLogIndex() {
-//        return raftLog.getStartLogIndex();
-//    }
-//
-//    public long getLastLogIndex() {
-//        return raftLog.getLastLogIndex();
-//    }
-//
-//    public long getLastLogTerm() {
-//        long lastLogIndex = raftLog.getLastLogIndex();
-//        return raftLog.getEntry(lastLogIndex).getTerm();
-//    }
-//
-//    public Raft.LogEntry getEntry(long index) {
-//        return raftLog.getEntry(index);
-//    }
 
     public void stepDown(long newTerm) {
         assert this.currentTerm <= newTerm;
@@ -375,5 +364,13 @@ public class RaftNode {
 
     public void setLeaderId(int leaderId) {
         this.leaderId = leaderId;
+    }
+
+    public Snapshot getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(Snapshot snapshot) {
+        this.snapshot = snapshot;
     }
 }
