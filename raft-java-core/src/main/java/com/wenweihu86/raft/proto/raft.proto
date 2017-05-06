@@ -18,15 +18,15 @@ message LogEntry {
 };
 
 message VoteRequest {
-    int64 term = 1; // 候选人的任期号
-    int32 candidate_id = 2; // 请求选票的候选人的 Id
+    int32 server_id = 1; // 请求选票的候选人的 Id
+    int64 term = 2; // 候选人的任期号
     int64 last_log_term = 3; // 候选人的最后日志条目的索引值
     int64 last_log_index = 4; // 候选人最后日志条目的任期号
 };
 
 message VoteResponse {
     int64 term = 1; // 当前任期号，以便于候选人去更新自己的任期号
-    bool vote_granted = 2; // 候选人赢得了此张选票时为真
+    bool granted = 2; // 候选人赢得了此张选票时为真
 };
 
 message AppendEntriesRequest {

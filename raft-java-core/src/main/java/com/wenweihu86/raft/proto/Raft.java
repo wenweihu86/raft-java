@@ -834,21 +834,21 @@ public final class Raft {
 
     /**
      * <pre>
-     * 候选人的任期号
-     * </pre>
-     *
-     * <code>optional int64 term = 1;</code>
-     */
-    long getTerm();
-
-    /**
-     * <pre>
      * 请求选票的候选人的 Id
      * </pre>
      *
-     * <code>optional int32 candidate_id = 2;</code>
+     * <code>optional int32 server_id = 1;</code>
      */
-    int getCandidateId();
+    int getServerId();
+
+    /**
+     * <pre>
+     * 候选人的任期号
+     * </pre>
+     *
+     * <code>optional int64 term = 2;</code>
+     */
+    long getTerm();
 
     /**
      * <pre>
@@ -880,8 +880,8 @@ public final class Raft {
       super(builder);
     }
     private VoteRequest() {
+      serverId_ = 0;
       term_ = 0L;
-      candidateId_ = 0;
       lastLogTerm_ = 0L;
       lastLogIndex_ = 0L;
     }
@@ -913,12 +913,12 @@ public final class Raft {
             }
             case 8: {
 
-              term_ = input.readInt64();
+              serverId_ = input.readInt32();
               break;
             }
             case 16: {
 
-              candidateId_ = input.readInt32();
+              term_ = input.readInt64();
               break;
             }
             case 24: {
@@ -954,30 +954,30 @@ public final class Raft {
               com.wenweihu86.raft.proto.Raft.VoteRequest.class, com.wenweihu86.raft.proto.Raft.VoteRequest.Builder.class);
     }
 
-    public static final int TERM_FIELD_NUMBER = 1;
+    public static final int SERVER_ID_FIELD_NUMBER = 1;
+    private int serverId_;
+    /**
+     * <pre>
+     * 请求选票的候选人的 Id
+     * </pre>
+     *
+     * <code>optional int32 server_id = 1;</code>
+     */
+    public int getServerId() {
+      return serverId_;
+    }
+
+    public static final int TERM_FIELD_NUMBER = 2;
     private long term_;
     /**
      * <pre>
      * 候选人的任期号
      * </pre>
      *
-     * <code>optional int64 term = 1;</code>
+     * <code>optional int64 term = 2;</code>
      */
     public long getTerm() {
       return term_;
-    }
-
-    public static final int CANDIDATE_ID_FIELD_NUMBER = 2;
-    private int candidateId_;
-    /**
-     * <pre>
-     * 请求选票的候选人的 Id
-     * </pre>
-     *
-     * <code>optional int32 candidate_id = 2;</code>
-     */
-    public int getCandidateId() {
-      return candidateId_;
     }
 
     public static final int LAST_LOG_TERM_FIELD_NUMBER = 3;
@@ -1018,11 +1018,11 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (term_ != 0L) {
-        output.writeInt64(1, term_);
+      if (serverId_ != 0) {
+        output.writeInt32(1, serverId_);
       }
-      if (candidateId_ != 0) {
-        output.writeInt32(2, candidateId_);
+      if (term_ != 0L) {
+        output.writeInt64(2, term_);
       }
       if (lastLogTerm_ != 0L) {
         output.writeInt64(3, lastLogTerm_);
@@ -1037,13 +1037,13 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
+      if (serverId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, serverId_);
+      }
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, term_);
-      }
-      if (candidateId_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, candidateId_);
+          .computeInt64Size(2, term_);
       }
       if (lastLogTerm_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -1069,10 +1069,10 @@ public final class Raft {
       com.wenweihu86.raft.proto.Raft.VoteRequest other = (com.wenweihu86.raft.proto.Raft.VoteRequest) obj;
 
       boolean result = true;
+      result = result && (getServerId()
+          == other.getServerId());
       result = result && (getTerm()
           == other.getTerm());
-      result = result && (getCandidateId()
-          == other.getCandidateId());
       result = result && (getLastLogTerm()
           == other.getLastLogTerm());
       result = result && (getLastLogIndex()
@@ -1087,11 +1087,11 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + SERVER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getServerId();
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTerm());
-      hash = (37 * hash) + CANDIDATE_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getCandidateId();
       hash = (37 * hash) + LAST_LOG_TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getLastLogTerm());
@@ -1216,9 +1216,9 @@ public final class Raft {
       }
       public Builder clear() {
         super.clear();
-        term_ = 0L;
+        serverId_ = 0;
 
-        candidateId_ = 0;
+        term_ = 0L;
 
         lastLogTerm_ = 0L;
 
@@ -1246,8 +1246,8 @@ public final class Raft {
 
       public com.wenweihu86.raft.proto.Raft.VoteRequest buildPartial() {
         com.wenweihu86.raft.proto.Raft.VoteRequest result = new com.wenweihu86.raft.proto.Raft.VoteRequest(this);
+        result.serverId_ = serverId_;
         result.term_ = term_;
-        result.candidateId_ = candidateId_;
         result.lastLogTerm_ = lastLogTerm_;
         result.lastLogIndex_ = lastLogIndex_;
         onBuilt();
@@ -1291,11 +1291,11 @@ public final class Raft {
 
       public Builder mergeFrom(com.wenweihu86.raft.proto.Raft.VoteRequest other) {
         if (other == com.wenweihu86.raft.proto.Raft.VoteRequest.getDefaultInstance()) return this;
+        if (other.getServerId() != 0) {
+          setServerId(other.getServerId());
+        }
         if (other.getTerm() != 0L) {
           setTerm(other.getTerm());
-        }
-        if (other.getCandidateId() != 0) {
-          setCandidateId(other.getCandidateId());
         }
         if (other.getLastLogTerm() != 0L) {
           setLastLogTerm(other.getLastLogTerm());
@@ -1329,13 +1329,51 @@ public final class Raft {
         return this;
       }
 
+      private int serverId_ ;
+      /**
+       * <pre>
+       * 请求选票的候选人的 Id
+       * </pre>
+       *
+       * <code>optional int32 server_id = 1;</code>
+       */
+      public int getServerId() {
+        return serverId_;
+      }
+      /**
+       * <pre>
+       * 请求选票的候选人的 Id
+       * </pre>
+       *
+       * <code>optional int32 server_id = 1;</code>
+       */
+      public Builder setServerId(int value) {
+        
+        serverId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 请求选票的候选人的 Id
+       * </pre>
+       *
+       * <code>optional int32 server_id = 1;</code>
+       */
+      public Builder clearServerId() {
+        
+        serverId_ = 0;
+        onChanged();
+        return this;
+      }
+
       private long term_ ;
       /**
        * <pre>
        * 候选人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional int64 term = 2;</code>
        */
       public long getTerm() {
         return term_;
@@ -1345,7 +1383,7 @@ public final class Raft {
        * 候选人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional int64 term = 2;</code>
        */
       public Builder setTerm(long value) {
         
@@ -1358,49 +1396,11 @@ public final class Raft {
        * 候选人的任期号
        * </pre>
        *
-       * <code>optional int64 term = 1;</code>
+       * <code>optional int64 term = 2;</code>
        */
       public Builder clearTerm() {
         
         term_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int candidateId_ ;
-      /**
-       * <pre>
-       * 请求选票的候选人的 Id
-       * </pre>
-       *
-       * <code>optional int32 candidate_id = 2;</code>
-       */
-      public int getCandidateId() {
-        return candidateId_;
-      }
-      /**
-       * <pre>
-       * 请求选票的候选人的 Id
-       * </pre>
-       *
-       * <code>optional int32 candidate_id = 2;</code>
-       */
-      public Builder setCandidateId(int value) {
-        
-        candidateId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * 请求选票的候选人的 Id
-       * </pre>
-       *
-       * <code>optional int32 candidate_id = 2;</code>
-       */
-      public Builder clearCandidateId() {
-        
-        candidateId_ = 0;
         onChanged();
         return this;
       }
@@ -1547,9 +1547,9 @@ public final class Raft {
      * 候选人赢得了此张选票时为真
      * </pre>
      *
-     * <code>optional bool vote_granted = 2;</code>
+     * <code>optional bool granted = 2;</code>
      */
-    boolean getVoteGranted();
+    boolean getGranted();
   }
   /**
    * Protobuf type {@code raft.VoteResponse}
@@ -1564,7 +1564,7 @@ public final class Raft {
     }
     private VoteResponse() {
       term_ = 0L;
-      voteGranted_ = false;
+      granted_ = false;
     }
 
     @java.lang.Override
@@ -1599,7 +1599,7 @@ public final class Raft {
             }
             case 16: {
 
-              voteGranted_ = input.readBool();
+              granted_ = input.readBool();
               break;
             }
           }
@@ -1638,17 +1638,17 @@ public final class Raft {
       return term_;
     }
 
-    public static final int VOTE_GRANTED_FIELD_NUMBER = 2;
-    private boolean voteGranted_;
+    public static final int GRANTED_FIELD_NUMBER = 2;
+    private boolean granted_;
     /**
      * <pre>
      * 候选人赢得了此张选票时为真
      * </pre>
      *
-     * <code>optional bool vote_granted = 2;</code>
+     * <code>optional bool granted = 2;</code>
      */
-    public boolean getVoteGranted() {
-      return voteGranted_;
+    public boolean getGranted() {
+      return granted_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1666,8 +1666,8 @@ public final class Raft {
       if (term_ != 0L) {
         output.writeInt64(1, term_);
       }
-      if (voteGranted_ != false) {
-        output.writeBool(2, voteGranted_);
+      if (granted_ != false) {
+        output.writeBool(2, granted_);
       }
     }
 
@@ -1680,9 +1680,9 @@ public final class Raft {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(1, term_);
       }
-      if (voteGranted_ != false) {
+      if (granted_ != false) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, voteGranted_);
+          .computeBoolSize(2, granted_);
       }
       memoizedSize = size;
       return size;
@@ -1702,8 +1702,8 @@ public final class Raft {
       boolean result = true;
       result = result && (getTerm()
           == other.getTerm());
-      result = result && (getVoteGranted()
-          == other.getVoteGranted());
+      result = result && (getGranted()
+          == other.getGranted());
       return result;
     }
 
@@ -1717,9 +1717,9 @@ public final class Raft {
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTerm());
-      hash = (37 * hash) + VOTE_GRANTED_FIELD_NUMBER;
+      hash = (37 * hash) + GRANTED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getVoteGranted());
+          getGranted());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1840,7 +1840,7 @@ public final class Raft {
         super.clear();
         term_ = 0L;
 
-        voteGranted_ = false;
+        granted_ = false;
 
         return this;
       }
@@ -1865,7 +1865,7 @@ public final class Raft {
       public com.wenweihu86.raft.proto.Raft.VoteResponse buildPartial() {
         com.wenweihu86.raft.proto.Raft.VoteResponse result = new com.wenweihu86.raft.proto.Raft.VoteResponse(this);
         result.term_ = term_;
-        result.voteGranted_ = voteGranted_;
+        result.granted_ = granted_;
         onBuilt();
         return result;
       }
@@ -1910,8 +1910,8 @@ public final class Raft {
         if (other.getTerm() != 0L) {
           setTerm(other.getTerm());
         }
-        if (other.getVoteGranted() != false) {
-          setVoteGranted(other.getVoteGranted());
+        if (other.getGranted() != false) {
+          setGranted(other.getGranted());
         }
         onChanged();
         return this;
@@ -1977,27 +1977,27 @@ public final class Raft {
         return this;
       }
 
-      private boolean voteGranted_ ;
+      private boolean granted_ ;
       /**
        * <pre>
        * 候选人赢得了此张选票时为真
        * </pre>
        *
-       * <code>optional bool vote_granted = 2;</code>
+       * <code>optional bool granted = 2;</code>
        */
-      public boolean getVoteGranted() {
-        return voteGranted_;
+      public boolean getGranted() {
+        return granted_;
       }
       /**
        * <pre>
        * 候选人赢得了此张选票时为真
        * </pre>
        *
-       * <code>optional bool vote_granted = 2;</code>
+       * <code>optional bool granted = 2;</code>
        */
-      public Builder setVoteGranted(boolean value) {
+      public Builder setGranted(boolean value) {
         
-        voteGranted_ = value;
+        granted_ = value;
         onChanged();
         return this;
       }
@@ -2006,11 +2006,11 @@ public final class Raft {
        * 候选人赢得了此张选票时为真
        * </pre>
        *
-       * <code>optional bool vote_granted = 2;</code>
+       * <code>optional bool granted = 2;</code>
        */
-      public Builder clearVoteGranted() {
+      public Builder clearGranted() {
         
-        voteGranted_ = false;
+        granted_ = false;
         onChanged();
         return this;
       }
@@ -4235,21 +4235,21 @@ public final class Raft {
       "\n\nraft.proto\022\004raft\"j\n\010LogEntry\022\021\n\tlog_in" +
       "dex\030\001 \001(\003\022\014\n\004term\030\002 \001(\003\022\035\n\004type\030\003 \001(\0162\017." +
       "raft.EntryType\022\020\n\010data_len\030\004 \001(\003\022\014\n\004data" +
-      "\030\005 \001(\014\"`\n\013VoteRequest\022\014\n\004term\030\001 \001(\003\022\024\n\014c" +
-      "andidate_id\030\002 \001(\005\022\025\n\rlast_log_term\030\003 \001(\003" +
-      "\022\026\n\016last_log_index\030\004 \001(\003\"2\n\014VoteResponse" +
-      "\022\014\n\004term\030\001 \001(\003\022\024\n\014vote_granted\030\002 \001(\010\"\247\001\n" +
-      "\024AppendEntriesRequest\022\014\n\004term\030\001 \001(\003\022\021\n\tl" +
-      "eader_id\030\002 \001(\005\022\026\n\016prev_log_index\030\003 \001(\003\022\025" +
-      "\n\rprev_log_term\030\004 \001(\003\022\037\n\007entries\030\005 \001(\0132\016",
-      ".raft.LogEntry\022\036\n\026leader_committed_index" +
-      "\030\006 \001(\003\"6\n\025AppendEntriesResponse\022\014\n\004term\030" +
-      "\001 \001(\003\022\017\n\007success\030\002 \001(\010\"O\n\013LogMetaData\022\024\n" +
-      "\014current_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027" +
-      "\n\017start_log_index\030\003 \001(\004*>\n\tEntryType\022\023\n\017" +
-      "ENTRY_TYPE_DATA\020\000\022\034\n\030ENTRY_TYPE_CONFIGUR" +
-      "ATION\020\001B!\n\031com.wenweihu86.raft.protoB\004Ra" +
-      "ftb\006proto3"
+      "\030\005 \001(\014\"]\n\013VoteRequest\022\021\n\tserver_id\030\001 \001(\005" +
+      "\022\014\n\004term\030\002 \001(\003\022\025\n\rlast_log_term\030\003 \001(\003\022\026\n" +
+      "\016last_log_index\030\004 \001(\003\"-\n\014VoteResponse\022\014\n" +
+      "\004term\030\001 \001(\003\022\017\n\007granted\030\002 \001(\010\"\247\001\n\024AppendE" +
+      "ntriesRequest\022\014\n\004term\030\001 \001(\003\022\021\n\tleader_id" +
+      "\030\002 \001(\005\022\026\n\016prev_log_index\030\003 \001(\003\022\025\n\rprev_l" +
+      "og_term\030\004 \001(\003\022\037\n\007entries\030\005 \001(\0132\016.raft.Lo",
+      "gEntry\022\036\n\026leader_committed_index\030\006 \001(\003\"6" +
+      "\n\025AppendEntriesResponse\022\014\n\004term\030\001 \001(\003\022\017\n" +
+      "\007success\030\002 \001(\010\"O\n\013LogMetaData\022\024\n\014current" +
+      "_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017start_" +
+      "log_index\030\003 \001(\004*>\n\tEntryType\022\023\n\017ENTRY_TY" +
+      "PE_DATA\020\000\022\034\n\030ENTRY_TYPE_CONFIGURATION\020\001B" +
+      "!\n\031com.wenweihu86.raft.protoB\004Raftb\006prot" +
+      "o3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -4274,13 +4274,13 @@ public final class Raft {
     internal_static_raft_VoteRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_VoteRequest_descriptor,
-        new java.lang.String[] { "Term", "CandidateId", "LastLogTerm", "LastLogIndex", });
+        new java.lang.String[] { "ServerId", "Term", "LastLogTerm", "LastLogIndex", });
     internal_static_raft_VoteResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_raft_VoteResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_VoteResponse_descriptor,
-        new java.lang.String[] { "Term", "VoteGranted", });
+        new java.lang.String[] { "Term", "Granted", });
     internal_static_raft_AppendEntriesRequest_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_raft_AppendEntriesRequest_fieldAccessorTable = new

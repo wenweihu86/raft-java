@@ -2,10 +2,10 @@ package com.wenweihu86.raft;
 
 import com.wenweihu86.raft.proto.Raft;
 import com.wenweihu86.raft.storage.SegmentedLog;
-import com.wenweihu86.rpc.client.RPCClient;
-import sun.plugin.javascript.navig.AnchorArray;
+import com.wenweihu86.rpc.client.RPCCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
@@ -21,6 +21,8 @@ public class RaftNode {
         STATE_CANDIDATE,
         STATE_LEADER
     }
+
+    private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
 
     private Lock lock = new ReentrantLock();
     private NodeState state = NodeState.STATE_FOLLOWER;
@@ -74,6 +76,78 @@ public class RaftNode {
         // TODO: requestVote to peers
     }
 
+    public void requestVote() {
+        Raft.VoteRequest request = Raft.VoteRequest.newBuilder()
+                .setServerId(localServer.getServerId())
+                .setTerm(currentTerm)
+                .setLastLogIndex(raftLog.getLastLogIndex())
+                .setLastLogTerm(getLastLogTerm()).build();
+        for (Peer peer : peers) {
+            peer.getRpcClient().asyncCall(
+                    "RaftApi.requestVote", request,
+                    new VoteResponseCallback(peer));
+        }
+    }
+
+    private class VoteResponseCallback implements RPCCallback<Raft.VoteResponse> {
+        private Peer peer;
+
+        public VoteResponseCallback(Peer peer) {
+            this.peer = peer;
+        }
+
+        @Override
+        public void success(Raft.VoteResponse response) {
+            if (response.getTerm() > currentTerm) {
+                LOG.info("Received RequestVote response from server {} " +
+                                "in term {} (this server's term was {})",
+                        peer.getServerAddress().getServerId(),
+                        response.getTerm(),
+                        currentTerm);
+                stepDown(response.getTerm());
+            } else {
+                if (response.getGranted()) {
+                    LOG.info("Got vote from server {} for term {}",
+                            peer.getServerAddress().getServerId(), currentTerm);
+                    int voteGrantedNum = 1;
+                    for (Peer peer1 : peers) {
+                        if (peer1.isVoteGranted()) {
+                            voteGrantedNum += 1;
+                        }
+                    }
+                    if (voteGrantedNum > (peers.size() + 1) / 2) {
+                        becomeLeader();
+                    }
+                } else {
+                    LOG.info("Vote denied by server {} for term {}",
+                            peer.getServerAddress().getServerId(), currentTerm);
+                }
+            }
+        }
+
+        @Override
+        public void fail(Throwable e) {
+            LOG.warn("requestVote with peer[{}:{}] failed",
+                    peer.getServerAddress().getHost(),
+                    peer.getServerAddress().getPort());
+        }
+
+    }
+
+    public void becomeLeader() {
+        state = NodeState.STATE_LEADER;
+        leaderId = localServer.getServerId();
+        // TODO: send AppendEntries to peers
+    }
+
+    public long getLastLogTerm() {
+        long lastLogIndex = raftLog.getLastLogIndex();
+        return raftLog.getEntry(lastLogIndex).getTerm();
+    }
+
+    public long getLastLogIndex() {
+        return raftLog.getLastLogIndex();
+    }
 
     public void stepDown(long newTerm) {
         assert this.currentTerm <= newTerm;
@@ -88,6 +162,10 @@ public class RaftNode {
                 state = NodeState.STATE_FOLLOWER;
             }
         }
+    }
+
+    public void updateMetaData() {
+        raftLog.updateMetaData(currentTerm, votedFor, null);
     }
 
     public int getElectionTimeoutMs() {
@@ -151,5 +229,17 @@ public class RaftNode {
 
     public void setLastApplied(long lastApplied) {
         this.lastApplied = lastApplied;
+    }
+
+    public ServerAddress getLocalServer() {
+        return localServer;
+    }
+
+    public void setLocalServer(ServerAddress localServer) {
+        this.localServer = localServer;
+    }
+
+    public SegmentedLog getRaftLog() {
+        return raftLog;
     }
 }
