@@ -6,6 +6,7 @@ import com.wenweihu86.rpc.client.RPCCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
@@ -33,6 +34,9 @@ public class RaftNode {
     private List<Raft.LogEntry> entries;
     // 已知的最大的已经被提交的日志条目的索引值
     private long commitIndex;
+    // The index of the last log entry that has been flushed to disk.
+    // Valid for leaders only.
+    private long lastSyncedIndex;
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
     private long lastApplied;
     private long lastSnapshotIndex;
@@ -54,20 +58,26 @@ public class RaftNode {
                 peers.add(peer);
             }
         }
-
+        resetElectionTimer();
         raftLog = new SegmentedLog();
-        voteScheduledFuture = scheduledExecutor.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                // TODO
-            }
-        }, 0, getElectionTimeoutMs(), TimeUnit.MILLISECONDS);
         stepDown(1);
     }
 
     public void init() {
         this.currentTerm = raftLog.getMetaData().getCurrentTerm();
         this.votedFor = raftLog.getMetaData().getVotedFor();
+    }
+
+    public void resetElectionTimer() {
+        if (voteScheduledFuture != null) {
+            voteScheduledFuture.cancel(true);
+        }
+        voteScheduledFuture = scheduledExecutor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                // TODO
+            }
+        }, getElectionTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 
     public void startNewElection() {
@@ -83,7 +93,7 @@ public class RaftNode {
                 .setServerId(localServer.getServerId())
                 .setTerm(currentTerm)
                 .setLastLogIndex(raftLog.getLastLogIndex())
-                .setLastLogTerm(getLastLogTerm()).build();
+                .setLastLogTerm(raftLog.getLastLogTerm()).build();
         for (Peer peer : peers) {
             peer.getRpcClient().asyncCall(
                     "RaftApi.requestVote", request,
@@ -143,7 +153,7 @@ public class RaftNode {
             return;
         }
 
-        long lastLogIndex = this.getLastLogIndex();
+        long lastLogIndex = this.raftLog.getLastLogIndex();
         long prevLogIndex = peer.getNextIndex() - 1;
         long prevLogTerm = 0;
         if (prevLogIndex >= startLogIndex) {
@@ -197,6 +207,24 @@ public class RaftNode {
     }
 
     public void advanceCommitIndex() {
+        // 获取quorum matchIndex
+        int peerNum = peers.size();
+        long[] matchIndexes = new long[peerNum + 1];
+        for (int i = 0; i < peerNum - 1; i++) {
+            matchIndexes[i] = peers.get(i).getMatchIndex();
+        }
+        matchIndexes[peerNum] = lastSyncedIndex;
+        Arrays.sort(matchIndexes);
+        long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
+
+        if (commitIndex >= newCommitIndex) {
+            return;
+        }
+        if (raftLog.getEntry(newCommitIndex).getTerm() != currentTerm) {
+            return;
+        }
+        commitIndex = newCommitIndex;
+        // TODO: 同步到状态机
     }
 
     public long packEntries(long nextIndex, Raft.AppendEntriesRequest.Builder requestBuilder) {
@@ -218,14 +246,22 @@ public class RaftNode {
         // TODO: send AppendEntries to peers
     }
 
-    public long getLastLogTerm() {
-        long lastLogIndex = raftLog.getLastLogIndex();
-        return raftLog.getEntry(lastLogIndex).getTerm();
-    }
-
-    public long getLastLogIndex() {
-        return raftLog.getLastLogIndex();
-    }
+//    public long getStartLogIndex() {
+//        return raftLog.getStartLogIndex();
+//    }
+//
+//    public long getLastLogIndex() {
+//        return raftLog.getLastLogIndex();
+//    }
+//
+//    public long getLastLogTerm() {
+//        long lastLogIndex = raftLog.getLastLogIndex();
+//        return raftLog.getEntry(lastLogIndex).getTerm();
+//    }
+//
+//    public Raft.LogEntry getEntry(long index) {
+//        return raftLog.getEntry(index);
+//    }
 
     public void stepDown(long newTerm) {
         assert this.currentTerm <= newTerm;
@@ -319,5 +355,25 @@ public class RaftNode {
 
     public SegmentedLog getRaftLog() {
         return raftLog;
+    }
+
+    public ScheduledFuture getVoteScheduledFuture() {
+        return voteScheduledFuture;
+    }
+
+    public void setVoteScheduledFuture(ScheduledFuture voteScheduledFuture) {
+        this.voteScheduledFuture = voteScheduledFuture;
+    }
+
+    public ScheduledExecutorService getScheduledExecutor() {
+        return scheduledExecutor;
+    }
+
+    public int getLeaderId() {
+        return leaderId;
+    }
+
+    public void setLeaderId(int leaderId) {
+        this.leaderId = leaderId;
     }
 }

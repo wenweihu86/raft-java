@@ -73,6 +73,11 @@ public class SegmentedLog {
         return lastSegment.getEndIndex();
     }
 
+    public long getLastLogTerm() {
+        long lastLogIndex = this.getLastLogIndex();
+        return this.getEntry(lastLogIndex).getTerm();
+    }
+
     public void append(List<Raft.LogEntry> entries) {
         for (Raft.LogEntry entry : entries) {
             int entrySize = entry.getSerializedSize();

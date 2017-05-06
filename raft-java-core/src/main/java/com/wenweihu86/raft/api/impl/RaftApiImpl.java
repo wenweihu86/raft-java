@@ -6,6 +6,9 @@ import com.wenweihu86.raft.proto.Raft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by wenweihu86 on 2017/5/2.
  */
@@ -49,7 +52,62 @@ public class RaftApiImpl implements RaftApi {
 
     @Override
     public Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request) {
-        return null;
+        Raft.AppendEntriesResponse.Builder responseBuilder = Raft.AppendEntriesResponse.newBuilder();
+        responseBuilder.setTerm(raftNode.getCurrentTerm());
+        responseBuilder.setSuccess(false);
+        responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
+
+        if (request.getTerm() < raftNode.getCurrentTerm()) {
+            return responseBuilder.build();
+        }
+        if (request.getTerm() > raftNode.getCurrentTerm()) {
+            LOG.info("Received AppendEntries request from server {} " +
+                    "in term {} (this server's term was {})",
+                    request.getServerId(), request.getTerm(),
+                    raftNode.getCurrentTerm());
+            responseBuilder.setTerm(request.getTerm());
+        }
+        raftNode.stepDown(request.getTerm());
+        raftNode.resetElectionTimer();
+        if (raftNode.getLeaderId() == 0) {
+            raftNode.setLeaderId(request.getServerId());
+        }
+        if (request.getPrevLogIndex() > raftNode.getRaftLog().getLastLogIndex()) {
+            LOG.debug("Rejecting AppendEntries RPC: would leave gap");
+            return responseBuilder.build();
+        }
+        if (request.getPrevLogIndex() >= raftNode.getRaftLog().getStartLogIndex()
+                && raftNode.getRaftLog().getEntry(request.getPrevLogIndex()).getTerm()
+                != request.getPrevLogTerm()) {
+            LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
+            return responseBuilder.build();
+        }
+
+        responseBuilder.setSuccess(true);
+        List<Raft.LogEntry> entries = new ArrayList<>();
+        long index = request.getPrevLogIndex();
+        for (Raft.LogEntry entry : request.getEntriesList()) {
+            index++;
+            if (index < raftNode.getRaftLog().getStartLogIndex()) {
+                continue;
+            }
+            if (raftNode.getRaftLog().getLastLogIndex() >= index) {
+                if (raftNode.getRaftLog().getEntry(index).getTerm() == entry.getTerm()) {
+                    continue;
+                }
+                // TODO: truncate segment log from index
+            }
+            entries.add(entry);
+        }
+        raftNode.getRaftLog().append(entries);
+        responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
+
+        if (raftNode.getCommitIndex() < request.getCommitIndex()) {
+            raftNode.setCommitIndex(request.getCommitIndex());
+            // TODO: apply state machine
+        }
+
+        return responseBuilder.build();
     }
 
 }
