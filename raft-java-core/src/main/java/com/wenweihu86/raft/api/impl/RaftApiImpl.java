@@ -36,6 +36,8 @@ public class RaftApiImpl implements RaftApi {
                     && (raftNode.getCurrentTerm() == request.getTerm()
                     && raftNode.getCommitIndex() == request.getLastLogIndex())) {
                 raftNode.setVotedFor(request.getServerId());
+                raftNode.stepDown(raftNode.getCurrentTerm());
+                raftNode.resetElectionTimer();
                 raftNode.updateMetaData();
                 Raft.VoteResponse response = Raft.VoteResponse.newBuilder()
                         .setGranted(true)

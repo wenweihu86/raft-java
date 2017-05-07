@@ -71,4 +71,8 @@ public class Snapshot {
             return null;
         }
     }
+
+    public Raft.SnapshotMetaData getMetaData() {
+        return metaData;
+    }
 }

@@ -48,10 +48,14 @@ public class RaftNode {
     private SegmentedLog raftLog;
     private Snapshot snapshot;
 
-    private ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-    private ScheduledFuture voteScheduledFuture;
+    private ExecutorService executorService;
+    private ScheduledExecutorService scheduledExecutorService;
+    private ScheduledFuture electionScheduledFuture;
+    private ScheduledFuture heartbeatScheduledFuture;
 
     public RaftNode(int localServerId, List<ServerAddress> servers) {
+        raftLog = new SegmentedLog();
+        snapshot = new Snapshot();
         for (ServerAddress server : servers) {
             if (server.getServerId() == localServerId) {
                 this.localServer = server;
@@ -60,48 +64,87 @@ public class RaftNode {
                 peers.add(peer);
             }
         }
+        executorService = Executors.newFixedThreadPool(peers.size() * 2);
+        scheduledExecutorService = Executors.newScheduledThreadPool(2);
+        // election timer
         resetElectionTimer();
-        raftLog = new SegmentedLog();
-        snapshot = new Snapshot();
-        stepDown(1);
     }
 
     public void init() {
         this.currentTerm = raftLog.getMetaData().getCurrentTerm();
         this.votedFor = raftLog.getMetaData().getVotedFor();
+        this.commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
+        stepDown(1);
     }
 
     public void resetElectionTimer() {
-        if (voteScheduledFuture != null) {
-            voteScheduledFuture.cancel(true);
+        if (electionScheduledFuture != null && !electionScheduledFuture.isDone()) {
+            electionScheduledFuture.cancel(false);
         }
-        voteScheduledFuture = scheduledExecutor.schedule(new Runnable() {
+        electionScheduledFuture = scheduledExecutorService.schedule(new Runnable() {
             @Override
             public void run() {
-                // TODO
+                startNewElection();
             }
         }, getElectionTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 
+    // 开始新的选举，对candidate有效
     public void startNewElection() {
         currentTerm++;
+        LOG.info("Running for election in term {}", currentTerm);
         state = NodeState.STATE_CANDIDATE;
         leaderId = 0;
         votedFor = localServer.getServerId();
-        // TODO: requestVote to peers
+        for (final Peer peer : peers) {
+            Future electionFuture = executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    requestVote(peer);
+                }
+            });
+            peer.setElectionFuture(electionFuture);
+        }
+        resetElectionTimer();
     }
 
-    public void requestVote() {
+    public void resetHeartbeatTimer() {
+        if (heartbeatScheduledFuture != null && !heartbeatScheduledFuture.isDone()) {
+            heartbeatScheduledFuture.cancel(true);
+        }
+        heartbeatScheduledFuture = scheduledExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                startNewHeartbeat();
+            }
+        }, RaftOption.heartbeatPeriodMilliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    // 开始心跳，对leader有效
+    public void startNewHeartbeat() {
+        LOG.info("start new heartbeat");
+        for (final Peer peer : peers) {
+            Future heartbeatFuture = executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    appendEntries(peer);
+                }
+            });
+            peer.setHeartbeatFuture(heartbeatFuture);
+        }
+        resetHeartbeatTimer();
+    }
+
+    public void requestVote(Peer peer) {
+        peer.setVoteGranted(false);
         Raft.VoteRequest request = Raft.VoteRequest.newBuilder()
                 .setServerId(localServer.getServerId())
                 .setTerm(currentTerm)
                 .setLastLogIndex(raftLog.getLastLogIndex())
                 .setLastLogTerm(raftLog.getLastLogTerm()).build();
-        for (Peer peer : peers) {
-            peer.getRpcClient().asyncCall(
-                    "RaftApi.requestVote", request,
-                    new VoteResponseCallback(peer));
-        }
+        peer.getRpcClient().asyncCall(
+                "RaftApi.requestVote", request,
+                new VoteResponseCallback(peer));
     }
 
     private class VoteResponseCallback implements RPCCallback<Raft.VoteResponse> {
@@ -131,6 +174,7 @@ public class RaftNode {
                         }
                     }
                     if (voteGrantedNum > (peers.size() + 1) / 2) {
+                        LOG.info("Got majority vote");
                         becomeLeader();
                     }
                 } else {
@@ -244,12 +288,14 @@ public class RaftNode {
         Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
         requestBuilder.setServerId(localServer.getServerId());
         requestBuilder.setTerm(currentTerm);
+        // TODO: send snapshot
     }
 
     public void becomeLeader() {
         state = NodeState.STATE_LEADER;
         leaderId = localServer.getServerId();
-        // TODO: send AppendEntries to peers
+        // start heartbeat timer
+        resetHeartbeatTimer();
     }
 
     public void stepDown(long newTerm) {
@@ -346,18 +392,6 @@ public class RaftNode {
         return raftLog;
     }
 
-    public ScheduledFuture getVoteScheduledFuture() {
-        return voteScheduledFuture;
-    }
-
-    public void setVoteScheduledFuture(ScheduledFuture voteScheduledFuture) {
-        this.voteScheduledFuture = voteScheduledFuture;
-    }
-
-    public ScheduledExecutorService getScheduledExecutor() {
-        return scheduledExecutor;
-    }
-
     public int getLeaderId() {
         return leaderId;
     }
@@ -372,5 +406,13 @@ public class RaftNode {
 
     public void setSnapshot(Snapshot snapshot) {
         this.snapshot = snapshot;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
     }
 }

@@ -4,11 +4,14 @@ import com.wenweihu86.raft.api.RaftApi;
 import com.wenweihu86.rpc.client.RPCClient;
 import com.wenweihu86.rpc.client.RPCProxy;
 
+import java.util.concurrent.Future;
+
 /**
  * Created by wenweihu86 on 2017/5/5.
  */
 public class Peer {
 
+    private RaftNode raftNode;
     private ServerAddress serverAddress;
     private RPCClient rpcClient;
     private RaftApi raftApi;
@@ -20,6 +23,8 @@ public class Peer {
     private long lastSnapshotFileOffset;
     private long lastSnapshotIndex;
     private volatile boolean voteGranted;
+    private Future electionFuture;
+    private Future heartbeatFuture;
 
     public Peer(ServerAddress serverAddress) {
         this.serverAddress = serverAddress;
@@ -95,4 +100,19 @@ public class Peer {
         this.voteGranted = voteGranted;
     }
 
+    public Future getElectionFuture() {
+        return electionFuture;
+    }
+
+    public void setElectionFuture(Future electionFuture) {
+        this.electionFuture = electionFuture;
+    }
+
+    public Future getHeartbeatFuture() {
+        return heartbeatFuture;
+    }
+
+    public void setHeartbeatFuture(Future heartbeatFuture) {
+        this.heartbeatFuture = heartbeatFuture;
+    }
 }
