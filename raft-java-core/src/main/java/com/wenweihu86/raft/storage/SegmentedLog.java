@@ -80,7 +80,8 @@ public class SegmentedLog {
         return this.getEntry(lastLogIndex).getTerm();
     }
 
-    public void append(List<Raft.LogEntry> entries) {
+    public long append(List<Raft.LogEntry> entries) {
+        long newLastLogIndex = this.getLastLogIndex();
         for (Raft.LogEntry entry : entries) {
             int entrySize = entry.getSerializedSize();
             int segmentSize = segments.size();
@@ -122,6 +123,13 @@ public class SegmentedLog {
                     segments.add(segment);
                 }
                 // 写proto到segment中
+                if (entry.getIndex() == 0) {
+                    newLastLogIndex++;
+                    entry = Raft.LogEntry.newBuilder(entry)
+                            .setIndex(newLastLogIndex).build();
+                } else {
+                    newLastLogIndex = entry.getIndex();
+                }
                 segmentSize = segments.size();
                 Segment segment = segments.get(segmentSize - 1);
                 if (segment.getStartIndex() == 0) {
@@ -137,6 +145,7 @@ public class SegmentedLog {
                 throw new RuntimeException("meet exception, msg=" + ex.getMessage());
             }
         }
+        return newLastLogIndex;
     }
 
     public void loadSegmentData(Segment segment) {

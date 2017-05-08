@@ -1,5 +1,6 @@
 package com.wenweihu86.raft;
 
+import com.google.protobuf.ByteString;
 import com.wenweihu86.raft.proto.Raft;
 import com.wenweihu86.raft.storage.SegmentedLog;
 import com.wenweihu86.raft.storage.Snapshot;
@@ -7,9 +8,11 @@ import com.wenweihu86.rpc.client.RPCCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -47,6 +50,9 @@ public class RaftNode {
     private int leaderId; // leader节点id
     private SegmentedLog raftLog;
     private Snapshot snapshot;
+
+    private Lock commitIndexLock = new ReentrantLock();
+    private Condition commitIndexCondition = commitIndexLock.newCondition();
 
     private ExecutorService executorService;
     private ScheduledExecutorService scheduledExecutorService;
@@ -223,7 +229,7 @@ public class RaftNode {
         requestBuilder.setCommitIndex(Math.min(commitIndex, prevLogIndex + numEntries));
         Raft.AppendEntriesRequest request = requestBuilder.build();
 
-        Raft.AppendEntriesResponse response = peer.getRaftApi().appendEntries(request);
+        Raft.AppendEntriesResponse response = peer.getRaftConsensusService().appendEntries(request);
         if (response == null) {
             LOG.warn("appendEntries with peer[{}:{}] failed",
                     peer.getServerAddress().getHost(),
@@ -263,15 +269,18 @@ public class RaftNode {
         matchIndexes[peerNum] = lastSyncedIndex;
         Arrays.sort(matchIndexes);
         long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
-
-        if (commitIndex >= newCommitIndex) {
+        if (raftLog.getEntry(newCommitIndex).getTerm() != currentTerm) {
             return;
         }
-        if (raftLog.getEntry(newCommitIndex).getTerm() != currentTerm) {
+
+        commitIndexLock.lock();
+        if (commitIndex >= newCommitIndex) {
             return;
         }
         commitIndex = newCommitIndex;
         // TODO: 同步到状态机
+        commitIndexCondition.signalAll();
+        commitIndexLock.unlock();
     }
 
     public long packEntries(long nextIndex, Raft.AppendEntriesRequest.Builder requestBuilder) {
@@ -322,6 +331,39 @@ public class RaftNode {
         int randomElectionTimeout = RaftOption.electionTimeoutMilliseconds
                 + random.nextInt(0, RaftOption.electionTimeoutMilliseconds);
         return randomElectionTimeout;
+    }
+
+    // client set command
+    public void replicate(byte[] data) {
+        Raft.LogEntry logEntry = Raft.LogEntry.newBuilder()
+                .setTerm(currentTerm)
+                .setType(Raft.EntryType.ENTRY_TYPE_DATA)
+                .setData(ByteString.copyFrom(data)).build();
+        List<Raft.LogEntry> entries = new ArrayList<>();
+        entries.add(logEntry);
+        long newLastLogIndex = raftLog.append(entries);
+        for (final Peer peer : peers) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    appendEntries(peer);
+                }
+            });
+        }
+        // sync wait condition commitIndex >= newLastLogIndex
+        // TODO: add timeout
+        commitIndexLock.lock();
+        try {
+            while (commitIndex < newLastLogIndex) {
+                try {
+                    commitIndexCondition.await();
+                } catch (InterruptedException ex) {
+                    LOG.warn(ex.getMessage());
+                }
+            }
+        } finally {
+            commitIndexLock.unlock();
+        }
     }
 
     public Lock getLock() {

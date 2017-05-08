@@ -48,7 +48,7 @@ public class Peer {
         this.rpcClient = rpcClient;
     }
 
-    public RaftConsensusService getRaftApi() {
+    public RaftConsensusService getRaftConsensusService() {
         return raftConsensusService;
     }
 
