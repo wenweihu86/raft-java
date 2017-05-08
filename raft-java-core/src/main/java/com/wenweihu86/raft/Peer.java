@@ -1,6 +1,6 @@
 package com.wenweihu86.raft;
 
-import com.wenweihu86.raft.api.RaftApi;
+import com.wenweihu86.raft.service.RaftConsensusService;
 import com.wenweihu86.rpc.client.RPCClient;
 import com.wenweihu86.rpc.client.RPCProxy;
 
@@ -14,7 +14,7 @@ public class Peer {
     private RaftNode raftNode;
     private ServerAddress serverAddress;
     private RPCClient rpcClient;
-    private RaftApi raftApi;
+    private RaftConsensusService raftConsensusService;
     // 需要发送给follower的下一个日志条目的索引值，只对leader有效
     private long nextIndex;
     // 已复制日志的最高索引值
@@ -29,7 +29,7 @@ public class Peer {
     public Peer(ServerAddress serverAddress) {
         this.serverAddress = serverAddress;
         this.rpcClient = new RPCClient(serverAddress.getHost() + ":" + serverAddress.getPort());
-        raftApi = RPCProxy.getProxy(rpcClient, RaftApi.class);
+        raftConsensusService = RPCProxy.getProxy(rpcClient, RaftConsensusService.class);
     }
 
     public ServerAddress getServerAddress() {
@@ -48,8 +48,8 @@ public class Peer {
         this.rpcClient = rpcClient;
     }
 
-    public RaftApi getRaftApi() {
-        return raftApi;
+    public RaftConsensusService getRaftApi() {
+        return raftConsensusService;
     }
 
     public long getNextIndex() {

@@ -143,7 +143,7 @@ public class RaftNode {
                 .setLastLogIndex(raftLog.getLastLogIndex())
                 .setLastLogTerm(raftLog.getLastLogTerm()).build();
         peer.getRpcClient().asyncCall(
-                "RaftApi.requestVote", request,
+                "RaftConsensusService.requestVote", request,
                 new VoteResponseCallback(peer));
     }
 

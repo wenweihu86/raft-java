@@ -1,7 +1,7 @@
-package com.wenweihu86.raft.api.impl;
+package com.wenweihu86.raft.service.impl;
 
 import com.wenweihu86.raft.RaftNode;
-import com.wenweihu86.raft.api.RaftApi;
+import com.wenweihu86.raft.service.RaftConsensusService;
 import com.wenweihu86.raft.proto.Raft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +12,12 @@ import java.util.List;
 /**
  * Created by wenweihu86 on 2017/5/2.
  */
-public class RaftApiImpl implements RaftApi {
+public class RaftConsensusServiceImpl implements RaftConsensusService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RaftApiImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RaftConsensusServiceImpl.class);
     private RaftNode raftNode;
 
-    public RaftApiImpl(RaftNode node) {
+    public RaftConsensusServiceImpl(RaftNode node) {
         this.raftNode = node;
     }
 
