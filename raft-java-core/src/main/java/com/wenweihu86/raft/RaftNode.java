@@ -50,6 +50,7 @@ public class RaftNode {
     private int leaderId; // leader节点id
     private SegmentedLog raftLog;
     private Snapshot snapshot;
+    private StateMachine stateMachine;
 
     private Lock commitIndexLock = new ReentrantLock();
     private Condition commitIndexCondition = commitIndexLock.newCondition();
@@ -277,8 +278,13 @@ public class RaftNode {
         if (commitIndex >= newCommitIndex) {
             return;
         }
+        long oldCommitIndex = commitIndex;
         commitIndex = newCommitIndex;
-        // TODO: 同步到状态机
+        // 同步到状态机
+        for (long index = oldCommitIndex + 1; index <= newCommitIndex; index++) {
+            Raft.LogEntry entry = raftLog.getEntry(index);
+            stateMachine.apply(entry.getData().toByteArray());
+        }
         commitIndexCondition.signalAll();
         commitIndexLock.unlock();
     }

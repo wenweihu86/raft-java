@@ -1,6 +1,7 @@
 package com.wenweihu86.raft.example;
 
 import com.wenweihu86.raft.RaftOption;
+import com.wenweihu86.raft.StateMachine;
 import com.wenweihu86.raft.example.service.Example;
 import org.apache.commons.io.FileUtils;
 import org.rocksdb.Checkpoint;
@@ -15,7 +16,7 @@ import java.io.File;
 /**
  * Created by wenweihu86 on 2017/5/9.
  */
-public class ExampleStateMachine {
+public class ExampleStateMachine implements StateMachine {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExampleStateMachine.class);
 
@@ -25,6 +26,7 @@ public class ExampleStateMachine {
 
     private RocksDB db;
 
+    @Override
     public void writeSnapshot(String snapshotDir) {
         String tmpDir = snapshotDir + ".tmp";
         Checkpoint checkpoint = Checkpoint.create(db);
@@ -36,6 +38,7 @@ public class ExampleStateMachine {
         }
     }
 
+    @Override
     public void readSnapshot(String snapshotDir) {
         try {
             // copy snapshot dir to data dir
@@ -52,6 +55,16 @@ public class ExampleStateMachine {
             Options options = new Options();
             options.setCreateIfMissing(true);
             db = RocksDB.open(options, dataDir);
+        } catch (Exception ex) {
+            LOG.warn("meet exception, msg={}", ex.getMessage());
+        }
+    }
+
+    @Override
+    public void apply(byte[] dataBytes) {
+        try {
+            Example.SetRequest request = Example.SetRequest.parseFrom(dataBytes);
+            db.put(request.getKey().getBytes(), request.getValue().getBytes());
         } catch (Exception ex) {
             LOG.warn("meet exception, msg={}", ex.getMessage());
         }
