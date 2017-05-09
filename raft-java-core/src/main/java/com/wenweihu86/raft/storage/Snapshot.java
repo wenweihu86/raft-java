@@ -75,4 +75,8 @@ public class Snapshot {
     public Raft.SnapshotMetaData getMetaData() {
         return metaData;
     }
+
+    public String getSnapshotDir() {
+        return snapshotDir;
+    }
 }
