@@ -16,6 +16,7 @@
 
     <modules>
         <module>raft-java-core</module>
+        <module>raft-java-example</module>
     </modules>
 
 </project>

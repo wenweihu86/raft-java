@@ -1,8 +1,8 @@
 package com.wenweihu86.raft.storage;
 
 import com.wenweihu86.raft.RaftOption;
-import com.wenweihu86.raft.proto.Raft;
 import com.wenweihu86.raft.util.FileUtil;
+import com.wenweihu86.raft.proto.Raft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
