@@ -26,6 +26,8 @@ public class SegmentedLog {
     private List<Segment> segments = new ArrayList<>();
     private TreeMap<Long, Segment> startLogIndexSegmentMap = new TreeMap<>();
     private AtomicLong openedSegmentIndex = new AtomicLong(0);
+    // segment log占用的内存大小，用于判断是否需要做snapshot
+    private volatile long totalSize;
 
     public SegmentedLog() {
         File file = new File(logDir);
@@ -141,6 +143,7 @@ public class SegmentedLog {
                         segment.getRandomAccessFile().getFilePointer(), entry));
                 FileUtil.writeProtoToFile(segment.getRandomAccessFile(), entry);
                 segment.setFileSize(segment.getRandomAccessFile().length());
+                totalSize += entrySize;
             }  catch (IOException ex) {
                 throw new RuntimeException("meet exception, msg=" + ex.getMessage());
             }
@@ -159,6 +162,7 @@ public class SegmentedLog {
                 segment.getEntries().add(record);
                 offset = randomAccessFile.getFilePointer();
             }
+            totalSize += totalLength;
         } catch (Exception ex) {
             LOG.error("read segment meet exception, msg={}", ex.getMessage());
             throw new RuntimeException("file not found");
@@ -250,4 +254,7 @@ public class SegmentedLog {
         }
     }
 
+    public long getTotalSize() {
+        return totalSize;
+    }
 }

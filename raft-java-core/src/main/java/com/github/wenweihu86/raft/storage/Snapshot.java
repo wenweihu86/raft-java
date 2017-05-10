@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Snapshot {
 
-    public class SnapshotFile {
+    public class SnapshotDataFile {
         public String fileName;
         public RandomAccessFile randomAccessFile;
     }
@@ -25,17 +25,17 @@ public class Snapshot {
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
     private String snapshotDir = RaftOption.dataDir + File.pathSeparator + "snapshot";
     private Raft.SnapshotMetaData metaData;
-    private List<SnapshotFile> snapshotFiles;
+    private List<SnapshotDataFile> snapshotDataFiles;
 
     public Snapshot() {
         File file = new File(snapshotDir);
         if (!file.exists()) {
             file.mkdirs();
         }
-        this.snapshotFiles = readSnapshotFiles();
+        this.snapshotDataFiles = readSnapshotDataFiles();
         metaData = this.readMetaData();
         if (metaData == null) {
-            if (snapshotFiles.size() > 0) {
+            if (snapshotDataFiles.size() > 0) {
                 LOG.error("No readable metadata file but found snapshot in {}", snapshotDir);
                 throw new RuntimeException("No readable metadata file but found snapshot");
             }
@@ -43,15 +43,13 @@ public class Snapshot {
         }
     }
 
-    public List<SnapshotFile> readSnapshotFiles() {
-        List<SnapshotFile> snapshotFileList = new ArrayList<>();
-        List<String> fileNames = FileUtil.getSortedFilesInDirectory(snapshotDir);
+    public List<SnapshotDataFile> readSnapshotDataFiles() {
+        List<SnapshotDataFile> snapshotFileList = new ArrayList<>();
+        String snapshotDataDir = snapshotDir + File.pathSeparator + "data";
+        List<String> fileNames = FileUtil.getSortedFilesInDirectory(snapshotDataDir);
         for (String fileName : fileNames) {
-            if (fileName.equals("metadata")) {
-                continue;
-            }
             RandomAccessFile randomAccessFile = FileUtil.openFile(snapshotDir, fileName, "r");
-            SnapshotFile snapshotFile = new SnapshotFile();
+            SnapshotDataFile snapshotFile = new SnapshotDataFile();
             snapshotFile.fileName = fileName;
             snapshotFile.randomAccessFile = randomAccessFile;
             snapshotFileList.add(snapshotFile);
@@ -69,6 +67,34 @@ public class Snapshot {
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
             return null;
+        }
+    }
+
+    public void updateMetaData(String dir, Long lastIncludedIndex, Long lastIncludedTerm) {
+        Raft.SnapshotMetaData snapshotMetaData = Raft.SnapshotMetaData.newBuilder()
+                .setLastIncludedIndex(lastIncludedIndex)
+                .setLastIncludedTerm(lastIncludedTerm).build();
+        this.metaData = snapshotMetaData;
+        RandomAccessFile randomAccessFile = null;
+        String snapshotMetaFile = dir + File.pathSeparator + "metadata";
+        try {
+            File file = new File(snapshotMetaFile);
+            if (file.exists()) {
+                file.delete();
+                file.createNewFile();
+            }
+            randomAccessFile = new RandomAccessFile(file, "rw");
+            FileUtil.writeProtoToFile(randomAccessFile, metaData);
+        } catch (IOException ex) {
+            LOG.warn("meta file not exist, name={}", snapshotMetaFile);
+        } finally {
+            if (randomAccessFile != null) {
+                try {
+                    randomAccessFile.close();
+                } catch (Exception ex2) {
+                    LOG.warn("close failed");
+                }
+            }
         }
     }
 

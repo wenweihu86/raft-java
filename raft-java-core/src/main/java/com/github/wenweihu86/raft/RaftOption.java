@@ -12,6 +12,11 @@ public class RaftOption {
     // A leader sends RPCs at least this often, even if there is no data to send
     public static int heartbeatPeriodMilliseconds = 500;
 
+    // snapshot定时器执行间隔
+    public static int snapshotPeriodSeconds = 60;
+    // log entry大小达到snapshotMinLogSize，才做snapshot
+    public static int snapshotMinLogSize = 100 * 1024 * 1024;
+
     public static int maxLogEntriesPerRequest = 5000;
 
     // A snapshot saving would be triggered every snapshotInterval seconds

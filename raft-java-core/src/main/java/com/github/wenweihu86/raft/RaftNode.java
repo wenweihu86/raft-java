@@ -5,13 +5,17 @@ import com.github.wenweihu86.raft.storage.SegmentedLog;
 import com.google.protobuf.ByteString;
 import com.github.wenweihu86.raft.storage.Snapshot;
 import com.wenweihu86.rpc.client.RPCCallback;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,7 +33,6 @@ public class RaftNode {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
 
-    private Lock lock = new ReentrantLock();
     private NodeState state = NodeState.STATE_FOLLOWER;
     // 服务器最后一次知道的任期号（初始化为 0，持续递增）
     private long currentTerm;
@@ -42,18 +45,21 @@ public class RaftNode {
     // Valid for leaders only.
     private long lastSyncedIndex;
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
-    private long lastApplied;
-    private long lastSnapshotIndex;
-    private long lastSnapshotTerm;
+    private volatile long lastAppliedIndex;
+
     private List<Peer> peers;
     private ServerAddress localServer;
     private int leaderId; // leader节点id
     private SegmentedLog raftLog;
-    private Snapshot snapshot;
     private StateMachine stateMachine;
 
-    private Lock commitIndexLock = new ReentrantLock();
-    private Condition commitIndexCondition = commitIndexLock.newCondition();
+    private Snapshot snapshot;
+    private long lastSnapshotIndex;
+    private long lastSnapshotTerm;
+    private AtomicBoolean takingSnapshot = new AtomicBoolean(false);
+
+    private Lock lock = new ReentrantLock();
+    private Condition commitIndexCondition = lock.newCondition();
 
     private ExecutorService executorService;
     private ScheduledExecutorService scheduledExecutorService;
@@ -75,13 +81,16 @@ public class RaftNode {
         scheduledExecutorService = Executors.newScheduledThreadPool(2);
         // election timer
         resetElectionTimer();
-    }
-
-    public void init() {
         this.currentTerm = raftLog.getMetaData().getCurrentTerm();
         this.votedFor = raftLog.getMetaData().getVotedFor();
         this.commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
         stepDown(1);
+        scheduledExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                takeSnapshot();
+            }
+        }, RaftOption.snapshotPeriodSeconds, TimeUnit.SECONDS);
     }
 
     public void resetElectionTimer() {
@@ -274,7 +283,7 @@ public class RaftNode {
             return;
         }
 
-        commitIndexLock.lock();
+        lock.lock();
         if (commitIndex >= newCommitIndex) {
             return;
         }
@@ -285,8 +294,9 @@ public class RaftNode {
             Raft.LogEntry entry = raftLog.getEntry(index);
             stateMachine.apply(entry.getData().toByteArray());
         }
+        lastAppliedIndex = commitIndex;
         commitIndexCondition.signalAll();
-        commitIndexLock.unlock();
+        lock.unlock();
     }
 
     public long packEntries(long nextIndex, Raft.AppendEntriesRequest.Builder requestBuilder) {
@@ -358,7 +368,7 @@ public class RaftNode {
         }
         // sync wait condition commitIndex >= newLastLogIndex
         // TODO: add timeout
-        commitIndexLock.lock();
+        lock.lock();
         try {
             while (commitIndex < newLastLogIndex) {
                 try {
@@ -368,7 +378,35 @@ public class RaftNode {
                 }
             }
         } finally {
-            commitIndexLock.unlock();
+            lock.unlock();
+        }
+    }
+
+    public void takeSnapshot() {
+        if (raftLog.getTotalSize() < RaftOption.snapshotMinLogSize) {
+            return;
+        }
+        if (lastAppliedIndex <= lastSnapshotIndex) {
+            return;
+        }
+        long lastAppliedTerm = 0;
+        if (lastAppliedIndex >= raftLog.getStartLogIndex()
+                && lastAppliedIndex <= raftLog.getLastLogIndex()) {
+            lastAppliedTerm = raftLog.getEntry(lastAppliedIndex).getTerm();
+        }
+        if (takingSnapshot.compareAndSet(false, true)) {
+            // take snapshot
+            String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
+            snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
+            String tmpSnapshotDataDir = tmpSnapshotDir + File.pathSeparator + "data";
+            stateMachine.writeSnapshot(tmpSnapshotDataDir);
+            try {
+                FileUtils.moveDirectory(new File(tmpSnapshotDir), new File(snapshot.getSnapshotDir()));
+                lastSnapshotIndex = lastAppliedIndex;
+                lastSnapshotTerm = lastAppliedTerm;
+            } catch (IOException ex) {
+                LOG.warn("move direct failed, msg={}", ex.getMessage());
+            }
         }
     }
 
@@ -420,12 +458,13 @@ public class RaftNode {
         this.commitIndex = commitIndex;
     }
 
-    public long getLastApplied() {
-        return lastApplied;
+
+    public long getLastAppliedIndex() {
+        return lastAppliedIndex;
     }
 
-    public void setLastApplied(long lastApplied) {
-        this.lastApplied = lastApplied;
+    public void setLastAppliedIndex(long lastAppliedIndex) {
+        this.lastAppliedIndex = lastAppliedIndex;
     }
 
     public ServerAddress getLocalServer() {
