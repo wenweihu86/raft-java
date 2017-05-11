@@ -1,7 +1,7 @@
 package com.github.wenweihu86.raft.storage;
 
 import com.github.wenweihu86.raft.RaftOption;
-import com.github.wenweihu86.raft.util.FileUtil;
+import com.github.wenweihu86.raft.util.RaftFileUtils;
 import com.github.wenweihu86.raft.proto.Raft;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,7 +107,7 @@ public class SegmentedLog {
                         File oldFile = new File(segment.getFileName());
                         oldFile.renameTo(newFile);
                         segment.setFileName(newFileName);
-                        segment.setRandomAccessFile(FileUtil.openFile(logDir, newFileName, "r"));
+                        segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, newFileName, "r"));
                     }
                 }
                 // 新建segment文件
@@ -121,7 +121,7 @@ public class SegmentedLog {
                     segment.setStartIndex(0);
                     segment.setEndIndex(0);
                     segment.setFileName(newSegmentFileName);
-                    segment.setRandomAccessFile(FileUtil.openFile(logDir, newSegmentFileName, "rw"));
+                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, newSegmentFileName, "rw"));
                     segments.add(segment);
                 }
                 // 写proto到segment中
@@ -141,7 +141,7 @@ public class SegmentedLog {
                 segment.setEndIndex(entry.getIndex());
                 segment.getEntries().add(new Segment.Record(
                         segment.getRandomAccessFile().getFilePointer(), entry));
-                FileUtil.writeProtoToFile(segment.getRandomAccessFile(), entry);
+                RaftFileUtils.writeProtoToFile(segment.getRandomAccessFile(), entry);
                 segment.setFileSize(segment.getRandomAccessFile().length());
                 totalSize += entrySize;
             }  catch (IOException ex) {
@@ -157,7 +157,7 @@ public class SegmentedLog {
             long totalLength = segment.getFileSize();
             long offset = 0;
             while (offset < totalLength) {
-                Raft.LogEntry entry = FileUtil.readProtoFromFile(randomAccessFile, Raft.LogEntry.class);
+                Raft.LogEntry entry = RaftFileUtils.readProtoFromFile(randomAccessFile, Raft.LogEntry.class);
                 Segment.Record record = new Segment.Record(offset, entry);
                 segment.getEntries().add(record);
                 offset = randomAccessFile.getFilePointer();
@@ -176,7 +176,7 @@ public class SegmentedLog {
     }
 
     public List<Segment> readSegments() {
-        List<String> fileNames = FileUtil.getSortedFilesInDirectory(logDir);
+        List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(logDir);
         for (String fileName: fileNames) {
             if (fileName.equals("metadata")) {
                 continue;
@@ -203,7 +203,7 @@ public class SegmentedLog {
                         continue;
                     }
                 }
-                segment.setRandomAccessFile(FileUtil.openFile(logDir, fileName, "r"));
+                segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, fileName, "r"));
                 segment.setFileSize(segment.getRandomAccessFile().length());
                 segments.add(segment);
             } catch (IOException ioException) {
@@ -224,7 +224,7 @@ public class SegmentedLog {
         String fileName = logDir + File.pathSeparator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            Raft.LogMetaData metadata = FileUtil.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
+            Raft.LogMetaData metadata = RaftFileUtils.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
             return metadata;
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
@@ -248,7 +248,7 @@ public class SegmentedLog {
         String fileName = logDir + File.pathSeparator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
-            FileUtil.writeProtoToFile(randomAccessFile, metaData);
+            RaftFileUtils.writeProtoToFile(randomAccessFile, metaData);
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
         }

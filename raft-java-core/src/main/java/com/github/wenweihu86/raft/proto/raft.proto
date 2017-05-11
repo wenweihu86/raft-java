@@ -57,11 +57,12 @@ message AppendEntriesResponse {
 message InstallSnapshotRequest {
     uint64 server_id = 1;
     uint64 term = 2;
-    uint64 last_snapshot_index = 3;
+    SnapshotMetaData snapshot_meta_data = 3;
     string file_name = 4;
     uint64 offset = 5;
     bytes data = 6;
-    bool is_last = 7;
+    bool is_first = 7;
+    bool is_last = 8;
 }
 
 message InstallSnapshotResponse {

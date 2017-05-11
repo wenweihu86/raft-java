@@ -2,7 +2,7 @@ package com.github.wenweihu86.raft.storage;
 
 import com.github.wenweihu86.raft.RaftOption;
 import com.github.wenweihu86.raft.proto.Raft;
-import com.github.wenweihu86.raft.util.FileUtil;
+import com.github.wenweihu86.raft.util.RaftFileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by wenweihu86 on 2017/5/6.
@@ -25,43 +26,44 @@ public class Snapshot {
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
     private String snapshotDir = RaftOption.dataDir + File.pathSeparator + "snapshot";
     private Raft.SnapshotMetaData metaData;
-    private List<SnapshotDataFile> snapshotDataFiles;
+    private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
 
     public Snapshot() {
         File file = new File(snapshotDir);
         if (!file.exists()) {
             file.mkdirs();
         }
-        this.snapshotDataFiles = readSnapshotDataFiles();
+        this.snapshotDataFileMap = readSnapshotDataFiles();
         metaData = this.readMetaData();
         if (metaData == null) {
-            if (snapshotDataFiles.size() > 0) {
+            if (snapshotDataFileMap.size() > 0) {
                 LOG.error("No readable metadata file but found snapshot in {}", snapshotDir);
                 throw new RuntimeException("No readable metadata file but found snapshot");
             }
             metaData = Raft.SnapshotMetaData.newBuilder().build();
+            snapshotDataFileMap = new TreeMap<>();
         }
     }
 
-    public List<SnapshotDataFile> readSnapshotDataFiles() {
-        List<SnapshotDataFile> snapshotFileList = new ArrayList<>();
+    public TreeMap<String, SnapshotDataFile> readSnapshotDataFiles() {
+        TreeMap<String, SnapshotDataFile> snapshotDataFileMap = new TreeMap<>();
         String snapshotDataDir = snapshotDir + File.pathSeparator + "data";
-        List<String> fileNames = FileUtil.getSortedFilesInDirectory(snapshotDataDir);
+        List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(snapshotDataDir);
         for (String fileName : fileNames) {
-            RandomAccessFile randomAccessFile = FileUtil.openFile(snapshotDir, fileName, "r");
+            RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDir, fileName, "r");
             SnapshotDataFile snapshotFile = new SnapshotDataFile();
             snapshotFile.fileName = fileName;
             snapshotFile.randomAccessFile = randomAccessFile;
-            snapshotFileList.add(snapshotFile);
+            snapshotDataFileMap.put(fileName, snapshotFile);
         }
-        return snapshotFileList;
+        return snapshotDataFileMap;
     }
 
     public Raft.SnapshotMetaData readMetaData() {
         String fileName = snapshotDir + File.pathSeparator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            Raft.SnapshotMetaData metadata = FileUtil.readProtoFromFile(
+            Raft.SnapshotMetaData metadata = RaftFileUtils.readProtoFromFile(
                     randomAccessFile, Raft.SnapshotMetaData.class);
             return metadata;
         } catch (IOException ex) {
@@ -84,7 +86,7 @@ public class Snapshot {
                 file.createNewFile();
             }
             randomAccessFile = new RandomAccessFile(file, "rw");
-            FileUtil.writeProtoToFile(randomAccessFile, metaData);
+            RaftFileUtils.writeProtoToFile(randomAccessFile, metaData);
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", snapshotMetaFile);
         } finally {
@@ -104,5 +106,9 @@ public class Snapshot {
 
     public String getSnapshotDir() {
         return snapshotDir;
+    }
+
+    public TreeMap<String, SnapshotDataFile> getSnapshotDataFileMap() {
+        return snapshotDataFileMap;
     }
 }

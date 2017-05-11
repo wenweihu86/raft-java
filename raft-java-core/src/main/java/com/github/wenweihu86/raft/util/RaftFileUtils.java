@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * Created by wenweihu86 on 2017/5/6.
  */
-public class FileUtil {
+public class RaftFileUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RaftFileUtils.class);
 
     public static List<String> getSortedFilesInDirectory(String dirName) {
         File dir = new File(dirName);

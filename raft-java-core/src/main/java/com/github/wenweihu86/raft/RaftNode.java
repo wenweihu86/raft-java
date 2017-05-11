@@ -11,14 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.*;
 
 /**
  * Created by wenweihu86 on 2017/5/2.
@@ -56,7 +52,8 @@ public class RaftNode {
     private Snapshot snapshot;
     private long lastSnapshotIndex;
     private long lastSnapshotTerm;
-    private AtomicBoolean takingSnapshot = new AtomicBoolean(false);
+    private boolean isSnapshoting;
+    private ReadWriteLock snapshotLock = new ReentrantReadWriteLock();
 
     private Lock lock = new ReentrantLock();
     private Condition commitIndexCondition = lock.newCondition();
@@ -313,7 +310,116 @@ public class RaftNode {
         Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
         requestBuilder.setServerId(localServer.getServerId());
         requestBuilder.setTerm(currentTerm);
-        // TODO: send snapshot
+        // send snapshot
+        try {
+            snapshotLock.readLock().lock();
+            Raft.InstallSnapshotRequest request = this.buildInstallSnapshotRequest(
+                    null, 0, 0);
+            peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
+                    request, new InstallSnapshotResponseCallback(peer, request));
+            isSnapshoting = true;
+        } finally {
+            snapshotLock.readLock().unlock();
+        }
+
+    }
+
+    private class InstallSnapshotResponseCallback implements RPCCallback<Raft.InstallSnapshotResponse> {
+        private Peer peer;
+        private Raft.InstallSnapshotRequest request;
+
+        public InstallSnapshotResponseCallback(Peer peer, Raft.InstallSnapshotRequest request) {
+            this.peer = peer;
+            this.request = request;
+        }
+
+        @Override
+        public void success(Raft.InstallSnapshotResponse response) {
+            TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
+            Snapshot.SnapshotDataFile lastDataFile = snapshotDataFileMap.get(request.getFileName());
+            try {
+                snapshotLock.readLock().lock();
+                if (request.getIsLast() == true) {
+                    isSnapshoting = false;
+                } else {
+                    Raft.InstallSnapshotRequest currentRequest = buildInstallSnapshotRequest(
+                            this.request.getFileName(),
+                            this.request.getOffset(),
+                            this.request.getData().toByteArray().length);
+                    peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
+                            currentRequest, new InstallSnapshotResponseCallback(peer, currentRequest));
+                }
+            } finally {
+                snapshotLock.readLock().unlock();
+            }
+        }
+
+        @Override
+        public void fail(Throwable e) {
+            LOG.warn("install snapshot failed, msg={}", e.getMessage());
+            snapshotLock.readLock().lock();
+            isSnapshoting = false;
+            snapshotLock.readLock().unlock();
+        }
+    }
+
+    private Raft.InstallSnapshotRequest buildInstallSnapshotRequest(
+            String lastFileName, long lastOffset, long lastLength) {
+        Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
+        try {
+            TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
+            if (lastFileName == null) {
+                lastFileName = snapshotDataFileMap.firstKey();
+                lastOffset = 0;
+                lastLength = 0;
+            }
+            Snapshot.SnapshotDataFile lastFile = snapshotDataFileMap.get(lastFileName);
+            long lastFileLength = lastFile.randomAccessFile.length();
+            String currentFileName = lastFileName;
+            long currentOffset = lastOffset + lastLength;
+            int currentDataSize = RaftOption.maxSnapshotBytesPerRequest;
+            Snapshot.SnapshotDataFile currentDataFile = lastFile;
+            if (lastOffset + lastLength < lastFileLength) {
+                if (lastOffset + lastLength + RaftOption.maxSnapshotBytesPerRequest > lastFileLength) {
+                    currentDataSize = (int) (lastFileLength - (lastOffset + lastLength));
+                }
+            } else {
+                Map.Entry<String, Snapshot.SnapshotDataFile> currentEntry
+                        = snapshotDataFileMap.higherEntry(lastFileName);
+                if (currentEntry == null) {
+                    return null;
+                }
+                currentDataFile = currentEntry.getValue();
+                currentFileName = currentEntry.getKey();
+                currentOffset = 0;
+                int currentFileLenght = (int) currentEntry.getValue().randomAccessFile.length();
+                if (currentFileLenght < RaftOption.maxSnapshotBytesPerRequest) {
+                    currentDataSize = currentFileLenght;
+                }
+            }
+            byte[] currentData = new byte[currentDataSize];
+            currentDataFile.randomAccessFile.read(currentData);
+            requestBuilder.setData(ByteString.copyFrom(currentData));
+            requestBuilder.setFileName(currentFileName);
+            requestBuilder.setOffset(currentOffset);
+            requestBuilder.setTerm(currentTerm);
+            requestBuilder.setServerId(localServer.getServerId());
+            requestBuilder.setIsFirst(false);
+            if (currentFileName.equals(snapshotDataFileMap.lastKey())
+                    && currentOffset + currentDataSize >= currentDataFile.randomAccessFile.length()) {
+                requestBuilder.setIsLast(true);
+            } else {
+                requestBuilder.setIsLast(false);
+            }
+            if (currentFileName.equals(snapshotDataFileMap.firstKey()) && currentOffset == 0) {
+                requestBuilder.setIsFirst(true);
+            } else {
+                requestBuilder.setIsFirst(false);
+            }
+            return requestBuilder.build();
+        } catch (IOException ex) {
+            return null;
+        }
     }
 
     public void becomeLeader() {
@@ -394,20 +500,21 @@ public class RaftNode {
                 && lastAppliedIndex <= raftLog.getLastLogIndex()) {
             lastAppliedTerm = raftLog.getEntry(lastAppliedIndex).getTerm();
         }
-        if (takingSnapshot.compareAndSet(false, true)) {
-            // take snapshot
-            String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
-            snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
-            String tmpSnapshotDataDir = tmpSnapshotDir + File.pathSeparator + "data";
-            stateMachine.writeSnapshot(tmpSnapshotDataDir);
-            try {
-                FileUtils.moveDirectory(new File(tmpSnapshotDir), new File(snapshot.getSnapshotDir()));
-                lastSnapshotIndex = lastAppliedIndex;
-                lastSnapshotTerm = lastAppliedTerm;
-            } catch (IOException ex) {
-                LOG.warn("move direct failed, msg={}", ex.getMessage());
-            }
+
+        snapshotLock.writeLock().lock();
+        // take snapshot
+        String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
+        snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
+        String tmpSnapshotDataDir = tmpSnapshotDir + File.pathSeparator + "data";
+        stateMachine.writeSnapshot(tmpSnapshotDataDir);
+        try {
+            FileUtils.moveDirectory(new File(tmpSnapshotDir), new File(snapshot.getSnapshotDir()));
+            lastSnapshotIndex = lastAppliedIndex;
+            lastSnapshotTerm = lastAppliedTerm;
+        } catch (IOException ex) {
+            LOG.warn("move direct failed, msg={}", ex.getMessage());
         }
+        snapshotLock.writeLock().unlock();
     }
 
     public Lock getLock() {

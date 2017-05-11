@@ -16,6 +16,7 @@ public class RaftOption {
     public static int snapshotPeriodSeconds = 60;
     // log entry大小达到snapshotMinLogSize，才做snapshot
     public static int snapshotMinLogSize = 100 * 1024 * 1024;
+    public static int maxSnapshotBytesPerRequest = 500 * 1024; // 500k
 
     public static int maxLogEntriesPerRequest = 5000;
 
