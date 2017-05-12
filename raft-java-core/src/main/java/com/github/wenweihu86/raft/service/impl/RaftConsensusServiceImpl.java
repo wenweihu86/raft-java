@@ -3,9 +3,14 @@ package com.github.wenweihu86.raft.service.impl;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
+import com.github.wenweihu86.raft.util.RaftFileUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,8 +134,62 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.setLeaderId(request.getServerId());
         }
         raftNode.getLock().unlock();
-        // TODO: write snapshot data to local
-        return null;
+
+        // write snapshot data to local
+        raftNode.getSnapshotLock().writeLock().lock();
+        String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
+        File file = new File(tmpSnapshotDir);
+        if (file.exists() && request.getIsFirst()) {
+            file.delete();
+            file.mkdir();
+        }
+        if (request.getIsFirst()) {
+            raftNode.getSnapshot().updateMetaData(tmpSnapshotDir,
+                    request.getSnapshotMetaData().getLastIncludedIndex(),
+                    request.getSnapshotMetaData().getLastIncludedTerm());
+        }
+        // write to file
+        RandomAccessFile randomAccessFile = null;
+        try {
+            String currentDataFileName = tmpSnapshotDir + File.pathSeparator
+                    + "data" + File.pathSeparator + request.getFileName();
+            File currentDataFile = new File(currentDataFileName);
+            if (!currentDataFile.exists()) {
+                currentDataFile.createNewFile();
+            }
+            randomAccessFile = RaftFileUtils.openFile(
+                    tmpSnapshotDir + File.pathSeparator + "data",
+                    request.getFileName(), "rw");
+            randomAccessFile.skipBytes((int) request.getOffset());
+            randomAccessFile.write(request.getData().toByteArray());
+            if (randomAccessFile != null) {
+                try {
+                    randomAccessFile.close();
+                    randomAccessFile = null;
+                } catch (Exception ex2) {
+                    LOG.warn("close failed");
+                }
+            }
+            // move tmp dir to snapshot dir if this is the last package
+            File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
+            if (snapshotDirFile.exists()) {
+                snapshotDirFile.delete();
+            }
+            FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
+            responseBuilder.setSuccess(true);
+        } catch (IOException ex) {
+            LOG.warn("io exception, msg={}", ex.getMessage());
+        } finally {
+            if (randomAccessFile != null) {
+                try {
+                    randomAccessFile.close();
+                } catch (Exception ex2) {
+                    LOG.warn("close failed");
+                }
+            }
+            raftNode.getSnapshotLock().writeLock().unlock();
+        }
+        return responseBuilder.build();
     }
 
 }

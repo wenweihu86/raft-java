@@ -608,4 +608,8 @@ public class RaftNode {
     public ScheduledExecutorService getScheduledExecutorService() {
         return scheduledExecutorService;
     }
+
+    public ReadWriteLock getSnapshotLock() {
+        return snapshotLock;
+    }
 }
