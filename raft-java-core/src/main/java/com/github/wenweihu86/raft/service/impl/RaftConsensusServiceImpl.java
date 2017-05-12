@@ -28,6 +28,14 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.VoteResponse requestVote(Raft.VoteRequest request) {
+        raftNode.getLock().lock();
+        Raft.VoteResponse.Builder responseBuilder = Raft.VoteResponse.newBuilder();
+        responseBuilder.setGranted(false);
+        responseBuilder.setTerm(raftNode.getCurrentTerm());
+        if (request.getTerm() < raftNode.getCurrentTerm()) {
+            raftNode.getLock().unlock();
+            return responseBuilder.build();
+        }
         if (request.getTerm() > raftNode.getCurrentTerm()) {
             LOG.info("Received RequestVote request from server {} " +
                     "in term {} (this server's term was {})",
@@ -35,36 +43,29 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     raftNode.getCurrentTerm());
             raftNode.stepDown(request.getTerm());
         }
-        if (request.getTerm() == raftNode.getCurrentTerm()) {
-            if ((raftNode.getVotedFor() == 0
-                    || raftNode.getVotedFor() == request.getServerId())
-                    && (raftNode.getCurrentTerm() == request.getTerm()
-                    && raftNode.getCommitIndex() == request.getLastLogIndex())) {
-                raftNode.setVotedFor(request.getServerId());
-                raftNode.stepDown(raftNode.getCurrentTerm());
-                raftNode.resetElectionTimer();
-                raftNode.updateMetaData();
-                Raft.VoteResponse response = Raft.VoteResponse.newBuilder()
-                        .setGranted(true)
-                        .setTerm(raftNode.getCurrentTerm()).build();
-                return response;
-            }
+        boolean logIsOk = request.getLastLogTerm() > raftNode.getRaftLog().getLastLogTerm()
+                || (request.getLastLogTerm() == raftNode.getRaftLog().getLastLogTerm()
+                && request.getLastLogIndex() >= raftNode.getRaftLog().getLastLogIndex());
+        if (raftNode.getVotedFor() == 0 || logIsOk) {
+            raftNode.stepDown(request.getTerm());
+            raftNode.setVotedFor(request.getServerId());
+            raftNode.updateMetaData();
+            responseBuilder.setGranted(true);
+            responseBuilder.setTerm(raftNode.getCurrentTerm());
         }
-
-        Raft.VoteResponse response = Raft.VoteResponse.newBuilder()
-                .setGranted(false)
-                .setTerm(raftNode.getCurrentTerm()).build();
-        return response;
+        raftNode.getLock().unlock();
+        return responseBuilder.build();
     }
 
     @Override
     public Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request) {
+        raftNode.getLock().lock();
         Raft.AppendEntriesResponse.Builder responseBuilder = Raft.AppendEntriesResponse.newBuilder();
         responseBuilder.setTerm(raftNode.getCurrentTerm());
         responseBuilder.setSuccess(false);
         responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
-
         if (request.getTerm() < raftNode.getCurrentTerm()) {
+            raftNode.getLock().unlock();
             return responseBuilder.build();
         }
         if (request.getTerm() > raftNode.getCurrentTerm()) {
@@ -72,21 +73,22 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     "in term {} (this server's term was {})",
                     request.getServerId(), request.getTerm(),
                     raftNode.getCurrentTerm());
-            responseBuilder.setTerm(request.getTerm());
+            raftNode.stepDown(request.getTerm());
         }
-        raftNode.stepDown(request.getTerm());
-        raftNode.resetElectionTimer();
         if (raftNode.getLeaderId() == 0) {
             raftNode.setLeaderId(request.getServerId());
         }
+
         if (request.getPrevLogIndex() > raftNode.getRaftLog().getLastLogIndex()) {
             LOG.debug("Rejecting AppendEntries RPC: would leave gap");
+            raftNode.getLock().unlock();
             return responseBuilder.build();
         }
         if (request.getPrevLogIndex() >= raftNode.getRaftLog().getStartLogIndex()
                 && raftNode.getRaftLog().getEntry(request.getPrevLogIndex()).getTerm()
                 != request.getPrevLogTerm()) {
             LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
+            raftNode.getLock().unlock();
             return responseBuilder.build();
         }
 
@@ -102,7 +104,9 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 if (raftNode.getRaftLog().getEntry(index).getTerm() == entry.getTerm()) {
                     continue;
                 }
-                // TODO: truncate segment log from index
+                // truncate segment log from index
+                long lastIndexKept = index - 1;
+                raftNode.getRaftLog().truncateSuffix(lastIndexKept);
             }
             entries.add(entry);
         }
@@ -111,9 +115,14 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
         if (raftNode.getCommitIndex() < request.getCommitIndex()) {
             raftNode.setCommitIndex(request.getCommitIndex());
-            // TODO: apply state machine
+            // apply state machine
+            for (index = raftNode.getLastAppliedIndex() + 1; index <= raftNode.getCommitIndex(); index++) {
+                raftNode.getStateMachine().apply(
+                        raftNode.getRaftLog().getEntry(index).getData().toByteArray());
+            }
         }
 
+        raftNode.getLock().unlock();
         return responseBuilder.build();
     }
 

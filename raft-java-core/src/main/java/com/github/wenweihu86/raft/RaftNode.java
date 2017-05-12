@@ -612,4 +612,8 @@ public class RaftNode {
     public ReadWriteLock getSnapshotLock() {
         return snapshotLock;
     }
+
+    public StateMachine getStateMachine() {
+        return stateMachine;
+    }
 }
