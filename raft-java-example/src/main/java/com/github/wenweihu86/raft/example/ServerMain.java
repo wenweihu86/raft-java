@@ -6,7 +6,7 @@ import com.github.wenweihu86.raft.ServerAddress;
 import com.github.wenweihu86.raft.example.service.impl.ExampleServiceImpl;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
 import com.github.wenweihu86.raft.service.impl.RaftConsensusServiceImpl;
-import com.wenweihu86.rpc.server.RPCServer;
+import com.github.wenweihu86.rpc.server.RPCServer;
 
 import java.util.ArrayList;
 import java.util.List;

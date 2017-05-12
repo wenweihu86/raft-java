@@ -55,7 +55,7 @@ message AppendEntriesResponse {
 };
 
 message InstallSnapshotRequest {
-    uint64 server_id = 1;
+    uint32 server_id = 1;
     uint64 term = 2;
     SnapshotMetaData snapshot_meta_data = 3;
     string file_name = 4;

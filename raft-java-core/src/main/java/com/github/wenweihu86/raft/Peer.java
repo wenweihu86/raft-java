@@ -1,8 +1,8 @@
 package com.github.wenweihu86.raft;
 
 import com.github.wenweihu86.raft.service.RaftConsensusService;
-import com.wenweihu86.rpc.client.RPCClient;
-import com.wenweihu86.rpc.client.RPCProxy;
+import com.github.wenweihu86.rpc.client.RPCClient;
+import com.github.wenweihu86.rpc.client.RPCProxy;
 
 import java.util.concurrent.Future;
 

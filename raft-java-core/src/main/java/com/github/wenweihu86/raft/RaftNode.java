@@ -4,7 +4,7 @@ import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.storage.SegmentedLog;
 import com.google.protobuf.ByteString;
 import com.github.wenweihu86.raft.storage.Snapshot;
-import com.wenweihu86.rpc.client.RPCCallback;
+import com.github.wenweihu86.rpc.client.RPCCallback;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
 
 /**
@@ -92,7 +91,7 @@ public class RaftNode {
 
     public void resetElectionTimer() {
         if (electionScheduledFuture != null && !electionScheduledFuture.isDone()) {
-            electionScheduledFuture.cancel(false);
+            electionScheduledFuture.cancel(true);
         }
         electionScheduledFuture = scheduledExecutorService.schedule(new Runnable() {
             @Override
@@ -430,18 +429,18 @@ public class RaftNode {
     }
 
     public void stepDown(long newTerm) {
-        assert this.currentTerm <= newTerm;
-        if (this.currentTerm < newTerm) {
-            currentTerm = newTerm;
-            leaderId = -1;
-            votedFor = -1;
-            state = NodeState.STATE_FOLLOWER;
-            raftLog.updateMetaData(currentTerm, votedFor, null);
-        } else {
-            if (state != NodeState.STATE_FOLLOWER) {
-                state = NodeState.STATE_FOLLOWER;
-            }
+        if (currentTerm > newTerm) {
+            LOG.error("can't be happened");
+            return;
         }
+        if (currentTerm < newTerm) {
+            currentTerm = newTerm;
+            leaderId = 0;
+            votedFor = 0;
+            raftLog.updateMetaData(currentTerm, votedFor, null);
+        }
+        state = NodeState.STATE_FOLLOWER;
+        resetElectionTimer();
     }
 
     public void updateMetaData() {

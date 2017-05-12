@@ -4922,9 +4922,9 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional uint64 server_id = 1;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
-    long getServerId();
+    int getServerId();
 
     /**
      * <code>optional uint64 term = 2;</code>
@@ -4986,7 +4986,7 @@ public final class Raft {
       super(builder);
     }
     private InstallSnapshotRequest() {
-      serverId_ = 0L;
+      serverId_ = 0;
       term_ = 0L;
       fileName_ = "";
       offset_ = 0L;
@@ -5022,7 +5022,7 @@ public final class Raft {
             }
             case 8: {
 
-              serverId_ = input.readUInt64();
+              serverId_ = input.readUInt32();
               break;
             }
             case 16: {
@@ -5093,11 +5093,11 @@ public final class Raft {
     }
 
     public static final int SERVER_ID_FIELD_NUMBER = 1;
-    private long serverId_;
+    private int serverId_;
     /**
-     * <code>optional uint64 server_id = 1;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
-    public long getServerId() {
+    public int getServerId() {
       return serverId_;
     }
 
@@ -5213,8 +5213,8 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (serverId_ != 0L) {
-        output.writeUInt64(1, serverId_);
+      if (serverId_ != 0) {
+        output.writeUInt32(1, serverId_);
       }
       if (term_ != 0L) {
         output.writeUInt64(2, term_);
@@ -5244,9 +5244,9 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (serverId_ != 0L) {
+      if (serverId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(1, serverId_);
+          .computeUInt32Size(1, serverId_);
       }
       if (term_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
@@ -5321,8 +5321,7 @@ public final class Raft {
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + SERVER_ID_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getServerId());
+      hash = (53 * hash) + getServerId();
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getTerm());
@@ -5461,7 +5460,7 @@ public final class Raft {
       }
       public Builder clear() {
         super.clear();
-        serverId_ = 0L;
+        serverId_ = 0;
 
         term_ = 0L;
 
@@ -5556,7 +5555,7 @@ public final class Raft {
 
       public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest other) {
         if (other == com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.getDefaultInstance()) return this;
-        if (other.getServerId() != 0L) {
+        if (other.getServerId() != 0) {
           setServerId(other.getServerId());
         }
         if (other.getTerm() != 0L) {
@@ -5607,28 +5606,28 @@ public final class Raft {
         return this;
       }
 
-      private long serverId_ ;
+      private int serverId_ ;
       /**
-       * <code>optional uint64 server_id = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
-      public long getServerId() {
+      public int getServerId() {
         return serverId_;
       }
       /**
-       * <code>optional uint64 server_id = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
-      public Builder setServerId(long value) {
+      public Builder setServerId(int value) {
         
         serverId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint64 server_id = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public Builder clearServerId() {
         
-        serverId_ = 0L;
+        serverId_ = 0;
         onChanged();
         return this;
       }
@@ -6565,7 +6564,7 @@ public final class Raft {
       " \001(\004\"N\n\025AppendEntriesResponse\022\014\n\004term\030\001 " +
       "\001(\004\022\017\n\007success\030\002 \001(\010\022\026\n\016last_log_index\030\003" +
       " \001(\004\"\301\001\n\026InstallSnapshotRequest\022\021\n\tserve" +
-      "r_id\030\001 \001(\004\022\014\n\004term\030\002 \001(\004\0222\n\022snapshot_met" +
+      "r_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\0222\n\022snapshot_met" +
       "a_data\030\003 \001(\0132\026.raft.SnapshotMetaData\022\021\n\t" +
       "file_name\030\004 \001(\t\022\016\n\006offset\030\005 \001(\004\022\014\n\004data\030",
       "\006 \001(\014\022\020\n\010is_first\030\007 \001(\010\022\017\n\007is_last\030\010 \001(\010" +
