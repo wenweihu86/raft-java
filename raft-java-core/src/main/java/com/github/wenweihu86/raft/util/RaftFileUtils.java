@@ -4,10 +4,7 @@ import com.google.protobuf.GeneratedMessageV3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +49,36 @@ public class RaftFileUtils {
         } catch (FileNotFoundException ex) {
             LOG.warn("file not fount, file={}", fileName);
             throw new RuntimeException("file not found, file={}" + fileName);
+        }
+    }
+
+    public static void closeFile(RandomAccessFile randomAccessFile) {
+        try {
+            if (randomAccessFile != null) {
+                randomAccessFile.close();
+            }
+        } catch (IOException ex) {
+            LOG.warn("close file error, msg={}", ex.getMessage());
+        }
+    }
+
+    public static void closeFile(FileInputStream inputStream) {
+        try {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (IOException ex) {
+            LOG.warn("close file error, msg={}", ex.getMessage());
+        }
+    }
+
+    public static void closeFile(FileOutputStream outputStream) {
+        try {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        } catch (IOException ex) {
+            LOG.warn("close file error, msg={}", ex.getMessage());
         }
     }
 
