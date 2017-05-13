@@ -49,7 +49,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         if (raftNode.getVotedFor() == 0 || logIsOk) {
             raftNode.stepDown(request.getTerm());
             raftNode.setVotedFor(request.getServerId());
-            raftNode.updateMetaData();
+            raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(), raftNode.getVotedFor(), null);
             responseBuilder.setGranted(true);
             responseBuilder.setTerm(raftNode.getCurrentTerm());
         }
@@ -84,7 +84,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.getLock().unlock();
             return responseBuilder.build();
         }
-        if (request.getPrevLogIndex() >= raftNode.getRaftLog().getStartLogIndex()
+        if (request.getPrevLogIndex() >= raftNode.getRaftLog().getFirstLogIndex()
                 && raftNode.getRaftLog().getEntry(request.getPrevLogIndex()).getTerm()
                 != request.getPrevLogTerm()) {
             LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
@@ -97,7 +97,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         long index = request.getPrevLogIndex();
         for (Raft.LogEntry entry : request.getEntriesList()) {
             index++;
-            if (index < raftNode.getRaftLog().getStartLogIndex()) {
+            if (index < raftNode.getRaftLog().getFirstLogIndex()) {
                 continue;
             }
             if (raftNode.getRaftLog().getLastLogIndex() >= index) {
@@ -145,7 +145,6 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         raftNode.getLock().unlock();
 
         // write snapshot data to local
-        raftNode.getSnapshotLock().writeLock().lock();
         String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
         File file = new File(tmpSnapshotDir);
         if (file.exists() && request.getIsFirst()) {
@@ -189,14 +188,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         } catch (IOException ex) {
             LOG.warn("io exception, msg={}", ex.getMessage());
         } finally {
-            if (randomAccessFile != null) {
-                try {
-                    randomAccessFile.close();
-                } catch (Exception ex2) {
-                    LOG.warn("close failed");
-                }
-            }
-            raftNode.getSnapshotLock().writeLock().unlock();
+            RaftFileUtils.closeFile(randomAccessFile);
         }
         return responseBuilder.build();
     }

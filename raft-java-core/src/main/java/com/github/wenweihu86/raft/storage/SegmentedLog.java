@@ -43,23 +43,23 @@ public class SegmentedLog {
                 LOG.error("No readable metadata file but found segments in {}", logDir);
                 throw new RuntimeException("No readable metadata file but found segments");
             }
-            metaData = Raft.LogMetaData.newBuilder().setStartLogIndex(0).build();
+            metaData = Raft.LogMetaData.newBuilder().setFirstLogIndex(0).build();
         }
     }
 
     public Raft.LogEntry getEntry(long index) {
-        long startLogIndex = getStartLogIndex();
+        long firstLogIndex = getFirstLogIndex();
         long lastLogIndex = getLastLogIndex();
-        if (index < startLogIndex || index > lastLogIndex) {
-            LOG.warn("index out of range, index={}, startLogIndex={}, lastLogIndex={}",
-                    index, startLogIndex, lastLogIndex);
+        if (index < firstLogIndex || index > lastLogIndex) {
+            LOG.warn("index out of range, index={}, firstLogIndex={}, lastLogIndex={}",
+                    index, firstLogIndex, lastLogIndex);
             return null;
         }
         Segment segment = startLogIndexSegmentMap.lowerEntry(index).getValue();
         return segment.getEntry(index);
     }
 
-    public long getStartLogIndex() {
+    public long getFirstLogIndex() {
         if (startLogIndexSegmentMap.size() == 0) {
             return 0;
         }
@@ -147,20 +147,20 @@ public class SegmentedLog {
         return newLastLogIndex;
     }
 
-    public void truncatePrefix(long newStartIndex) {
-        if (newStartIndex <= getStartLogIndex()) {
+    public void truncatePrefix(long newFirstIndex) {
+        if (newFirstIndex <= getFirstLogIndex()) {
             return;
         }
-        LOG.info("Truncating log from old start index {} to new start index {}",
-                getStartLogIndex(), newStartIndex);
+        LOG.info("Truncating log from old first index {} to new first index {}",
+                getFirstLogIndex(), newFirstIndex);
         while (!startLogIndexSegmentMap.isEmpty()) {
             Segment segment = startLogIndexSegmentMap.firstEntry().getValue();
-            if (newStartIndex <= segment.getEndIndex()) {
+            if (newFirstIndex <= segment.getEndIndex()) {
                 List<Segment.Record> newEntries = new ArrayList<>();
                 List<Segment.Record> oldEntries = segment.getEntries();
                 int oldEntrySize = oldEntries.size();
                 long newFirstOffset = 0;
-                for (int index = (int) (newStartIndex - segment.getStartIndex());
+                for (int index = (int) (newFirstIndex - segment.getStartIndex());
                      index < oldEntrySize; index++) {
                     Segment.Record record = segment.getEntries().get(index);
                     if (newFirstOffset == 0) {
@@ -170,7 +170,7 @@ public class SegmentedLog {
                     newEntries.add(record);
                 }
                 segment.setEntries(newEntries);
-                segment.setStartIndex(newStartIndex);
+                segment.setStartIndex(newFirstIndex);
                 segment.setFileSize(segment.getFileSize() - newFirstOffset);
 
                 // 截取文件后半部分
@@ -200,13 +200,13 @@ public class SegmentedLog {
                     RaftFileUtils.closeFile(newFileStream);
                 }
                 break;
-            } else if (newStartIndex > segment.getEndIndex()){
+            } else if (newFirstIndex > segment.getEndIndex()){
                 File oldFile = new File(logDir + File.pathSeparator + segment.getFileName());
                 oldFile.delete();
                 startLogIndexSegmentMap.remove(segment.getStartIndex());
             }
         }
-        updateMetaData(null, null, newStartIndex);
+        updateMetaData(null, null, newFirstIndex);
     }
 
     public void truncateSuffix(long newEndIndex) {
@@ -332,7 +332,7 @@ public class SegmentedLog {
         }
     }
 
-    public void updateMetaData(Long currentTerm, Integer votedFor, Long startLogIndex) {
+    public void updateMetaData(Long currentTerm, Integer votedFor, Long firstLogIndex) {
         Raft.LogMetaData.Builder builder = Raft.LogMetaData.newBuilder(this.metaData);
         if (currentTerm != null) {
             builder.setCurrentTerm(currentTerm);
@@ -340,8 +340,8 @@ public class SegmentedLog {
         if (votedFor != null) {
             builder.setVotedFor(votedFor);
         }
-        if (startLogIndex != null) {
-            builder.setStartLogIndex(startLogIndex);
+        if (firstLogIndex != null) {
+            builder.setFirstLogIndex(firstLogIndex);
         }
         this.metaData = builder.build();
 

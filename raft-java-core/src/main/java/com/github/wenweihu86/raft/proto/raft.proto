@@ -7,7 +7,7 @@ option java_outer_classname = "Raft";
 message LogMetaData {
     uint64 current_term = 1;
     uint32 voted_for = 2;
-    uint64 start_log_index = 3;
+    uint64 first_log_index = 3;
 }
 
 message SnapshotMetaData {

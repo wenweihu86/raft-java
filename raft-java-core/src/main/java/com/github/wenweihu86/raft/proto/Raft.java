@@ -127,9 +127,9 @@ public final class Raft {
     int getVotedFor();
 
     /**
-     * <code>optional uint64 start_log_index = 3;</code>
+     * <code>optional uint64 first_log_index = 3;</code>
      */
-    long getStartLogIndex();
+    long getFirstLogIndex();
   }
   /**
    * Protobuf type {@code raft.LogMetaData}
@@ -145,7 +145,7 @@ public final class Raft {
     private LogMetaData() {
       currentTerm_ = 0L;
       votedFor_ = 0;
-      startLogIndex_ = 0L;
+      firstLogIndex_ = 0L;
     }
 
     @java.lang.Override
@@ -185,7 +185,7 @@ public final class Raft {
             }
             case 24: {
 
-              startLogIndex_ = input.readUInt64();
+              firstLogIndex_ = input.readUInt64();
               break;
             }
           }
@@ -229,13 +229,13 @@ public final class Raft {
       return votedFor_;
     }
 
-    public static final int START_LOG_INDEX_FIELD_NUMBER = 3;
-    private long startLogIndex_;
+    public static final int FIRST_LOG_INDEX_FIELD_NUMBER = 3;
+    private long firstLogIndex_;
     /**
-     * <code>optional uint64 start_log_index = 3;</code>
+     * <code>optional uint64 first_log_index = 3;</code>
      */
-    public long getStartLogIndex() {
-      return startLogIndex_;
+    public long getFirstLogIndex() {
+      return firstLogIndex_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -256,8 +256,8 @@ public final class Raft {
       if (votedFor_ != 0) {
         output.writeUInt32(2, votedFor_);
       }
-      if (startLogIndex_ != 0L) {
-        output.writeUInt64(3, startLogIndex_);
+      if (firstLogIndex_ != 0L) {
+        output.writeUInt64(3, firstLogIndex_);
       }
     }
 
@@ -274,9 +274,9 @@ public final class Raft {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, votedFor_);
       }
-      if (startLogIndex_ != 0L) {
+      if (firstLogIndex_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(3, startLogIndex_);
+          .computeUInt64Size(3, firstLogIndex_);
       }
       memoizedSize = size;
       return size;
@@ -298,8 +298,8 @@ public final class Raft {
           == other.getCurrentTerm());
       result = result && (getVotedFor()
           == other.getVotedFor());
-      result = result && (getStartLogIndex()
-          == other.getStartLogIndex());
+      result = result && (getFirstLogIndex()
+          == other.getFirstLogIndex());
       return result;
     }
 
@@ -315,9 +315,9 @@ public final class Raft {
           getCurrentTerm());
       hash = (37 * hash) + VOTED_FOR_FIELD_NUMBER;
       hash = (53 * hash) + getVotedFor();
-      hash = (37 * hash) + START_LOG_INDEX_FIELD_NUMBER;
+      hash = (37 * hash) + FIRST_LOG_INDEX_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getStartLogIndex());
+          getFirstLogIndex());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -440,7 +440,7 @@ public final class Raft {
 
         votedFor_ = 0;
 
-        startLogIndex_ = 0L;
+        firstLogIndex_ = 0L;
 
         return this;
       }
@@ -466,7 +466,7 @@ public final class Raft {
         com.github.wenweihu86.raft.proto.Raft.LogMetaData result = new com.github.wenweihu86.raft.proto.Raft.LogMetaData(this);
         result.currentTerm_ = currentTerm_;
         result.votedFor_ = votedFor_;
-        result.startLogIndex_ = startLogIndex_;
+        result.firstLogIndex_ = firstLogIndex_;
         onBuilt();
         return result;
       }
@@ -514,8 +514,8 @@ public final class Raft {
         if (other.getVotedFor() != 0) {
           setVotedFor(other.getVotedFor());
         }
-        if (other.getStartLogIndex() != 0L) {
-          setStartLogIndex(other.getStartLogIndex());
+        if (other.getFirstLogIndex() != 0L) {
+          setFirstLogIndex(other.getFirstLogIndex());
         }
         onChanged();
         return this;
@@ -595,28 +595,28 @@ public final class Raft {
         return this;
       }
 
-      private long startLogIndex_ ;
+      private long firstLogIndex_ ;
       /**
-       * <code>optional uint64 start_log_index = 3;</code>
+       * <code>optional uint64 first_log_index = 3;</code>
        */
-      public long getStartLogIndex() {
-        return startLogIndex_;
+      public long getFirstLogIndex() {
+        return firstLogIndex_;
       }
       /**
-       * <code>optional uint64 start_log_index = 3;</code>
+       * <code>optional uint64 first_log_index = 3;</code>
        */
-      public Builder setStartLogIndex(long value) {
+      public Builder setFirstLogIndex(long value) {
         
-        startLogIndex_ = value;
+        firstLogIndex_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint64 start_log_index = 3;</code>
+       * <code>optional uint64 first_log_index = 3;</code>
        */
-      public Builder clearStartLogIndex() {
+      public Builder clearFirstLogIndex() {
         
-        startLogIndex_ = 0L;
+        firstLogIndex_ = 0L;
         onChanged();
         return this;
       }
@@ -6548,8 +6548,8 @@ public final class Raft {
   static {
     java.lang.String[] descriptorData = {
       "\n\nraft.proto\022\004raft\"O\n\013LogMetaData\022\024\n\014cur" +
-      "rent_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017st" +
-      "art_log_index\030\003 \001(\004\"K\n\020SnapshotMetaData\022" +
+      "rent_term\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017fi" +
+      "rst_log_index\030\003 \001(\004\"K\n\020SnapshotMetaData\022" +
       "\033\n\023last_included_index\030\001 \001(\004\022\032\n\022last_inc" +
       "luded_term\030\002 \001(\004\"T\n\010LogEntry\022\014\n\004term\030\001 \001" +
       "(\004\022\r\n\005index\030\002 \001(\004\022\035\n\004type\030\003 \001(\0162\017.raft.E" +
@@ -6591,7 +6591,7 @@ public final class Raft {
     internal_static_raft_LogMetaData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_LogMetaData_descriptor,
-        new java.lang.String[] { "CurrentTerm", "VotedFor", "StartLogIndex", });
+        new java.lang.String[] { "CurrentTerm", "VotedFor", "FirstLogIndex", });
     internal_static_raft_SnapshotMetaData_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_raft_SnapshotMetaData_fieldAccessorTable = new

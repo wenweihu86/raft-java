@@ -28,32 +28,25 @@ public class RaftNode {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
 
+    private List<Peer> peers;
+    private ServerAddress localServer;
+    private StateMachine stateMachine;
+    private SegmentedLog raftLog;
+    private Snapshot snapshot;
+
     private NodeState state = NodeState.STATE_FOLLOWER;
     // 服务器最后一次知道的任期号（初始化为 0，持续递增）
     private long currentTerm;
     // 在当前获得选票的候选人的Id
     private int votedFor;
-    private List<Raft.LogEntry> entries;
+    private int leaderId; // leader节点id
     // 已知的最大的已经被提交的日志条目的索引值
     private long commitIndex;
-    // The index of the last log entry that has been flushed to disk.
-    // Valid for leaders only.
-    private long lastSyncedIndex;
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
     private volatile long lastAppliedIndex;
-
-    private List<Peer> peers;
-    private ServerAddress localServer;
-    private int leaderId; // leader节点id
-    private SegmentedLog raftLog;
-    private StateMachine stateMachine;
-
-    private Snapshot snapshot;
-    private long lastSnapshotIndex;
-    private long lastSnapshotTerm;
     private boolean isSnapshoting;
-    private ReadWriteLock snapshotLock = new ReentrantReadWriteLock();
 
+    // TODO: fix lock
     private Lock lock = new ReentrantLock();
     private Condition commitIndexCondition = lock.newCondition();
 
@@ -62,9 +55,8 @@ public class RaftNode {
     private ScheduledFuture electionScheduledFuture;
     private ScheduledFuture heartbeatScheduledFuture;
 
-    public RaftNode(int localServerId, List<ServerAddress> servers) {
-        raftLog = new SegmentedLog();
-        snapshot = new Snapshot();
+    public RaftNode(int localServerId, List<ServerAddress> servers, StateMachine stateMachine) {
+        peers = new ArrayList<>();
         for (ServerAddress server : servers) {
             if (server.getServerId() == localServerId) {
                 this.localServer = server;
@@ -73,20 +65,37 @@ public class RaftNode {
                 peers.add(peer);
             }
         }
+        this.stateMachine = stateMachine;
+        // load log and snapshot
+        raftLog = new SegmentedLog();
+        snapshot = new Snapshot();
+        currentTerm = raftLog.getMetaData().getCurrentTerm();
+        votedFor = raftLog.getMetaData().getVotedFor();
+        commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
+        // discard old log entries
+        if (raftLog.getFirstLogIndex() <= snapshot.getMetaData().getLastIncludedIndex()) {
+            raftLog.truncatePrefix(snapshot.getMetaData().getLastIncludedIndex() + 1);
+        }
+        // apply state machine
+        stateMachine.readSnapshot(snapshot.getSnapshotDir());
+        for (long index = snapshot.getMetaData().getLastIncludedIndex() + 1;
+             index <= commitIndex; index++) {
+            Raft.LogEntry entry = raftLog.getEntry(index);
+            stateMachine.apply(entry.getData().toByteArray());
+        }
+        lastAppliedIndex = commitIndex;
+
+        // init thread pool
         executorService = Executors.newFixedThreadPool(peers.size() * 2);
         scheduledExecutorService = Executors.newScheduledThreadPool(2);
-        // election timer
-        resetElectionTimer();
-        this.currentTerm = raftLog.getMetaData().getCurrentTerm();
-        this.votedFor = raftLog.getMetaData().getVotedFor();
-        this.commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
-        stepDown(1);
         scheduledExecutorService.schedule(new Runnable() {
             @Override
             public void run() {
                 takeSnapshot();
             }
         }, RaftOption.snapshotPeriodSeconds, TimeUnit.SECONDS);
+        // start election
+        startNewElection();
     }
 
     public void resetElectionTimer() {
@@ -206,21 +215,20 @@ public class RaftNode {
     }
 
     public void appendEntries(Peer peer) {
-        long startLogIndex = raftLog.getStartLogIndex();
-        if (peer.getNextIndex() < startLogIndex) {
-            this.installSnapshot(peer);
+        long firstLogIndex = raftLog.getFirstLogIndex();
+        if (peer.getNextIndex() < firstLogIndex) {
+            installSnapshot(peer);
             return;
         }
 
-        long lastLogIndex = this.raftLog.getLastLogIndex();
         long prevLogIndex = peer.getNextIndex() - 1;
         long prevLogTerm = 0;
-        if (prevLogIndex >= startLogIndex) {
+        if (prevLogIndex >= firstLogIndex) {
             prevLogTerm = raftLog.getEntry(prevLogIndex).getTerm();
         } else if (prevLogIndex == 0) {
             prevLogTerm = 0;
-        } else if (prevLogIndex == lastSnapshotIndex) {
-            prevLogTerm = lastSnapshotTerm;
+        } else if (prevLogIndex == snapshot.getMetaData().getLastIncludedIndex()) {
+            prevLogTerm = snapshot.getMetaData().getLastIncludedTerm();
         } else {
             installSnapshot(peer);
             return;
@@ -272,7 +280,7 @@ public class RaftNode {
         for (int i = 0; i < peerNum - 1; i++) {
             matchIndexes[i] = peers.get(i).getMatchIndex();
         }
-        matchIndexes[peerNum] = lastSyncedIndex;
+        matchIndexes[peerNum] = raftLog.getLastLogIndex();
         Arrays.sort(matchIndexes);
         long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
         if (raftLog.getEntry(newCommitIndex).getTerm() != currentTerm) {
@@ -310,16 +318,11 @@ public class RaftNode {
         requestBuilder.setServerId(localServer.getServerId());
         requestBuilder.setTerm(currentTerm);
         // send snapshot
-        try {
-            snapshotLock.readLock().lock();
-            Raft.InstallSnapshotRequest request = this.buildInstallSnapshotRequest(
-                    null, 0, 0);
-            peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
-                    request, new InstallSnapshotResponseCallback(peer, request));
-            isSnapshoting = true;
-        } finally {
-            snapshotLock.readLock().unlock();
-        }
+        Raft.InstallSnapshotRequest request = this.buildInstallSnapshotRequest(
+                null, 0, 0);
+        peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
+                request, new InstallSnapshotResponseCallback(peer, request));
+        isSnapshoting = true;
 
     }
 
@@ -336,29 +339,22 @@ public class RaftNode {
         public void success(Raft.InstallSnapshotResponse response) {
             TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
             Snapshot.SnapshotDataFile lastDataFile = snapshotDataFileMap.get(request.getFileName());
-            try {
-                snapshotLock.readLock().lock();
-                if (request.getIsLast() == true) {
-                    isSnapshoting = false;
-                } else {
-                    Raft.InstallSnapshotRequest currentRequest = buildInstallSnapshotRequest(
-                            this.request.getFileName(),
-                            this.request.getOffset(),
-                            this.request.getData().toByteArray().length);
-                    peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
-                            currentRequest, new InstallSnapshotResponseCallback(peer, currentRequest));
-                }
-            } finally {
-                snapshotLock.readLock().unlock();
+            if (request.getIsLast() == true) {
+                isSnapshoting = false;
+            } else {
+                Raft.InstallSnapshotRequest currentRequest = buildInstallSnapshotRequest(
+                        this.request.getFileName(),
+                        this.request.getOffset(),
+                        this.request.getData().toByteArray().length);
+                peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
+                        currentRequest, new InstallSnapshotResponseCallback(peer, currentRequest));
             }
         }
 
         @Override
         public void fail(Throwable e) {
             LOG.warn("install snapshot failed, msg={}", e.getMessage());
-            snapshotLock.readLock().lock();
             isSnapshoting = false;
-            snapshotLock.readLock().unlock();
         }
     }
 
@@ -443,10 +439,6 @@ public class RaftNode {
         resetElectionTimer();
     }
 
-    public void updateMetaData() {
-        raftLog.updateMetaData(currentTerm, votedFor, null);
-    }
-
     public int getElectionTimeoutMs() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int randomElectionTimeout = RaftOption.electionTimeoutMilliseconds
@@ -491,53 +483,36 @@ public class RaftNode {
         if (raftLog.getTotalSize() < RaftOption.snapshotMinLogSize) {
             return;
         }
-        if (lastAppliedIndex <= lastSnapshotIndex) {
+        if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
             return;
         }
         long lastAppliedTerm = 0;
-        if (lastAppliedIndex >= raftLog.getStartLogIndex()
+        if (lastAppliedIndex >= raftLog.getFirstLogIndex()
                 && lastAppliedIndex <= raftLog.getLastLogIndex()) {
             lastAppliedTerm = raftLog.getEntry(lastAppliedIndex).getTerm();
         }
 
-        snapshotLock.writeLock().lock();
-        // take snapshot
-        String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
-        snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
-        String tmpSnapshotDataDir = tmpSnapshotDir + File.pathSeparator + "data";
-        stateMachine.writeSnapshot(tmpSnapshotDataDir);
-        try {
-            FileUtils.moveDirectory(new File(tmpSnapshotDir), new File(snapshot.getSnapshotDir()));
-            lastSnapshotIndex = lastAppliedIndex;
-            lastSnapshotTerm = lastAppliedTerm;
-        } catch (IOException ex) {
-            LOG.warn("move direct failed, msg={}", ex.getMessage());
+        if (!isSnapshoting) {
+            isSnapshoting = true;
+            // take snapshot
+            String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
+            snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
+            String tmpSnapshotDataDir = tmpSnapshotDir + File.pathSeparator + "data";
+            stateMachine.writeSnapshot(tmpSnapshotDataDir);
+            try {
+                FileUtils.moveDirectory(new File(tmpSnapshotDir), new File(snapshot.getSnapshotDir()));
+            } catch (IOException ex) {
+                LOG.warn("move direct failed, msg={}", ex.getMessage());
+            }
         }
-        snapshotLock.writeLock().unlock();
     }
 
     public Lock getLock() {
         return lock;
     }
 
-    public void setLock(Lock lock) {
-        this.lock = lock;
-    }
-
-    public NodeState getState() {
-        return state;
-    }
-
-    public void setState(NodeState state) {
-        this.state = state;
-    }
-
     public long getCurrentTerm() {
         return currentTerm;
-    }
-
-    public void setCurrentTerm(int currentTerm) {
-        this.currentTerm = currentTerm;
     }
 
     public int getVotedFor() {
@@ -548,14 +523,6 @@ public class RaftNode {
         this.votedFor = votedFor;
     }
 
-    public List<Raft.LogEntry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(List<Raft.LogEntry> entries) {
-        this.entries = entries;
-    }
-
     public long getCommitIndex() {
         return commitIndex;
     }
@@ -564,21 +531,8 @@ public class RaftNode {
         this.commitIndex = commitIndex;
     }
 
-
     public long getLastAppliedIndex() {
         return lastAppliedIndex;
-    }
-
-    public void setLastAppliedIndex(long lastAppliedIndex) {
-        this.lastAppliedIndex = lastAppliedIndex;
-    }
-
-    public ServerAddress getLocalServer() {
-        return localServer;
-    }
-
-    public void setLocalServer(ServerAddress localServer) {
-        this.localServer = localServer;
     }
 
     public SegmentedLog getRaftLog() {
@@ -595,22 +549,6 @@ public class RaftNode {
 
     public Snapshot getSnapshot() {
         return snapshot;
-    }
-
-    public void setSnapshot(Snapshot snapshot) {
-        this.snapshot = snapshot;
-    }
-
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-
-    public ScheduledExecutorService getScheduledExecutorService() {
-        return scheduledExecutorService;
-    }
-
-    public ReadWriteLock getSnapshotLock() {
-        return snapshotLock;
     }
 
     public StateMachine getStateMachine() {

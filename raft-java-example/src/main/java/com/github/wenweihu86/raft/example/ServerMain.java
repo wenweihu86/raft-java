@@ -35,11 +35,11 @@ public class ServerMain {
 
         RPCServer server = new RPCServer(8050);
 
-        RaftNode raftNode = new RaftNode(localServerId, serverAddressList);
+        ExampleStateMachine stateMachine = new ExampleStateMachine();
+        RaftNode raftNode = new RaftNode(localServerId, serverAddressList, stateMachine);
         RaftConsensusService raftConsensusService = new RaftConsensusServiceImpl(raftNode);
         server.registerService(raftConsensusService);
 
-        ExampleStateMachine stateMachine = new ExampleStateMachine();
         ExampleService exampleService = new ExampleServiceImpl(raftNode, stateMachine);
         server.registerService(exampleService);
 
