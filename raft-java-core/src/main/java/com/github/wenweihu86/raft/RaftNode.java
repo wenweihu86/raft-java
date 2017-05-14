@@ -98,6 +98,45 @@ public class RaftNode {
         startNewElection();
     }
 
+    // client set command
+    public boolean replicate(byte[] data) {
+        lock.lock();
+        if (state != NodeState.STATE_LEADER) {
+            LOG.debug("I'm not the leader");
+            lock.unlock();
+            return false;
+        }
+        Raft.LogEntry logEntry = Raft.LogEntry.newBuilder()
+                .setTerm(currentTerm)
+                .setType(Raft.EntryType.ENTRY_TYPE_DATA)
+                .setData(ByteString.copyFrom(data)).build();
+        List<Raft.LogEntry> entries = new ArrayList<>();
+        entries.add(logEntry);
+        long newLastLogIndex = raftLog.append(entries);
+        for (final Peer peer : peers) {
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    appendEntries(peer);
+                }
+            });
+        }
+        // sync wait condition commitIndex >= newLastLogIndex
+        // TODO: add timeout
+        try {
+            while (commitIndex < newLastLogIndex) {
+                try {
+                    commitIndexCondition.await();
+                } catch (InterruptedException ex) {
+                    LOG.warn(ex.getMessage());
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+        return true;
+    }
+
     // election timer, request vote
     // in lock
     private void resetElectionTimer() {
@@ -465,39 +504,6 @@ public class RaftNode {
         resetElectionTimer();
     }
 
-    // client set command
-    public void replicate(byte[] data) {
-        lock.lock();
-        Raft.LogEntry logEntry = Raft.LogEntry.newBuilder()
-                .setTerm(currentTerm)
-                .setType(Raft.EntryType.ENTRY_TYPE_DATA)
-                .setData(ByteString.copyFrom(data)).build();
-        List<Raft.LogEntry> entries = new ArrayList<>();
-        entries.add(logEntry);
-        long newLastLogIndex = raftLog.append(entries);
-        for (final Peer peer : peers) {
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    appendEntries(peer);
-                }
-            });
-        }
-        // sync wait condition commitIndex >= newLastLogIndex
-        // TODO: add timeout
-        try {
-            while (commitIndex < newLastLogIndex) {
-                try {
-                    commitIndexCondition.await();
-                } catch (InterruptedException ex) {
-                    LOG.warn(ex.getMessage());
-                }
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
     private void takeSnapshot() {
         lock.lock();
         if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
@@ -576,5 +582,13 @@ public class RaftNode {
 
     public StateMachine getStateMachine() {
         return stateMachine;
+    }
+
+    public List<Peer> getPeers() {
+        return peers;
+    }
+
+    public ServerAddress getLocalServer() {
+        return localServer;
     }
 }

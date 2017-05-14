@@ -15,13 +15,12 @@ import java.util.List;
  * Created by wenweihu86 on 2017/5/9.
  */
 public class ServerMain {
-
     public static void main(String[] args) {
         // parse args
         // serverId
-        Integer localServerId = Integer.parseInt(args[0]);
+        Integer localServerId = Integer.parseInt(args[1]);
         // format is "host:port:serverId;host2:port2:serverId2"
-        String servers = args[1];
+        String servers = args[0];
         String[] splitArray = servers.split(";");
         List<ServerAddress> serverAddressList = new ArrayList<>();
         for (String serverString : splitArray) {
@@ -45,5 +44,4 @@ public class ServerMain {
 
         server.start();
     }
-
 }

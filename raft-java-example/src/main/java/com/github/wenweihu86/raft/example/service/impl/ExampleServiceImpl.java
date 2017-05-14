@@ -11,7 +11,6 @@ import com.github.wenweihu86.raft.RaftNode;
 public class ExampleServiceImpl implements ExampleService {
 
     private RaftNode raftNode;
-
     private ExampleStateMachine stateMachine;
 
     public ExampleServiceImpl(RaftNode raftNode, ExampleStateMachine stateMachine) {
@@ -22,8 +21,10 @@ public class ExampleServiceImpl implements ExampleService {
     @Override
     public Example.SetResponse set(Example.SetRequest request) {
         byte[] data = request.toByteArray();
-        raftNode.replicate(data);
-        return null;
+        boolean success = raftNode.replicate(data);
+        Example.SetResponse response = Example.SetResponse.newBuilder()
+                .setSuccess(success).build();
+        return response;
     }
 
     @Override

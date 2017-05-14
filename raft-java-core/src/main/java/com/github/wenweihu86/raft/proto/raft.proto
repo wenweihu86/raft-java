@@ -69,3 +69,16 @@ message InstallSnapshotResponse {
     uint64 term = 1;
     bool success = 2;
 }
+
+message EndPoint {
+    string host = 1;
+    uint32 port = 2;
+}
+
+message GetLeaderRequest {
+}
+
+message GetLeaderResponse {
+    bool success = 1;
+    EndPoint leader = 2;
+}
