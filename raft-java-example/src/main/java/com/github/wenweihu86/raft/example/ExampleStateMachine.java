@@ -42,7 +42,7 @@ public class ExampleStateMachine implements StateMachine {
     public void readSnapshot(String snapshotDir) {
         try {
             // copy snapshot dir to data dir
-            String dataDir = RaftOptions.dataDir + File.pathSeparator + "rocksdb_data";
+            String dataDir = RaftOptions.dataDir + File.separator + "rocksdb_data";
             File dataFile = new File(dataDir);
             if (dataFile.exists()) {
                 FileUtils.deleteDirectory(dataFile);

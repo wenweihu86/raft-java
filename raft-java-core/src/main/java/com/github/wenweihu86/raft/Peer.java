@@ -15,7 +15,7 @@ public class Peer {
     private long nextIndex;
     // 已复制日志的最高索引值
     private long matchIndex;
-    private volatile boolean voteGranted;
+    private volatile Boolean voteGranted;
 
     public Peer(ServerAddress serverAddress) {
         this.serverAddress = serverAddress;
@@ -51,11 +51,11 @@ public class Peer {
         this.matchIndex = matchIndex;
     }
 
-    public boolean isVoteGranted() {
+    public Boolean isVoteGranted() {
         return voteGranted;
     }
 
-    public void setVoteGranted(boolean voteGranted) {
+    public void setVoteGranted(Boolean voteGranted) {
         this.voteGranted = voteGranted;
     }
 

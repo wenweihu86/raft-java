@@ -27,5 +27,5 @@ public class RaftOptions {
     public static int maxSegmentFileSize = 100 * 1000 * 1000;
 
     // raft的log和snapshot父目录，绝对路径
-    public static String dataDir = System.getProperty("com.wenweihu86.raft.data.dir");
+    public static String dataDir = System.getProperty("com.github.wenweihu86.raft.data.dir");
 }

@@ -43,7 +43,7 @@ public class RaftFileUtils {
 
     public static RandomAccessFile openFile(String dir, String fileName, String mode) {
         try {
-            String fullFileName = dir + File.pathSeparator + fileName;
+            String fullFileName = dir + File.separator + fileName;
             File file = new File(fullFileName);
             return new RandomAccessFile(file, mode);
         } catch (FileNotFoundException ex) {

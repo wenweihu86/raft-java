@@ -24,12 +24,13 @@ public class Snapshot {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
-    private String snapshotDir = RaftOptions.dataDir + File.pathSeparator + "snapshot";
+    private String snapshotDir = RaftOptions.dataDir + File.separator + "snapshot";
     private Raft.SnapshotMetaData metaData;
     private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
 
     public Snapshot() {
-        File file = new File(snapshotDir);
+        String snapshotDataDir = snapshotDir + File.separator + "data";
+        File file = new File(snapshotDataDir);
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -47,7 +48,7 @@ public class Snapshot {
 
     public TreeMap<String, SnapshotDataFile> readSnapshotDataFiles() {
         TreeMap<String, SnapshotDataFile> snapshotDataFileMap = new TreeMap<>();
-        String snapshotDataDir = snapshotDir + File.pathSeparator + "data";
+        String snapshotDataDir = snapshotDir + File.separator + "data";
         List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(snapshotDataDir);
         for (String fileName : fileNames) {
             RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDir, fileName, "r");
@@ -60,7 +61,7 @@ public class Snapshot {
     }
 
     public Raft.SnapshotMetaData readMetaData() {
-        String fileName = snapshotDir + File.pathSeparator + "metadata";
+        String fileName = snapshotDir + File.separator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
             Raft.SnapshotMetaData metadata = RaftFileUtils.readProtoFromFile(
@@ -78,7 +79,7 @@ public class Snapshot {
                 .setLastIncludedTerm(lastIncludedTerm).build();
         this.metaData = snapshotMetaData;
         RandomAccessFile randomAccessFile = null;
-        String snapshotMetaFile = dir + File.pathSeparator + "metadata";
+        String snapshotMetaFile = dir + File.separator + "metadata";
         try {
             File file = new File(snapshotMetaFile);
             if (file.exists()) {

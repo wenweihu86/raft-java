@@ -21,8 +21,8 @@ public class SegmentedLog {
 
     private static Logger LOG = LoggerFactory.getLogger(SegmentedLog.class);
 
-    private String logDir = RaftOptions.dataDir + File.pathSeparator + "log";
-    private String logDataDir = logDir + File.pathSeparator + "data";
+    private String logDir = RaftOptions.dataDir + File.separator + "log";
+    private String logDataDir = logDir + File.separator + "data";
     private Raft.LogMetaData metaData;
     private TreeMap<Long, Segment> startLogIndexSegmentMap = new TreeMap<>();
     // segment log占用的内存大小，用于判断是否需要做snapshot
@@ -178,7 +178,7 @@ public class SegmentedLog {
                 FileInputStream oldFileStream = null;
                 FileOutputStream newFileStream = null;
                 try {
-                    File oldFile = new File(logDataDir + File.pathSeparator + segment.getFileName());
+                    File oldFile = new File(logDataDir + File.separator + segment.getFileName());
                     oldFileStream = new FileInputStream(oldFile);
 
                     String newFileName = String.format("%020d-%020d",
@@ -202,7 +202,7 @@ public class SegmentedLog {
                 }
                 break;
             } else if (newFirstIndex > segment.getEndIndex()){
-                File oldFile = new File(logDataDir + File.pathSeparator + segment.getFileName());
+                File oldFile = new File(logDataDir + File.separator + segment.getFileName());
                 oldFile.delete();
                 startLogIndexSegmentMap.remove(segment.getStartIndex());
             }
@@ -225,7 +225,7 @@ public class SegmentedLog {
                     totalSize -= segment.getFileSize();
                     // delete file
                     segment.getRandomAccessFile().close();
-                    String fullFileName = logDataDir + File.pathSeparator + segment.getFileName();
+                    String fullFileName = logDataDir + File.separator + segment.getFileName();
                     FileUtils.forceDelete(new File(fullFileName));
                     startLogIndexSegmentMap.remove(segment.getFileName());
                 } else if (newEndIndex < segment.getEndIndex()) {
@@ -240,11 +240,11 @@ public class SegmentedLog {
                     fileChannel.truncate(segment.getFileSize());
                     fileChannel.close();
                     segment.getRandomAccessFile().close();
-                    String oldFullFileName = logDataDir + File.pathSeparator + segment.getFileName();
+                    String oldFullFileName = logDataDir + File.separator + segment.getFileName();
                     String newFileName = String.format("%020d-%020d",
                             segment.getStartIndex(), segment.getEndIndex());
                     segment.setFileName(newFileName);
-                    String newFullFileName = logDataDir + File.pathSeparator + segment.getFileName();
+                    String newFullFileName = logDataDir + File.separator + segment.getFileName();
                     new File(oldFullFileName).renameTo(new File(newFullFileName));
                     segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, segment.getFileName(), "rw"));
                 }
@@ -315,7 +315,7 @@ public class SegmentedLog {
     }
 
     public Raft.LogMetaData readMetaData() {
-        String fileName = logDir + File.pathSeparator + "metadata";
+        String fileName = logDir + File.separator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
             Raft.LogMetaData metadata = RaftFileUtils.readProtoFromFile(randomAccessFile, Raft.LogMetaData.class);
@@ -339,7 +339,7 @@ public class SegmentedLog {
         }
         this.metaData = builder.build();
 
-        String fileName = logDir + File.pathSeparator + "metadata";
+        String fileName = logDir + File.separator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
             RaftFileUtils.writeProtoToFile(randomAccessFile, metaData);

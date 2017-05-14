@@ -28,168 +28,172 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.VoteResponse requestVote(Raft.VoteRequest request) {
+        LOG.info("Receive RequestVote request from server {} " +
+                        "in term {} (this server's term was {})",
+                request.getServerId(), request.getTerm(),
+                raftNode.getCurrentTerm());
         raftNode.getLock().lock();
-        Raft.VoteResponse.Builder responseBuilder = Raft.VoteResponse.newBuilder();
-        responseBuilder.setGranted(false);
-        responseBuilder.setTerm(raftNode.getCurrentTerm());
-        if (request.getTerm() < raftNode.getCurrentTerm()) {
-            raftNode.getLock().unlock();
-            return responseBuilder.build();
-        }
-        if (request.getTerm() > raftNode.getCurrentTerm()) {
-            LOG.info("Received RequestVote request from server {} " +
-                    "in term {} (this server's term was {})",
-                    request.getServerId(), request.getTerm(),
-                    raftNode.getCurrentTerm());
-            raftNode.stepDown(request.getTerm());
-        }
-        boolean logIsOk = request.getLastLogTerm() > raftNode.getRaftLog().getLastLogTerm()
-                || (request.getLastLogTerm() == raftNode.getRaftLog().getLastLogTerm()
-                && request.getLastLogIndex() >= raftNode.getRaftLog().getLastLogIndex());
-        if (raftNode.getVotedFor() == 0 || logIsOk) {
-            raftNode.stepDown(request.getTerm());
-            raftNode.setVotedFor(request.getServerId());
-            raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(), raftNode.getVotedFor(), null);
-            responseBuilder.setGranted(true);
+        try {
+            Raft.VoteResponse.Builder responseBuilder = Raft.VoteResponse.newBuilder();
+            responseBuilder.setGranted(false);
             responseBuilder.setTerm(raftNode.getCurrentTerm());
+            if (request.getTerm() < raftNode.getCurrentTerm()) {
+                return responseBuilder.build();
+            }
+            if (request.getTerm() > raftNode.getCurrentTerm()) {
+                raftNode.stepDown(request.getTerm());
+            }
+            boolean logIsOk = request.getLastLogTerm() > raftNode.getRaftLog().getLastLogTerm()
+                    || (request.getLastLogTerm() == raftNode.getRaftLog().getLastLogTerm()
+                    && request.getLastLogIndex() >= raftNode.getRaftLog().getLastLogIndex());
+            if (raftNode.getVotedFor() == 0 || logIsOk) {
+                raftNode.stepDown(request.getTerm());
+                raftNode.setVotedFor(request.getServerId());
+                raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(), raftNode.getVotedFor(), null);
+                responseBuilder.setGranted(true);
+                responseBuilder.setTerm(raftNode.getCurrentTerm());
+            }
+            return responseBuilder.build();
+        } finally {
+            raftNode.getLock().unlock();
         }
-        raftNode.getLock().unlock();
-        return responseBuilder.build();
     }
 
     @Override
     public Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request) {
+        LOG.info("Receive AppendEntries request from server {} " +
+                        "in term {} (this server's term was {})",
+                request.getServerId(), request.getTerm(),
+                raftNode.getCurrentTerm());
         raftNode.getLock().lock();
-        Raft.AppendEntriesResponse.Builder responseBuilder = Raft.AppendEntriesResponse.newBuilder();
-        responseBuilder.setTerm(raftNode.getCurrentTerm());
-        responseBuilder.setSuccess(false);
-        responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
-        if (request.getTerm() < raftNode.getCurrentTerm()) {
-            raftNode.getLock().unlock();
-            return responseBuilder.build();
-        }
-        if (request.getTerm() > raftNode.getCurrentTerm()) {
-            LOG.info("Received AppendEntries request from server {} " +
-                    "in term {} (this server's term was {})",
-                    request.getServerId(), request.getTerm(),
-                    raftNode.getCurrentTerm());
-            raftNode.stepDown(request.getTerm());
-        }
-        if (raftNode.getLeaderId() == 0) {
-            raftNode.setLeaderId(request.getServerId());
-        }
-
-        if (request.getPrevLogIndex() > raftNode.getRaftLog().getLastLogIndex()) {
-            LOG.debug("Rejecting AppendEntries RPC: would leave gap");
-            raftNode.getLock().unlock();
-            return responseBuilder.build();
-        }
-        if (request.getPrevLogIndex() >= raftNode.getRaftLog().getFirstLogIndex()
-                && raftNode.getRaftLog().getEntry(request.getPrevLogIndex()).getTerm()
-                != request.getPrevLogTerm()) {
-            LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
-            raftNode.getLock().unlock();
-            return responseBuilder.build();
-        }
-
-        responseBuilder.setSuccess(true);
-        List<Raft.LogEntry> entries = new ArrayList<>();
-        long index = request.getPrevLogIndex();
-        for (Raft.LogEntry entry : request.getEntriesList()) {
-            index++;
-            if (index < raftNode.getRaftLog().getFirstLogIndex()) {
-                continue;
+        try {
+            Raft.AppendEntriesResponse.Builder responseBuilder = Raft.AppendEntriesResponse.newBuilder();
+            responseBuilder.setTerm(raftNode.getCurrentTerm());
+            responseBuilder.setSuccess(false);
+            responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
+            if (request.getTerm() < raftNode.getCurrentTerm()) {
+                raftNode.getLock().unlock();
+                return responseBuilder.build();
             }
-            if (raftNode.getRaftLog().getLastLogIndex() >= index) {
-                if (raftNode.getRaftLog().getEntry(index).getTerm() == entry.getTerm()) {
+            if (request.getTerm() > raftNode.getCurrentTerm()) {
+                raftNode.stepDown(request.getTerm());
+            }
+            if (raftNode.getLeaderId() == 0) {
+                raftNode.setLeaderId(request.getServerId());
+            }
+
+            if (request.getPrevLogIndex() > raftNode.getRaftLog().getLastLogIndex()) {
+                LOG.debug("Rejecting AppendEntries RPC: would leave gap");
+                return responseBuilder.build();
+            }
+            if (request.getPrevLogIndex() >= raftNode.getRaftLog().getFirstLogIndex()
+                    && raftNode.getRaftLog().getEntry(request.getPrevLogIndex()).getTerm()
+                    != request.getPrevLogTerm()) {
+                LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
+                return responseBuilder.build();
+            }
+
+            responseBuilder.setSuccess(true);
+            List<Raft.LogEntry> entries = new ArrayList<>();
+            long index = request.getPrevLogIndex();
+            for (Raft.LogEntry entry : request.getEntriesList()) {
+                index++;
+                if (index < raftNode.getRaftLog().getFirstLogIndex()) {
                     continue;
                 }
-                // truncate segment log from index
-                long lastIndexKept = index - 1;
-                raftNode.getRaftLog().truncateSuffix(lastIndexKept);
+                if (raftNode.getRaftLog().getLastLogIndex() >= index) {
+                    if (raftNode.getRaftLog().getEntry(index).getTerm() == entry.getTerm()) {
+                        continue;
+                    }
+                    // truncate segment log from index
+                    long lastIndexKept = index - 1;
+                    raftNode.getRaftLog().truncateSuffix(lastIndexKept);
+                }
+                entries.add(entry);
             }
-            entries.add(entry);
-        }
-        raftNode.getRaftLog().append(entries);
-        responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
+            raftNode.getRaftLog().append(entries);
+            responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
 
-        if (raftNode.getCommitIndex() < request.getCommitIndex()) {
-            raftNode.setCommitIndex(request.getCommitIndex());
-            // apply state machine
-            for (index = raftNode.getLastAppliedIndex() + 1; index <= raftNode.getCommitIndex(); index++) {
-                raftNode.getStateMachine().apply(
-                        raftNode.getRaftLog().getEntry(index).getData().toByteArray());
+            if (raftNode.getCommitIndex() < request.getCommitIndex()) {
+                raftNode.setCommitIndex(request.getCommitIndex());
+                // apply state machine
+                for (index = raftNode.getLastAppliedIndex() + 1; index <= raftNode.getCommitIndex(); index++) {
+                    raftNode.getStateMachine().apply(
+                            raftNode.getRaftLog().getEntry(index).getData().toByteArray());
+                }
             }
+            return responseBuilder.build();
+        } finally {
+            raftNode.getLock().unlock();
         }
-
-        raftNode.getLock().unlock();
-        return responseBuilder.build();
     }
 
     @Override
     public Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request) {
+        LOG.info("Receive installSnapshot request, Caller({}) is stale. Our term is {}, theirs is {}",
+                request.getServerId(), raftNode.getCurrentTerm(), request.getTerm());
         raftNode.getLock().lock();
-        Raft.InstallSnapshotResponse.Builder responseBuilder = Raft.InstallSnapshotResponse.newBuilder();
-        responseBuilder.setTerm(raftNode.getCurrentTerm());
-        if (request.getTerm() < raftNode.getCurrentTerm()) {
-            LOG.info("Caller({}) is stale. Our term is {}, theirs is {}",
-                    request.getServerId(), raftNode.getCurrentTerm(), request.getTerm());
-            raftNode.getLock().unlock();
-            return responseBuilder.build();
-        }
-        raftNode.stepDown(request.getTerm());
-        if (raftNode.getLeaderId() == 0) {
-            raftNode.setLeaderId(request.getServerId());
-        }
-
-        // write snapshot data to local
-        String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
-        File file = new File(tmpSnapshotDir);
-        if (file.exists() && request.getIsFirst()) {
-            file.delete();
-            file.mkdir();
-        }
-        if (request.getIsFirst()) {
-            raftNode.getSnapshot().updateMetaData(tmpSnapshotDir,
-                    request.getSnapshotMetaData().getLastIncludedIndex(),
-                    request.getSnapshotMetaData().getLastIncludedTerm());
-        }
-        // write to file
-        RandomAccessFile randomAccessFile = null;
         try {
-            String currentDataFileName = tmpSnapshotDir + File.pathSeparator
-                    + "data" + File.pathSeparator + request.getFileName();
-            File currentDataFile = new File(currentDataFileName);
-            if (!currentDataFile.exists()) {
-                currentDataFile.createNewFile();
+            Raft.InstallSnapshotResponse.Builder responseBuilder = Raft.InstallSnapshotResponse.newBuilder();
+            responseBuilder.setTerm(raftNode.getCurrentTerm());
+            if (request.getTerm() < raftNode.getCurrentTerm()) {
+                return responseBuilder.build();
             }
-            randomAccessFile = RaftFileUtils.openFile(
-                    tmpSnapshotDir + File.pathSeparator + "data",
-                    request.getFileName(), "rw");
-            randomAccessFile.skipBytes((int) request.getOffset());
-            randomAccessFile.write(request.getData().toByteArray());
-            if (randomAccessFile != null) {
-                try {
-                    randomAccessFile.close();
-                    randomAccessFile = null;
-                } catch (Exception ex2) {
-                    LOG.warn("close failed");
+            raftNode.stepDown(request.getTerm());
+            if (raftNode.getLeaderId() == 0) {
+                raftNode.setLeaderId(request.getServerId());
+            }
+
+            // write snapshot data to local
+            String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
+            File file = new File(tmpSnapshotDir);
+            if (file.exists() && request.getIsFirst()) {
+                file.delete();
+                file.mkdir();
+            }
+            if (request.getIsFirst()) {
+                raftNode.getSnapshot().updateMetaData(tmpSnapshotDir,
+                        request.getSnapshotMetaData().getLastIncludedIndex(),
+                        request.getSnapshotMetaData().getLastIncludedTerm());
+            }
+            // write to file
+            RandomAccessFile randomAccessFile = null;
+            try {
+                String currentDataFileName = tmpSnapshotDir + File.separator
+                        + "data" + File.separator + request.getFileName();
+                File currentDataFile = new File(currentDataFileName);
+                if (!currentDataFile.exists()) {
+                    currentDataFile.createNewFile();
                 }
+                randomAccessFile = RaftFileUtils.openFile(
+                        tmpSnapshotDir + File.separator + "data",
+                        request.getFileName(), "rw");
+                randomAccessFile.skipBytes((int) request.getOffset());
+                randomAccessFile.write(request.getData().toByteArray());
+                if (randomAccessFile != null) {
+                    try {
+                        randomAccessFile.close();
+                        randomAccessFile = null;
+                    } catch (Exception ex2) {
+                        LOG.warn("close failed");
+                    }
+                }
+                // move tmp dir to snapshot dir if this is the last package
+                File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
+                if (snapshotDirFile.exists()) {
+                    snapshotDirFile.delete();
+                }
+                FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
+                responseBuilder.setSuccess(true);
+            } catch (IOException ex) {
+                LOG.warn("io exception, msg={}", ex.getMessage());
+            } finally {
+                RaftFileUtils.closeFile(randomAccessFile);
             }
-            // move tmp dir to snapshot dir if this is the last package
-            File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
-            if (snapshotDirFile.exists()) {
-                snapshotDirFile.delete();
-            }
-            FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
-            responseBuilder.setSuccess(true);
-        } catch (IOException ex) {
-            LOG.warn("io exception, msg={}", ex.getMessage());
+            return responseBuilder.build();
         } finally {
-            RaftFileUtils.closeFile(randomAccessFile);
+            raftNode.getLock().unlock();
         }
-        raftNode.getLock().unlock();
-        return responseBuilder.build();
     }
 
 }

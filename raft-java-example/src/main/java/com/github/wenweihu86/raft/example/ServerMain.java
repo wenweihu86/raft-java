@@ -23,6 +23,7 @@ public class ServerMain {
         String servers = args[0];
         String[] splitArray = servers.split(";");
         List<ServerAddress> serverAddressList = new ArrayList<>();
+        ServerAddress localServer = null;
         for (String serverString : splitArray) {
             String[] splitServer = serverString.split(":");
             String host = splitServer[0];
@@ -30,9 +31,12 @@ public class ServerMain {
             Integer serverId = Integer.parseInt(splitServer[2]);
             ServerAddress serverAddress = new ServerAddress(serverId, host, port);
             serverAddressList.add(serverAddress);
+            if (serverId.equals(localServerId)) {
+                localServer = new ServerAddress(serverId, host, port);
+            }
         }
 
-        RPCServer server = new RPCServer(8050);
+        RPCServer server = new RPCServer(localServer.getPort());
 
         ExampleStateMachine stateMachine = new ExampleStateMachine();
         RaftNode raftNode = new RaftNode(localServerId, serverAddressList, stateMachine);
@@ -43,5 +47,6 @@ public class ServerMain {
         server.registerService(exampleService);
 
         server.start();
+        raftNode.init();
     }
 }
