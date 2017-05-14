@@ -3,7 +3,7 @@ package com.github.wenweihu86.raft;
 /**
  * Created by wenweihu86 on 2017/5/2.
  */
-public class RaftOption {
+public class RaftOptions {
 
     // A follower would become a candidate if it doesn't receive any message
     // from the leader in electionTimeoutMs milliseconds

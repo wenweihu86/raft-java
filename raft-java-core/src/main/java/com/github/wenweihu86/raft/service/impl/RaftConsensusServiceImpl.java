@@ -128,10 +128,9 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request) {
+        raftNode.getLock().lock();
         Raft.InstallSnapshotResponse.Builder responseBuilder = Raft.InstallSnapshotResponse.newBuilder();
         responseBuilder.setTerm(raftNode.getCurrentTerm());
-
-        raftNode.getLock().lock();
         if (request.getTerm() < raftNode.getCurrentTerm()) {
             LOG.info("Caller({}) is stale. Our term is {}, theirs is {}",
                     request.getServerId(), raftNode.getCurrentTerm(), request.getTerm());
@@ -142,7 +141,6 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         if (raftNode.getLeaderId() == 0) {
             raftNode.setLeaderId(request.getServerId());
         }
-        raftNode.getLock().unlock();
 
         // write snapshot data to local
         String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
@@ -190,6 +188,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         } finally {
             RaftFileUtils.closeFile(randomAccessFile);
         }
+        raftNode.getLock().unlock();
         return responseBuilder.build();
     }
 

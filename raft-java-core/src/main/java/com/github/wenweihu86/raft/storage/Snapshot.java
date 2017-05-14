@@ -1,6 +1,6 @@
 package com.github.wenweihu86.raft.storage;
 
-import com.github.wenweihu86.raft.RaftOption;
+import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class Snapshot {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
-    private String snapshotDir = RaftOption.dataDir + File.pathSeparator + "snapshot";
+    private String snapshotDir = RaftOptions.dataDir + File.pathSeparator + "snapshot";
     private Raft.SnapshotMetaData metaData;
     private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
 

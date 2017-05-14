@@ -93,12 +93,14 @@ public class RaftNode {
             public void run() {
                 takeSnapshot();
             }
-        }, RaftOption.snapshotPeriodSeconds, TimeUnit.SECONDS);
+        }, RaftOptions.snapshotPeriodSeconds, TimeUnit.SECONDS);
         // start election
         startNewElection();
     }
 
-    public void resetElectionTimer() {
+    // election timer, request vote
+    // in lock
+    private void resetElectionTimer() {
         if (electionScheduledFuture != null && !electionScheduledFuture.isDone()) {
             electionScheduledFuture.cancel(true);
         }
@@ -110,8 +112,16 @@ public class RaftNode {
         }, getElectionTimeoutMs(), TimeUnit.MILLISECONDS);
     }
 
+    private int getElectionTimeoutMs() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int randomElectionTimeout = RaftOptions.electionTimeoutMilliseconds
+                + random.nextInt(0, RaftOptions.electionTimeoutMilliseconds);
+        return randomElectionTimeout;
+    }
+
     // 开始新的选举，对candidate有效
-    public void startNewElection() {
+    private void startNewElection() {
+        lock.lock();
         currentTerm++;
         LOG.info("Running for election in term {}", currentTerm);
         state = NodeState.STATE_CANDIDATE;
@@ -124,45 +134,20 @@ public class RaftNode {
                     requestVote(peer);
                 }
             });
-            peer.setElectionFuture(electionFuture);
         }
         resetElectionTimer();
+        lock.unlock();
     }
 
-    public void resetHeartbeatTimer() {
-        if (heartbeatScheduledFuture != null && !heartbeatScheduledFuture.isDone()) {
-            heartbeatScheduledFuture.cancel(true);
-        }
-        heartbeatScheduledFuture = scheduledExecutorService.schedule(new Runnable() {
-            @Override
-            public void run() {
-                startNewHeartbeat();
-            }
-        }, RaftOption.heartbeatPeriodMilliseconds, TimeUnit.MILLISECONDS);
-    }
-
-    // 开始心跳，对leader有效
-    public void startNewHeartbeat() {
-        LOG.info("start new heartbeat");
-        for (final Peer peer : peers) {
-            Future heartbeatFuture = executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    appendEntries(peer);
-                }
-            });
-            peer.setHeartbeatFuture(heartbeatFuture);
-        }
-        resetHeartbeatTimer();
-    }
-
-    public void requestVote(Peer peer) {
+    private void requestVote(Peer peer) {
+        lock.lock();
         peer.setVoteGranted(false);
         Raft.VoteRequest request = Raft.VoteRequest.newBuilder()
                 .setServerId(localServer.getServerId())
                 .setTerm(currentTerm)
                 .setLastLogIndex(raftLog.getLastLogIndex())
                 .setLastLogTerm(raftLog.getLastLogTerm()).build();
+        lock.unlock();
         peer.getRpcClient().asyncCall(
                 "RaftConsensusService.requestVote", request,
                 new VoteResponseCallback(peer));
@@ -177,6 +162,7 @@ public class RaftNode {
 
         @Override
         public void success(Raft.VoteResponse response) {
+            lock.lock();
             if (response.getTerm() > currentTerm) {
                 LOG.info("Received RequestVote response from server {} " +
                                 "in term {} (this server's term was {})",
@@ -203,6 +189,7 @@ public class RaftNode {
                             peer.getServerAddress().getServerId(), currentTerm);
                 }
             }
+            lock.unlock();
         }
 
         @Override
@@ -214,15 +201,52 @@ public class RaftNode {
 
     }
 
-    public void appendEntries(Peer peer) {
+    // in lock
+    private void becomeLeader() {
+        state = NodeState.STATE_LEADER;
+        leaderId = localServer.getServerId();
+        // start heartbeat timer
+        resetHeartbeatTimer();
+    }
+
+    // heartbeat timer, append entries
+    private void resetHeartbeatTimer() {
+        if (heartbeatScheduledFuture != null && !heartbeatScheduledFuture.isDone()) {
+            heartbeatScheduledFuture.cancel(true);
+        }
+        heartbeatScheduledFuture = scheduledExecutorService.schedule(new Runnable() {
+            @Override
+            public void run() {
+                startNewHeartbeat();
+            }
+        }, RaftOptions.heartbeatPeriodMilliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    // 开始心跳，对leader有效
+    private void startNewHeartbeat() {
+        LOG.info("start new heartbeat");
+        for (final Peer peer : peers) {
+            Future heartbeatFuture = executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    appendEntries(peer);
+                }
+            });
+        }
+        resetHeartbeatTimer();
+    }
+
+    private void appendEntries(Peer peer) {
+        lock.lock();
         long firstLogIndex = raftLog.getFirstLogIndex();
         if (peer.getNextIndex() < firstLogIndex) {
             installSnapshot(peer);
+            lock.unlock();
             return;
         }
 
         long prevLogIndex = peer.getNextIndex() - 1;
-        long prevLogTerm = 0;
+        long prevLogTerm;
         if (prevLogIndex >= firstLogIndex) {
             prevLogTerm = raftLog.getEntry(prevLogIndex).getTerm();
         } else if (prevLogIndex == 0) {
@@ -231,6 +255,7 @@ public class RaftNode {
             prevLogTerm = snapshot.getMetaData().getLastIncludedTerm();
         } else {
             installSnapshot(peer);
+            lock.unlock();
             return;
         }
 
@@ -248,6 +273,7 @@ public class RaftNode {
             LOG.warn("appendEntries with peer[{}:{}] failed",
                     peer.getServerAddress().getHost(),
                     peer.getServerAddress().getPort());
+            lock.unlock();
             return;
         }
         if (response.getTerm() > currentTerm) {
@@ -271,9 +297,11 @@ public class RaftNode {
                 }
             }
         }
+        lock.unlock();
     }
 
-    public void advanceCommitIndex() {
+    // in lock
+    private void advanceCommitIndex() {
         // 获取quorum matchIndex
         int peerNum = peers.size();
         long[] matchIndexes = new long[peerNum + 1];
@@ -287,7 +315,6 @@ public class RaftNode {
             return;
         }
 
-        lock.lock();
         if (commitIndex >= newCommitIndex) {
             return;
         }
@@ -300,12 +327,12 @@ public class RaftNode {
         }
         lastAppliedIndex = commitIndex;
         commitIndexCondition.signalAll();
-        lock.unlock();
     }
 
-    public long packEntries(long nextIndex, Raft.AppendEntriesRequest.Builder requestBuilder) {
+    // in lock
+    private long packEntries(long nextIndex, Raft.AppendEntriesRequest.Builder requestBuilder) {
         long lastIndex = Math.min(raftLog.getLastLogIndex(),
-                nextIndex + RaftOption.maxLogEntriesPerRequest - 1);
+                nextIndex + RaftOptions.maxLogEntriesPerRequest - 1);
         for (long index = nextIndex; index <= lastIndex; index++) {
             Raft.LogEntry entry = raftLog.getEntry(index);
             requestBuilder.addEntries(entry);
@@ -313,7 +340,8 @@ public class RaftNode {
         return lastIndex - nextIndex + 1;
     }
 
-    public void installSnapshot(Peer peer) {
+    // in lock
+    private void installSnapshot(Peer peer) {
         Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
         requestBuilder.setServerId(localServer.getServerId());
         requestBuilder.setTerm(currentTerm);
@@ -323,7 +351,6 @@ public class RaftNode {
         peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
                 request, new InstallSnapshotResponseCallback(peer, request));
         isSnapshoting = true;
-
     }
 
     private class InstallSnapshotResponseCallback implements RPCCallback<Raft.InstallSnapshotResponse> {
@@ -337,6 +364,7 @@ public class RaftNode {
 
         @Override
         public void success(Raft.InstallSnapshotResponse response) {
+            lock.lock();
             TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
             Snapshot.SnapshotDataFile lastDataFile = snapshotDataFileMap.get(request.getFileName());
             if (request.getIsLast() == true) {
@@ -349,15 +377,19 @@ public class RaftNode {
                 peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
                         currentRequest, new InstallSnapshotResponseCallback(peer, currentRequest));
             }
+            lock.unlock();
         }
 
         @Override
         public void fail(Throwable e) {
             LOG.warn("install snapshot failed, msg={}", e.getMessage());
+            lock.lock();
             isSnapshoting = false;
+            lock.unlock();
         }
     }
 
+    // in lock
     private Raft.InstallSnapshotRequest buildInstallSnapshotRequest(
             String lastFileName, long lastOffset, long lastLength) {
         Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
@@ -372,10 +404,10 @@ public class RaftNode {
             long lastFileLength = lastFile.randomAccessFile.length();
             String currentFileName = lastFileName;
             long currentOffset = lastOffset + lastLength;
-            int currentDataSize = RaftOption.maxSnapshotBytesPerRequest;
+            int currentDataSize = RaftOptions.maxSnapshotBytesPerRequest;
             Snapshot.SnapshotDataFile currentDataFile = lastFile;
             if (lastOffset + lastLength < lastFileLength) {
-                if (lastOffset + lastLength + RaftOption.maxSnapshotBytesPerRequest > lastFileLength) {
+                if (lastOffset + lastLength + RaftOptions.maxSnapshotBytesPerRequest > lastFileLength) {
                     currentDataSize = (int) (lastFileLength - (lastOffset + lastLength));
                 }
             } else {
@@ -388,7 +420,7 @@ public class RaftNode {
                 currentFileName = currentEntry.getKey();
                 currentOffset = 0;
                 int currentFileLenght = (int) currentEntry.getValue().randomAccessFile.length();
-                if (currentFileLenght < RaftOption.maxSnapshotBytesPerRequest) {
+                if (currentFileLenght < RaftOptions.maxSnapshotBytesPerRequest) {
                     currentDataSize = currentFileLenght;
                 }
             }
@@ -417,13 +449,7 @@ public class RaftNode {
         }
     }
 
-    public void becomeLeader() {
-        state = NodeState.STATE_LEADER;
-        leaderId = localServer.getServerId();
-        // start heartbeat timer
-        resetHeartbeatTimer();
-    }
-
+    // in lock
     public void stepDown(long newTerm) {
         if (currentTerm > newTerm) {
             LOG.error("can't be happened");
@@ -439,15 +465,9 @@ public class RaftNode {
         resetElectionTimer();
     }
 
-    public int getElectionTimeoutMs() {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        int randomElectionTimeout = RaftOption.electionTimeoutMilliseconds
-                + random.nextInt(0, RaftOption.electionTimeoutMilliseconds);
-        return randomElectionTimeout;
-    }
-
     // client set command
     public void replicate(byte[] data) {
+        lock.lock();
         Raft.LogEntry logEntry = Raft.LogEntry.newBuilder()
                 .setTerm(currentTerm)
                 .setType(Raft.EntryType.ENTRY_TYPE_DATA)
@@ -465,7 +485,6 @@ public class RaftNode {
         }
         // sync wait condition commitIndex >= newLastLogIndex
         // TODO: add timeout
-        lock.lock();
         try {
             while (commitIndex < newLastLogIndex) {
                 try {
@@ -479,11 +498,14 @@ public class RaftNode {
         }
     }
 
-    public void takeSnapshot() {
-        if (raftLog.getTotalSize() < RaftOption.snapshotMinLogSize) {
+    private void takeSnapshot() {
+        lock.lock();
+        if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
+            lock.unlock();
             return;
         }
         if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
+            lock.unlock();
             return;
         }
         long lastAppliedTerm = 0;
@@ -505,6 +527,7 @@ public class RaftNode {
                 LOG.warn("move direct failed, msg={}", ex.getMessage());
             }
         }
+        lock.unlock();
     }
 
     public Lock getLock() {

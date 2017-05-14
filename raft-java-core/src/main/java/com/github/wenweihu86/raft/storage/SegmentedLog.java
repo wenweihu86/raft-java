@@ -1,6 +1,6 @@
 package com.github.wenweihu86.raft.storage;
 
-import com.github.wenweihu86.raft.RaftOption;
+import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
 import com.github.wenweihu86.raft.proto.Raft;
 import org.apache.commons.io.FileUtils;
@@ -21,14 +21,15 @@ public class SegmentedLog {
 
     private static Logger LOG = LoggerFactory.getLogger(SegmentedLog.class);
 
-    private String logDir = RaftOption.dataDir + File.pathSeparator + "log";
+    private String logDir = RaftOptions.dataDir + File.pathSeparator + "log";
+    private String logDataDir = logDir + File.pathSeparator + "data";
     private Raft.LogMetaData metaData;
     private TreeMap<Long, Segment> startLogIndexSegmentMap = new TreeMap<>();
     // segment log占用的内存大小，用于判断是否需要做snapshot
     private volatile long totalSize;
 
     public SegmentedLog() {
-        File file = new File(logDir);
+        File file = new File(logDataDir);
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -94,7 +95,7 @@ public class SegmentedLog {
                     Segment segment = startLogIndexSegmentMap.lastEntry().getValue();
                     if (!segment.isCanWrite()) {
                         isNeedNewSegmentFile = true;
-                    } else if (segment.getFileSize() + entrySize >= RaftOption.maxSegmentFileSize) {
+                    } else if (segment.getFileSize() + entrySize >= RaftOptions.maxSegmentFileSize) {
                         isNeedNewSegmentFile = true;
                         // 最后一个segment的文件close并改名
                         segment.getRandomAccessFile().close();
@@ -106,7 +107,7 @@ public class SegmentedLog {
                         File oldFile = new File(segment.getFileName());
                         oldFile.renameTo(newFile);
                         segment.setFileName(newFileName);
-                        segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, newFileName, "r"));
+                        segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, newFileName, "r"));
                     }
                 }
                 Segment newSegment = startLogIndexSegmentMap.lastEntry().getValue();
@@ -123,7 +124,7 @@ public class SegmentedLog {
                     segment.setStartIndex(newLastLogIndex);
                     segment.setEndIndex(0);
                     segment.setFileName(newSegmentFileName);
-                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, newSegmentFileName, "rw"));
+                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, newSegmentFileName, "rw"));
                     newSegment = segment;
                 }
                 // 写proto到segment中
@@ -177,12 +178,12 @@ public class SegmentedLog {
                 FileInputStream oldFileStream = null;
                 FileOutputStream newFileStream = null;
                 try {
-                    File oldFile = new File(logDir + File.pathSeparator + segment.getFileName());
+                    File oldFile = new File(logDataDir + File.pathSeparator + segment.getFileName());
                     oldFileStream = new FileInputStream(oldFile);
 
                     String newFileName = String.format("%020d-%020d",
                             segment.getStartIndex(), segment.getEndIndex());
-                    File newFile = new File(logDir + File.separator + newFileName);
+                    File newFile = new File(logDataDir + File.separator + newFileName);
                     newFile.createNewFile();
                     newFileStream = new FileOutputStream(newFile);
 
@@ -191,7 +192,7 @@ public class SegmentedLog {
                     segment.setFileName(newFileName);
                     RaftFileUtils.closeFile(segment.getRandomAccessFile());
                     oldFile.delete();
-                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, segment.getFileName(), "rw"));
+                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, segment.getFileName(), "rw"));
                     segment.setCanWrite(false);
                 } catch (Exception ex) {
                     LOG.warn("exception, msg={}", ex.getMessage());
@@ -201,7 +202,7 @@ public class SegmentedLog {
                 }
                 break;
             } else if (newFirstIndex > segment.getEndIndex()){
-                File oldFile = new File(logDir + File.pathSeparator + segment.getFileName());
+                File oldFile = new File(logDataDir + File.pathSeparator + segment.getFileName());
                 oldFile.delete();
                 startLogIndexSegmentMap.remove(segment.getStartIndex());
             }
@@ -224,7 +225,7 @@ public class SegmentedLog {
                     totalSize -= segment.getFileSize();
                     // delete file
                     segment.getRandomAccessFile().close();
-                    String fullFileName = logDir + File.pathSeparator + segment.getFileName();
+                    String fullFileName = logDataDir + File.pathSeparator + segment.getFileName();
                     FileUtils.forceDelete(new File(fullFileName));
                     startLogIndexSegmentMap.remove(segment.getFileName());
                 } else if (newEndIndex < segment.getEndIndex()) {
@@ -239,13 +240,13 @@ public class SegmentedLog {
                     fileChannel.truncate(segment.getFileSize());
                     fileChannel.close();
                     segment.getRandomAccessFile().close();
-                    String oldFullFileName = logDir + File.pathSeparator + segment.getFileName();
+                    String oldFullFileName = logDataDir + File.pathSeparator + segment.getFileName();
                     String newFileName = String.format("%020d-%020d",
                             segment.getStartIndex(), segment.getEndIndex());
                     segment.setFileName(newFileName);
-                    String newFullFileName = logDir + File.pathSeparator + segment.getFileName();
+                    String newFullFileName = logDataDir + File.pathSeparator + segment.getFileName();
                     new File(oldFullFileName).renameTo(new File(newFullFileName));
-                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, segment.getFileName(), "rw"));
+                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, segment.getFileName(), "rw"));
                 }
             } catch (IOException ex) {
                 LOG.warn("io exception, msg={}", ex.getMessage());
@@ -278,11 +279,8 @@ public class SegmentedLog {
     }
 
     public void readSegments() {
-        List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(logDir);
+        List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(logDataDir);
         for (String fileName: fileNames) {
-            if (fileName.equals("metadata")) {
-                continue;
-            }
             String[] splitArray = fileName.split("-");
             if (splitArray.length != 2) {
                 LOG.warn("segment filename[{}] is not valid", fileName);
@@ -305,7 +303,7 @@ public class SegmentedLog {
                         continue;
                     }
                 }
-                segment.setRandomAccessFile(RaftFileUtils.openFile(logDir, fileName, "r"));
+                segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, fileName, "r"));
                 segment.setFileSize(segment.getRandomAccessFile().length());
                 startLogIndexSegmentMap.put(segment.getStartIndex(), segment);
             } catch (IOException ioException) {
@@ -314,10 +312,6 @@ public class SegmentedLog {
                 throw new RuntimeException("open segment file error");
             }
         }
-    }
-
-    public Raft.LogMetaData getMetaData() {
-        return metaData;
     }
 
     public Raft.LogMetaData readMetaData() {
@@ -352,6 +346,10 @@ public class SegmentedLog {
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
         }
+    }
+
+    public Raft.LogMetaData getMetaData() {
+        return metaData;
     }
 
     public long getTotalSize() {

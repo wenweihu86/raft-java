@@ -4,14 +4,10 @@ import com.github.wenweihu86.raft.service.RaftConsensusService;
 import com.github.wenweihu86.rpc.client.RPCClient;
 import com.github.wenweihu86.rpc.client.RPCProxy;
 
-import java.util.concurrent.Future;
-
 /**
  * Created by wenweihu86 on 2017/5/5.
  */
 public class Peer {
-
-    private RaftNode raftNode;
     private ServerAddress serverAddress;
     private RPCClient rpcClient;
     private RaftConsensusService raftConsensusService;
@@ -19,12 +15,7 @@ public class Peer {
     private long nextIndex;
     // 已复制日志的最高索引值
     private long matchIndex;
-    private String lastSnapshotFileName;
-    private long lastSnapshotFileOffset;
-    private long lastSnapshotIndex;
     private volatile boolean voteGranted;
-    private Future electionFuture;
-    private Future heartbeatFuture;
 
     public Peer(ServerAddress serverAddress) {
         this.serverAddress = serverAddress;
@@ -36,16 +27,8 @@ public class Peer {
         return serverAddress;
     }
 
-    public void setServerAddress(ServerAddress serverAddress) {
-        this.serverAddress = serverAddress;
-    }
-
     public RPCClient getRpcClient() {
         return rpcClient;
-    }
-
-    public void setRpcClient(RPCClient rpcClient) {
-        this.rpcClient = rpcClient;
     }
 
     public RaftConsensusService getRaftConsensusService() {
@@ -68,30 +51,6 @@ public class Peer {
         this.matchIndex = matchIndex;
     }
 
-    public String getLastSnapshotFileName() {
-        return lastSnapshotFileName;
-    }
-
-    public void setLastSnapshotFileName(String lastSnapshotFileName) {
-        this.lastSnapshotFileName = lastSnapshotFileName;
-    }
-
-    public long getLastSnapshotFileOffset() {
-        return lastSnapshotFileOffset;
-    }
-
-    public void setLastSnapshotFileOffset(long lastSnapshotFileOffset) {
-        this.lastSnapshotFileOffset = lastSnapshotFileOffset;
-    }
-
-    public long getLastSnapshotIndex() {
-        return lastSnapshotIndex;
-    }
-
-    public void setLastSnapshotIndex(long lastSnapshotIndex) {
-        this.lastSnapshotIndex = lastSnapshotIndex;
-    }
-
     public boolean isVoteGranted() {
         return voteGranted;
     }
@@ -100,19 +59,4 @@ public class Peer {
         this.voteGranted = voteGranted;
     }
 
-    public Future getElectionFuture() {
-        return electionFuture;
-    }
-
-    public void setElectionFuture(Future electionFuture) {
-        this.electionFuture = electionFuture;
-    }
-
-    public Future getHeartbeatFuture() {
-        return heartbeatFuture;
-    }
-
-    public void setHeartbeatFuture(Future heartbeatFuture) {
-        this.heartbeatFuture = heartbeatFuture;
-    }
 }

@@ -1,6 +1,6 @@
 package com.github.wenweihu86.raft.example;
 
-import com.github.wenweihu86.raft.RaftOption;
+import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.StateMachine;
 import com.github.wenweihu86.raft.example.service.Example;
 import org.apache.commons.io.FileUtils;
@@ -42,7 +42,7 @@ public class ExampleStateMachine implements StateMachine {
     public void readSnapshot(String snapshotDir) {
         try {
             // copy snapshot dir to data dir
-            String dataDir = RaftOption.dataDir + File.pathSeparator + "rocksdb_data";
+            String dataDir = RaftOptions.dataDir + File.pathSeparator + "rocksdb_data";
             File dataFile = new File(dataDir);
             if (dataFile.exists()) {
                 FileUtils.deleteDirectory(dataFile);
