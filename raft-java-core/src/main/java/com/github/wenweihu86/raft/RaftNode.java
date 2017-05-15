@@ -203,10 +203,11 @@ public class RaftNode {
             requestBuilder.setServerId(localServer.getServerId())
                     .setTerm(currentTerm)
                     .setLastLogIndex(raftLog.getLastLogIndex())
-                    .setLastLogTerm(raftLog.getLastLogTerm()).build();
+                    .setLastLogTerm(raftLog.getLastLogTerm());
         } finally {
             lock.unlock();
         }
+
         peer.getRpcClient().asyncCall(
                 "RaftConsensusService.requestVote", requestBuilder.build(),
                 new VoteResponseCallback(peer));
@@ -223,6 +224,7 @@ public class RaftNode {
         public void success(Raft.VoteResponse response) {
             lock.lock();
             try {
+                peer.setVoteGranted(response.getGranted());
                 if (response.getTerm() > currentTerm) {
                     LOG.info("Received RequestVote response from server {} " +
                                     "in term {} (this server's term was {})",
@@ -236,10 +238,11 @@ public class RaftNode {
                                 peer.getServerAddress().getServerId(), currentTerm);
                         int voteGrantedNum = 1;
                         for (Peer peer1 : peers) {
-                            if (peer1.isVoteGranted() == true) {
+                            if (peer1.isVoteGranted() != null && peer1.isVoteGranted() == true) {
                                 voteGrantedNum += 1;
                             }
                         }
+                        LOG.info("voteGrantedNum={}", voteGrantedNum);
                         if (voteGrantedNum > (peers.size() + 1) / 2) {
                             LOG.info("Got majority vote, serverId={} become leader", localServer.getServerId());
                             becomeLeader();
@@ -248,16 +251,9 @@ public class RaftNode {
                         LOG.info("Vote denied by server {} for term {}",
                                 peer.getServerAddress().getServerId(), currentTerm);
                     }
-
-                    int responseNum = 0;
-                    for (Peer peer1 : peers) {
-                        if (peer1.isVoteGranted() != null) {
-                            responseNum++;
-                        }
-                    }
-                    if (responseNum == peers.size()) {
-                        isInElection = false;
-                    }
+                }
+                if (isElectionFinish()) {
+                    isInElection = false;
                 }
             } finally {
                 lock.unlock();
@@ -269,8 +265,24 @@ public class RaftNode {
             LOG.warn("requestVote with peer[{}:{}] failed",
                     peer.getServerAddress().getHost(),
                     peer.getServerAddress().getPort());
+            peer.setVoteGranted(new Boolean(false));
+            if (isElectionFinish()) {
+                isInElection = false;
+            }
         }
 
+        private boolean isElectionFinish() {
+            int responseNum = 0;
+            for (Peer peer1 : peers) {
+                if (peer1.isVoteGranted() != null) {
+                    responseNum++;
+                }
+            }
+            if (responseNum == peers.size()) {
+                return true;
+            }
+            return false;
+        }
     }
 
     // in lock

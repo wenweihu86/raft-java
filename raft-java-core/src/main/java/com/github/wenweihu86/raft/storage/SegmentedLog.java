@@ -51,7 +51,7 @@ public class SegmentedLog {
     public Raft.LogEntry getEntry(long index) {
         long firstLogIndex = getFirstLogIndex();
         long lastLogIndex = getLastLogIndex();
-        if (index < firstLogIndex || index > lastLogIndex) {
+        if (index == 0 || index < firstLogIndex || index > lastLogIndex) {
             LOG.warn("index out of range, index={}, firstLogIndex={}, lastLogIndex={}",
                     index, firstLogIndex, lastLogIndex);
             return null;
@@ -78,6 +78,9 @@ public class SegmentedLog {
 
     public long getLastLogTerm() {
         long lastLogIndex = this.getLastLogIndex();
+        if (lastLogIndex == 0) {
+            return 0;
+        }
         return this.getEntry(lastLogIndex).getTerm();
     }
 
