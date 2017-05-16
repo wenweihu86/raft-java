@@ -46,7 +46,6 @@ public class RaftNode {
     private volatile long lastAppliedIndex;
     private volatile boolean isInSnapshot;
     private volatile boolean isInElection;
-    private volatile boolean isInAppendEntries;
 
     private Lock lock = new ReentrantLock();
     private Condition commitIndexCondition = lock.newCondition();
@@ -74,7 +73,8 @@ public class RaftNode {
         votedFor = raftLog.getMetaData().getVotedFor();
         commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
         // discard old log entries
-        if (raftLog.getFirstLogIndex() <= snapshot.getMetaData().getLastIncludedIndex()) {
+        if (snapshot.getMetaData().getLastIncludedIndex() > 0
+                && raftLog.getFirstLogIndex() <= snapshot.getMetaData().getLastIncludedIndex()) {
             raftLog.truncatePrefix(snapshot.getMetaData().getLastIncludedIndex() + 1);
         }
         // apply state machine
@@ -160,6 +160,7 @@ public class RaftNode {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int randomElectionTimeout = RaftOptions.electionTimeoutMilliseconds
                 + random.nextInt(0, RaftOptions.electionTimeoutMilliseconds);
+        LOG.info("new election time is after {} ms", randomElectionTimeout);
         return randomElectionTimeout;
     }
 
@@ -225,6 +226,10 @@ public class RaftNode {
             lock.lock();
             try {
                 peer.setVoteGranted(response.getGranted());
+                if (currentTerm != response.getTerm() || state != NodeState.STATE_CANDIDATE) {
+                    LOG.info("ignore requestVote RPC result");
+                    return;
+                }
                 if (response.getTerm() > currentTerm) {
                     LOG.info("Received RequestVote response from server {} " +
                                     "in term {} (this server's term was {})",
@@ -289,8 +294,9 @@ public class RaftNode {
     private void becomeLeader() {
         state = NodeState.STATE_LEADER;
         leaderId = localServer.getServerId();
+        isInElection = false;
         // start heartbeat timer
-        resetHeartbeatTimer();
+        startNewHeartbeat();
     }
 
     // heartbeat timer, append entries
@@ -307,13 +313,8 @@ public class RaftNode {
         }, RaftOptions.heartbeatPeriodMilliseconds, TimeUnit.MILLISECONDS);
     }
 
-    // 开始心跳，对leader有效
+    // in lock, 开始心跳，对leader有效
     private void startNewHeartbeat() {
-        if (isInAppendEntries) {
-            LOG.info("already in AppendEntries, ignore current timer");
-            resetHeartbeatTimer();
-            return;
-        }
         LOG.info("start new heartbeat");
         for (final Peer peer : peers) {
             executorService.submit(new Runnable() {
@@ -332,7 +333,6 @@ public class RaftNode {
         long numEntries;
         lock.lock();
         try {
-            isInAppendEntries = true;
             long firstLogIndex = raftLog.getFirstLogIndex();
             if (peer.getNextIndex() < firstLogIndex) {
                 installSnapshot(peer);
@@ -394,7 +394,6 @@ public class RaftNode {
                     }
                 }
             }
-            isInAppendEntries = false;
         } finally {
             lock.unlock();
         }
@@ -442,6 +441,7 @@ public class RaftNode {
 
     // in lock
     private void installSnapshot(Peer peer) {
+        LOG.info("begin installSnapshot");
         Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
         requestBuilder.setServerId(localServer.getServerId());
         requestBuilder.setTerm(currentTerm);
@@ -659,5 +659,9 @@ public class RaftNode {
 
     public ServerAddress getLocalServer() {
         return localServer;
+    }
+
+    public NodeState getState() {
+        return state;
     }
 }

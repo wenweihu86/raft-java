@@ -13,7 +13,7 @@ public class RaftOptions {
     public static int heartbeatPeriodMilliseconds = 500;
 
     // snapshot定时器执行间隔
-    public static int snapshotPeriodSeconds = 60;
+    public static int snapshotPeriodSeconds = 3600;
     // log entry大小达到snapshotMinLogSize，才做snapshot
     public static int snapshotMinLogSize = 100 * 1024 * 1024;
     public static int maxSnapshotBytesPerRequest = 500 * 1024; // 500k

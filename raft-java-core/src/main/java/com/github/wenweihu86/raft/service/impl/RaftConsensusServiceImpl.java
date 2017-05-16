@@ -46,7 +46,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             boolean logIsOk = request.getLastLogTerm() > raftNode.getRaftLog().getLastLogTerm()
                     || (request.getLastLogTerm() == raftNode.getRaftLog().getLastLogTerm()
                     && request.getLastLogIndex() >= raftNode.getRaftLog().getLastLogIndex());
-            if (raftNode.getVotedFor() == 0 || logIsOk) {
+            if (raftNode.getVotedFor() == 0 && logIsOk) {
                 raftNode.stepDown(request.getTerm());
                 raftNode.setVotedFor(request.getServerId());
                 raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(), raftNode.getVotedFor(), null);
@@ -72,10 +72,11 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             responseBuilder.setSuccess(false);
             responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
             if (request.getTerm() < raftNode.getCurrentTerm()) {
-                raftNode.getLock().unlock();
                 return responseBuilder.build();
             }
-            if (request.getTerm() > raftNode.getCurrentTerm()) {
+            if (request.getTerm() > raftNode.getCurrentTerm()
+                    || raftNode.getState() != RaftNode.NodeState.STATE_FOLLOWER
+                    || raftNode.getLeaderId() == 0) {
                 raftNode.stepDown(request.getTerm());
             }
             if (raftNode.getLeaderId() == 0) {
