@@ -56,19 +56,22 @@ public class RaftNode {
     private ScheduledFuture heartbeatScheduledFuture;
 
     public RaftNode(int localServerId, List<ServerAddress> servers, StateMachine stateMachine) {
+        // load log and snapshot
+        raftLog = new SegmentedLog();
+        snapshot = new Snapshot();
+
         peers = new ArrayList<>();
         for (ServerAddress server : servers) {
             if (server.getServerId() == localServerId) {
                 this.localServer = server;
             } else {
                 Peer peer = new Peer(server);
+                peer.setNextIndex(raftLog.getLastLogIndex() + 1);
                 peers.add(peer);
             }
         }
         this.stateMachine = stateMachine;
-        // load log and snapshot
-        raftLog = new SegmentedLog();
-        snapshot = new Snapshot();
+
         currentTerm = raftLog.getMetaData().getCurrentTerm();
         votedFor = raftLog.getMetaData().getVotedFor();
         commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
@@ -160,7 +163,7 @@ public class RaftNode {
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int randomElectionTimeout = RaftOptions.electionTimeoutMilliseconds
                 + random.nextInt(0, RaftOptions.electionTimeoutMilliseconds);
-        LOG.info("new election time is after {} ms", randomElectionTimeout);
+        LOG.debug("new election time is after {} ms", randomElectionTimeout);
         return randomElectionTimeout;
     }
 
@@ -315,7 +318,7 @@ public class RaftNode {
 
     // in lock, 开始心跳，对leader有效
     private void startNewHeartbeat() {
-        LOG.info("start new heartbeat");
+        LOG.debug("start new heartbeat");
         for (final Peer peer : peers) {
             executorService.submit(new Runnable() {
                 @Override
@@ -341,10 +344,10 @@ public class RaftNode {
 
             prevLogIndex = peer.getNextIndex() - 1;
             long prevLogTerm;
-            if (prevLogIndex >= firstLogIndex) {
-                prevLogTerm = raftLog.getEntry(prevLogIndex).getTerm();
-            } else if (prevLogIndex == 0) {
+            if (prevLogIndex == 0) {
                 prevLogTerm = 0;
+            } else if (prevLogIndex >= firstLogIndex) {
+                prevLogTerm = raftLog.getEntryTerm(prevLogIndex);
             } else if (prevLogIndex == snapshot.getMetaData().getLastIncludedIndex()) {
                 prevLogTerm = snapshot.getMetaData().getLastIncludedTerm();
             } else {
@@ -410,7 +413,7 @@ public class RaftNode {
         matchIndexes[peerNum] = raftLog.getLastLogIndex();
         Arrays.sort(matchIndexes);
         long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
-        if (raftLog.getEntry(newCommitIndex).getTerm() != currentTerm) {
+        if (raftLog.getEntryTerm(newCommitIndex) != currentTerm) {
             return;
         }
 
@@ -583,7 +586,7 @@ public class RaftNode {
                 long lastAppliedTerm = 0;
                 if (lastAppliedIndex >= raftLog.getFirstLogIndex()
                         && lastAppliedIndex <= raftLog.getLastLogIndex()) {
-                    lastAppliedTerm = raftLog.getEntry(lastAppliedIndex).getTerm();
+                    lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
                 }
 
                 if (!isInSnapshot) {

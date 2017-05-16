@@ -52,12 +52,20 @@ public class SegmentedLog {
         long firstLogIndex = getFirstLogIndex();
         long lastLogIndex = getLastLogIndex();
         if (index == 0 || index < firstLogIndex || index > lastLogIndex) {
-            LOG.warn("index out of range, index={}, firstLogIndex={}, lastLogIndex={}",
+            LOG.debug("index out of range, index={}, firstLogIndex={}, lastLogIndex={}",
                     index, firstLogIndex, lastLogIndex);
             return null;
         }
         Segment segment = startLogIndexSegmentMap.lowerEntry(index).getValue();
         return segment.getEntry(index);
+    }
+
+    public long getEntryTerm(long index) {
+        Raft.LogEntry entry = getEntry(index);
+        if (entry == null) {
+            return 0;
+        }
+        return entry.getTerm();
     }
 
     public long getFirstLogIndex() {
@@ -81,7 +89,7 @@ public class SegmentedLog {
         if (lastLogIndex == 0) {
             return 0;
         }
-        return this.getEntry(lastLogIndex).getTerm();
+        return this.getEntryTerm(lastLogIndex);
     }
 
     public long append(List<Raft.LogEntry> entries) {

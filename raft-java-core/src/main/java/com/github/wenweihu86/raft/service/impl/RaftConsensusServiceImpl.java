@@ -88,7 +88,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 return responseBuilder.build();
             }
             if (request.getPrevLogIndex() >= raftNode.getRaftLog().getFirstLogIndex()
-                    && raftNode.getRaftLog().getEntry(request.getPrevLogIndex()).getTerm()
+                    && raftNode.getRaftLog().getEntryTerm(request.getPrevLogIndex())
                     != request.getPrevLogTerm()) {
                 LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
                 return responseBuilder.build();
@@ -103,7 +103,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     continue;
                 }
                 if (raftNode.getRaftLog().getLastLogIndex() >= index) {
-                    if (raftNode.getRaftLog().getEntry(index).getTerm() == entry.getTerm()) {
+                    if (raftNode.getRaftLog().getEntryTerm(index) == entry.getTerm()) {
                         continue;
                     }
                     // truncate segment log from index
