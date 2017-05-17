@@ -74,11 +74,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             if (request.getTerm() < raftNode.getCurrentTerm()) {
                 return responseBuilder.build();
             }
-            if (request.getTerm() > raftNode.getCurrentTerm()
-                    || raftNode.getState() != RaftNode.NodeState.STATE_FOLLOWER
-                    || raftNode.getLeaderId() == 0) {
-                raftNode.stepDown(request.getTerm());
-            }
+            raftNode.stepDown(request.getTerm());
             if (raftNode.getLeaderId() == 0) {
                 raftNode.setLeaderId(request.getServerId());
             }

@@ -297,7 +297,11 @@ public class RaftNode {
     private void becomeLeader() {
         state = NodeState.STATE_LEADER;
         leaderId = localServer.getServerId();
-        isInElection = false;
+        // stop vote timer
+        if (electionScheduledFuture != null && !electionScheduledFuture.isDone()) {
+            electionScheduledFuture.cancel(true);
+            isInElection = false;
+        }
         // start heartbeat timer
         startNewHeartbeat();
     }
