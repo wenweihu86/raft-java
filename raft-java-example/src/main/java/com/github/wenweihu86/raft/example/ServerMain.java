@@ -19,9 +19,9 @@ public class ServerMain {
         // parse args
         // serverId
         Integer localServerId = Integer.parseInt(args[1]);
-        // format is "host:port:serverId;host2:port2:serverId2"
+        // format is "host:port:serverId,host2:port2:serverId2"
         String servers = args[0];
-        String[] splitArray = servers.split(";");
+        String[] splitArray = servers.split(",");
         List<ServerAddress> serverAddressList = new ArrayList<>();
         ServerAddress localServer = null;
         for (String serverString : splitArray) {

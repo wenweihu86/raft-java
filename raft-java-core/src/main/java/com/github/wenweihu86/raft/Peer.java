@@ -1,6 +1,7 @@
 package com.github.wenweihu86.raft;
 
 import com.github.wenweihu86.raft.service.RaftConsensusService;
+import com.github.wenweihu86.rpc.client.EndPoint;
 import com.github.wenweihu86.rpc.client.RPCClient;
 import com.github.wenweihu86.rpc.client.RPCProxy;
 
@@ -19,7 +20,7 @@ public class Peer {
 
     public Peer(ServerAddress serverAddress) {
         this.serverAddress = serverAddress;
-        this.rpcClient = new RPCClient(serverAddress.getHost() + ":" + serverAddress.getPort());
+        this.rpcClient = new RPCClient(new EndPoint(serverAddress.getHost(), serverAddress.getPort()));
         raftConsensusService = RPCProxy.getProxy(rpcClient, RaftConsensusService.class);
     }
 
