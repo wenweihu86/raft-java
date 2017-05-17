@@ -29,7 +29,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
     @Override
     public Raft.VoteResponse requestVote(Raft.VoteRequest request) {
         LOG.info("Receive RequestVote request from server {} " +
-                        "in term {} (this server's term was {})",
+                        "in term {} (my term was {})",
                 request.getServerId(), request.getTerm(),
                 raftNode.getCurrentTerm());
         raftNode.getLock().lock();
@@ -62,7 +62,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
     @Override
     public Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request) {
         LOG.info("Receive AppendEntries request from server {} " +
-                        "in term {} (this server's term was {})",
+                        "in term {} (my term was {})",
                 request.getServerId(), request.getTerm(),
                 raftNode.getCurrentTerm());
         raftNode.getLock().lock();
@@ -127,8 +127,10 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request) {
-        LOG.info("Receive installSnapshot request, Caller({}) is stale. Our term is {}, theirs is {}",
-                request.getServerId(), raftNode.getCurrentTerm(), request.getTerm());
+        LOG.info("Receive installSnapshot request from server {} " +
+                        "in term {} (my term was {})",
+                request.getServerId(), request.getTerm(),
+                raftNode.getCurrentTerm());
         raftNode.getLock().lock();
         try {
             Raft.InstallSnapshotResponse.Builder responseBuilder = Raft.InstallSnapshotResponse.newBuilder();
