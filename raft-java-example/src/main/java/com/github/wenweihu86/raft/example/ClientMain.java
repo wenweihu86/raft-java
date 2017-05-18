@@ -10,7 +10,7 @@ import com.google.protobuf.util.JsonFormat;
  */
 public class ClientMain {
     public static void main(String[] args) {
-        String ipPorts = "127.0.0.1:8050;127.0.0.1:8051;127.0.0.1:8052";
+        String ipPorts = "127.0.0.1:8050,127.0.0.1:8051,127.0.0.1:8052";
         if (args.length == 1) {
             ipPorts = args[0];
         }

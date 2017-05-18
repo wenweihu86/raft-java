@@ -9,6 +9,9 @@ import com.github.wenweihu86.rpc.client.RPCProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * Created by wenweihu86 on 2017/5/14.
  */
@@ -18,9 +21,11 @@ public class ExampleServiceProxy implements ExampleService {
     private RPCClient clusterRPCClient;
     private ExampleService clusterExampleService;
     private RaftClientService clusterRaftClientService;
+
     private Raft.EndPoint leader;
     private RPCClient leaderRPCClient;
     private ExampleService leaderExampleService;
+    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
     // servers format is 10.1.1.1:8888;10.2.2.2:9999
     public ExampleServiceProxy(RPCClient clusterRPCClient) {
@@ -31,17 +36,25 @@ public class ExampleServiceProxy implements ExampleService {
 
     @Override
     public Example.SetResponse set(Example.SetRequest request) {
-        if (leader == null) {
-            getLeader();
-            if (leader != null) {
-                leaderRPCClient = new RPCClient(leader.getHost() + ":" + leader.getPort());
-                leaderExampleService = RPCProxy.getProxy(leaderRPCClient, ExampleService.class);
+        Example.SetResponse response = trySet(request);
+        if (response != null && response.getSuccess()) {
+            return response;
+        }
+
+        readWriteLock.writeLock().lock();
+        try {
+            if (leader == null || (response != null && !response.getSuccess())) {
+                getLeader();
+                if (leader != null) {
+                    leaderRPCClient = new RPCClient(leader.getHost() + ":" + leader.getPort());
+                    leaderExampleService = RPCProxy.getProxy(leaderRPCClient, ExampleService.class);
+                }
             }
+        } finally {
+            readWriteLock.writeLock().unlock();
         }
-        if (leader == null || leaderExampleService == null) {
-            return null;
-        }
-        return leaderExampleService.set(request);
+        response = trySet(request);
+        return response;
     }
 
     @Override
@@ -55,12 +68,28 @@ public class ExampleServiceProxy implements ExampleService {
         }
         Raft.GetLeaderRequest request = Raft.GetLeaderRequest.newBuilder().build();
         Raft.GetLeaderResponse response = clusterRaftClientService.getLeader(request);
-        if (response.getSuccess() == false) {
+        if (response == null || response.getSuccess() == false) {
             LOG.warn("getLeader request failed");
         } else {
             leader = response.getLeader();
         }
         return leader;
+    }
+
+    private Example.SetResponse trySet(Example.SetRequest request) {
+        Example.SetResponse response = null;
+        readWriteLock.readLock().lock();
+        try {
+            if (leader != null) {
+                response = leaderExampleService.set(request);
+                if (response == null || response.getSuccess()) {
+                    return response;
+                }
+            }
+        } finally {
+            readWriteLock.readLock().unlock();
+        }
+        return response;
     }
 
 }

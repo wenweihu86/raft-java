@@ -28,10 +28,6 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.VoteResponse requestVote(Raft.VoteRequest request) {
-        LOG.info("Receive RequestVote request from server {} " +
-                        "in term {} (my term was {})",
-                request.getServerId(), request.getTerm(),
-                raftNode.getCurrentTerm());
         raftNode.getLock().lock();
         try {
             Raft.VoteResponse.Builder responseBuilder = Raft.VoteResponse.newBuilder();
@@ -53,6 +49,10 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 responseBuilder.setGranted(true);
                 responseBuilder.setTerm(raftNode.getCurrentTerm());
             }
+            LOG.info("Receive RequestVote request from server {} " +
+                            "in term {} (my term is {}), granted={}",
+                    request.getServerId(), request.getTerm(),
+                    raftNode.getCurrentTerm(), responseBuilder.getGranted());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();
@@ -61,10 +61,6 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request) {
-        LOG.info("Receive AppendEntries request from server {} " +
-                        "in term {} (my term was {})",
-                request.getServerId(), request.getTerm(),
-                raftNode.getCurrentTerm());
         raftNode.getLock().lock();
         try {
             Raft.AppendEntriesResponse.Builder responseBuilder = Raft.AppendEntriesResponse.newBuilder();
@@ -119,6 +115,10 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                             raftNode.getRaftLog().getEntry(index).getData().toByteArray());
                 }
             }
+            LOG.info("Receive AppendEntries request from server {} " +
+                            "in term {} (my term is {}), success={}",
+                    request.getServerId(), request.getTerm(),
+                    raftNode.getCurrentTerm(), responseBuilder.getSuccess());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();
@@ -127,10 +127,6 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request) {
-        LOG.info("Receive installSnapshot request from server {} " +
-                        "in term {} (my term was {})",
-                request.getServerId(), request.getTerm(),
-                raftNode.getCurrentTerm());
         raftNode.getLock().lock();
         try {
             Raft.InstallSnapshotResponse.Builder responseBuilder = Raft.InstallSnapshotResponse.newBuilder();
@@ -189,6 +185,10 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             } finally {
                 RaftFileUtils.closeFile(randomAccessFile);
             }
+            LOG.info("Receive installSnapshot request from server {} " +
+                            "in term {} (my term is {}), success={}",
+                    request.getServerId(), request.getTerm(),
+                    raftNode.getCurrentTerm(), responseBuilder.getSuccess());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();

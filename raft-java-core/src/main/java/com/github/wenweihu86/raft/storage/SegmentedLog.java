@@ -56,7 +56,10 @@ public class SegmentedLog {
                     index, firstLogIndex, lastLogIndex);
             return null;
         }
-        Segment segment = startLogIndexSegmentMap.lowerEntry(index).getValue();
+        if (startLogIndexSegmentMap.size() == 0) {
+            return null;
+        }
+        Segment segment = startLogIndexSegmentMap.floorEntry(index).getValue();
         return segment.getEntry(index);
     }
 
@@ -113,20 +116,23 @@ public class SegmentedLog {
                         segment.setCanWrite(false);
                         String newFileName = String.format("%020d-%020d",
                                 segment.getStartIndex(), segment.getEndIndex());
-                        File newFile = new File(newFileName);
+                        String newFullFileName = logDataDir + File.separator + newFileName;
+                        File newFile = new File(newFullFileName);
                         newFile.createNewFile();
-                        File oldFile = new File(segment.getFileName());
+                        String oldFullFileName = logDataDir + File.separator + segment.getFileName();
+                        File oldFile = new File(oldFullFileName);
                         oldFile.renameTo(newFile);
                         segment.setFileName(newFileName);
                         segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, newFileName, "r"));
                     }
                 }
-                Segment newSegment = startLogIndexSegmentMap.lastEntry().getValue();
+                Segment newSegment;
                 // 新建segment文件
                 if (isNeedNewSegmentFile) {
                     // open new segment file
                     String newSegmentFileName = String.format("open-%d", newLastLogIndex);
-                    File newSegmentFile = new File(newSegmentFileName);
+                    String newFullFileName = logDataDir + File.separator + newSegmentFileName;
+                    File newSegmentFile = new File(newFullFileName);
                     if (!newSegmentFile.exists()) {
                         newSegmentFile.createNewFile();
                     }
@@ -137,6 +143,8 @@ public class SegmentedLog {
                     segment.setFileName(newSegmentFileName);
                     segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, newSegmentFileName, "rw"));
                     newSegment = segment;
+                } else {
+                    newSegment = startLogIndexSegmentMap.lastEntry().getValue();
                 }
                 // 写proto到segment中
                 if (entry.getIndex() == 0) {
@@ -148,7 +156,7 @@ public class SegmentedLog {
                         newSegment.getRandomAccessFile().getFilePointer(), entry));
                 RaftFileUtils.writeProtoToFile(newSegment.getRandomAccessFile(), entry);
                 newSegment.setFileSize(newSegment.getRandomAccessFile().length());
-                if (startLogIndexSegmentMap.containsKey(newSegment.getStartIndex())) {
+                if (!startLogIndexSegmentMap.containsKey(newSegment.getStartIndex())) {
                     startLogIndexSegmentMap.put(newSegment.getStartIndex(), newSegment);
                 }
                 totalSize += entrySize;

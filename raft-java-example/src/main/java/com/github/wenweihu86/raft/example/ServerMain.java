@@ -4,7 +4,9 @@ import com.github.wenweihu86.raft.example.service.ExampleService;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.ServerAddress;
 import com.github.wenweihu86.raft.example.service.impl.ExampleServiceImpl;
+import com.github.wenweihu86.raft.service.RaftClientService;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
+import com.github.wenweihu86.raft.service.impl.RaftClientServiceImpl;
 import com.github.wenweihu86.raft.service.impl.RaftConsensusServiceImpl;
 import com.github.wenweihu86.rpc.server.RPCServer;
 
@@ -40,8 +42,12 @@ public class ServerMain {
 
         ExampleStateMachine stateMachine = new ExampleStateMachine();
         RaftNode raftNode = new RaftNode(localServerId, serverAddressList, stateMachine);
+
         RaftConsensusService raftConsensusService = new RaftConsensusServiceImpl(raftNode);
         server.registerService(raftConsensusService);
+
+        RaftClientService raftClientService = new RaftClientServiceImpl(raftNode);
+        server.registerService(raftClientService);
 
         ExampleService exampleService = new ExampleServiceImpl(raftNode, stateMachine);
         server.registerService(exampleService);

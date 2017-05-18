@@ -45,7 +45,6 @@ public class RaftNode {
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
     private volatile long lastAppliedIndex;
     private volatile boolean isInSnapshot;
-    private volatile boolean isInElection;
 
     private Lock lock = new ReentrantLock();
     private Condition commitIndexCondition = lock.newCondition();
@@ -136,12 +135,19 @@ public class RaftNode {
 
         // sync wait commitIndex >= newLastLogIndex
         // TODO: add timeout
+        lock.lock();
         try {
             while (commitIndex < newLastLogIndex) {
-                Thread.sleep(1);
+                commitIndexCondition.await();
             }
         } catch (Exception ex) {
-            LOG.warn(ex.getMessage());
+            ex.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+        LOG.info("commitIndex={} newLastLogIndex={}", commitIndex, newLastLogIndex);
+        if (commitIndex < newLastLogIndex) {
+            return false;
         }
         return true;
     }
@@ -169,15 +175,8 @@ public class RaftNode {
 
     // 开始新的选举，对candidate有效
     private void startNewElection() {
-        if (isInElection) {
-            LOG.info("already in election, ignore current timer");
-            resetElectionTimer();
-            return;
-        }
-
         lock.lock();
         try {
-            isInElection = true;
             currentTerm++;
             LOG.info("Running for election in term {}", currentTerm);
             state = NodeState.STATE_CANDIDATE;
@@ -244,7 +243,10 @@ public class RaftNode {
                     if (response.getGranted()) {
                         LOG.info("Got vote from server {} for term {}",
                                 peer.getServerAddress().getServerId(), currentTerm);
-                        int voteGrantedNum = 1;
+                        int voteGrantedNum = 0;
+                        if (votedFor == localServer.getServerId()) {
+                            voteGrantedNum += 1;
+                        }
                         for (Peer peer1 : peers) {
                             if (peer1.isVoteGranted() != null && peer1.isVoteGranted() == true) {
                                 voteGrantedNum += 1;
@@ -260,9 +262,6 @@ public class RaftNode {
                                 peer.getServerAddress().getServerId(), currentTerm);
                     }
                 }
-                if (isElectionFinish()) {
-                    isInElection = false;
-                }
             } finally {
                 lock.unlock();
             }
@@ -274,22 +273,6 @@ public class RaftNode {
                     peer.getServerAddress().getHost(),
                     peer.getServerAddress().getPort());
             peer.setVoteGranted(new Boolean(false));
-            if (isElectionFinish()) {
-                isInElection = false;
-            }
-        }
-
-        private boolean isElectionFinish() {
-            int responseNum = 0;
-            for (Peer peer1 : peers) {
-                if (peer1.isVoteGranted() != null) {
-                    responseNum++;
-                }
-            }
-            if (responseNum == peers.size()) {
-                return true;
-            }
-            return false;
         }
     }
 
@@ -300,7 +283,6 @@ public class RaftNode {
         // stop vote timer
         if (electionScheduledFuture != null && !electionScheduledFuture.isDone()) {
             electionScheduledFuture.cancel(true);
-            isInElection = false;
         }
         // start heartbeat timer
         startNewHeartbeat();
@@ -378,13 +360,14 @@ public class RaftNode {
             return;
         }
 
+        LOG.info("Received AppendEntries response[{}] from server {} " +
+                        "in term {} (my term is {})",
+                response.getSuccess(), peer.getServerAddress().getServerId(),
+                response.getTerm(), currentTerm);
+
         lock.lock();
         try {
             if (response.getTerm() > currentTerm) {
-                LOG.info("Received AppendEntries response from server {} " +
-                                "in term {} (this server's term was {})",
-                        peer.getServerAddress().getServerId(),
-                        response.getTerm(), currentTerm);
                 stepDown(response.getTerm());
             } else {
                 if (response.getSuccess()) {
@@ -411,13 +394,16 @@ public class RaftNode {
         // 获取quorum matchIndex
         int peerNum = peers.size();
         long[] matchIndexes = new long[peerNum + 1];
-        for (int i = 0; i < peerNum - 1; i++) {
+        for (int i = 0; i < peerNum; i++) {
             matchIndexes[i] = peers.get(i).getMatchIndex();
         }
         matchIndexes[peerNum] = raftLog.getLastLogIndex();
         Arrays.sort(matchIndexes);
         long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
+        LOG.info("newCommitIndex={}, oldCommitIndex={}", newCommitIndex, commitIndex);
         if (raftLog.getEntryTerm(newCommitIndex) != currentTerm) {
+            LOG.info("newCommitIndexTerm={}, currentTerm={}",
+                    raftLog.getEntryTerm(newCommitIndex), currentTerm);
             return;
         }
 
@@ -432,6 +418,7 @@ public class RaftNode {
             stateMachine.apply(entry.getData().toByteArray());
         }
         lastAppliedIndex = commitIndex;
+        LOG.info("commitIndex={} lastAppliedIndex={}", commitIndex, lastAppliedIndex);
         commitIndexCondition.signalAll();
     }
 
