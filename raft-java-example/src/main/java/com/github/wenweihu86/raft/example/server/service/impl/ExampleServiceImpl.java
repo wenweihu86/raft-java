@@ -1,8 +1,8 @@
-package com.github.wenweihu86.raft.example.service.impl;
+package com.github.wenweihu86.raft.example.server.service.impl;
 
-import com.github.wenweihu86.raft.example.ExampleStateMachine;
-import com.github.wenweihu86.raft.example.service.Example;
-import com.github.wenweihu86.raft.example.service.ExampleService;
+import com.github.wenweihu86.raft.example.server.ExampleStateMachine;
+import com.github.wenweihu86.raft.example.server.service.Example;
+import com.github.wenweihu86.raft.example.server.service.ExampleService;
 import com.github.wenweihu86.raft.RaftNode;
 
 /**

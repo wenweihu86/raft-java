@@ -1,7 +1,7 @@
-package com.github.wenweihu86.raft.example;
+package com.github.wenweihu86.raft.example.client;
 
-import com.github.wenweihu86.raft.example.service.Example;
-import com.github.wenweihu86.raft.example.service.ExampleService;
+import com.github.wenweihu86.raft.example.server.service.Example;
+import com.github.wenweihu86.raft.example.server.service.ExampleService;
 import com.github.wenweihu86.rpc.client.RPCClient;
 import com.google.protobuf.util.JsonFormat;
 

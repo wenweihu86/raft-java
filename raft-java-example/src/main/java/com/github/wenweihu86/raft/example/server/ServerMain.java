@@ -1,9 +1,9 @@
-package com.github.wenweihu86.raft.example;
+package com.github.wenweihu86.raft.example.server;
 
-import com.github.wenweihu86.raft.example.service.ExampleService;
+import com.github.wenweihu86.raft.example.server.service.ExampleService;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.ServerAddress;
-import com.github.wenweihu86.raft.example.service.impl.ExampleServiceImpl;
+import com.github.wenweihu86.raft.example.server.service.impl.ExampleServiceImpl;
 import com.github.wenweihu86.raft.service.RaftClientService;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
 import com.github.wenweihu86.raft.service.impl.RaftClientServiceImpl;

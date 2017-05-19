@@ -1,7 +1,7 @@
 syntax="proto3";
 
 package service;
-option java_package = "com.github.wenweihu86.raft.example.service";
+option java_package = "com.github.wenweihu86.raft.example.server.service";
 option java_outer_classname = "Example";
 
 message SetRequest {

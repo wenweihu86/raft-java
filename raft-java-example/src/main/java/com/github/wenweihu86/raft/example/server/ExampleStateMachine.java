@@ -1,8 +1,8 @@
-package com.github.wenweihu86.raft.example;
+package com.github.wenweihu86.raft.example.server;
 
 import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.StateMachine;
-import com.github.wenweihu86.raft.example.service.Example;
+import com.github.wenweihu86.raft.example.server.service.Example;
 import org.apache.commons.io.FileUtils;
 import org.rocksdb.Checkpoint;
 import org.rocksdb.Options;
