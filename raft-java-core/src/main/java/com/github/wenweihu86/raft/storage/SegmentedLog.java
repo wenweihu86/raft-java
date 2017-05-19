@@ -322,7 +322,7 @@ public class SegmentedLog {
                         continue;
                     }
                 }
-                segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, fileName, "r"));
+                segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, fileName, "rw"));
                 segment.setFileSize(segment.getRandomAccessFile().length());
                 startLogIndexSegmentMap.put(segment.getStartIndex(), segment);
             } catch (IOException ioException) {

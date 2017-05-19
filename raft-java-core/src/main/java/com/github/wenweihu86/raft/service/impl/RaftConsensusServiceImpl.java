@@ -49,7 +49,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 responseBuilder.setGranted(true);
                 responseBuilder.setTerm(raftNode.getCurrentTerm());
             }
-            LOG.info("Receive RequestVote request from server {} " +
+            LOG.info("RequestVote request from server {} " +
                             "in term {} (my term is {}), granted={}",
                     request.getServerId(), request.getTerm(),
                     raftNode.getCurrentTerm(), responseBuilder.getGranted());
@@ -74,15 +74,34 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             if (raftNode.getLeaderId() == 0) {
                 raftNode.setLeaderId(request.getServerId());
             }
+            if (raftNode.getLeaderId() != request.getServerId()) {
+                LOG.warn("Another peer={} declares that it is the leader " +
+                                "at term={} which was occupied by leader={}",
+                        request.getServerId(), request.getTerm(), raftNode.getLeaderId());
+                raftNode.stepDown(request.getTerm() + 1);
+                responseBuilder.setSuccess(false);
+                responseBuilder.setTerm(request.getTerm() + 1);
+                return responseBuilder.build();
+            }
 
             if (request.getPrevLogIndex() > raftNode.getRaftLog().getLastLogIndex()) {
-                LOG.debug("Rejecting AppendEntries RPC: would leave gap");
+                LOG.info("Rejecting AppendEntries RPC: would leave gap");
                 return responseBuilder.build();
             }
             if (request.getPrevLogIndex() >= raftNode.getRaftLog().getFirstLogIndex()
                     && raftNode.getRaftLog().getEntryTerm(request.getPrevLogIndex())
                     != request.getPrevLogTerm()) {
                 LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
+                return responseBuilder.build();
+            }
+
+            if (request.getEntriesCount() == 0) {
+                LOG.debug("heartbeat request from peer={} at term={}, my term={}",
+                        request.getServerId(), request.getTerm(), raftNode.getCurrentTerm());
+                responseBuilder.setSuccess(true);
+                responseBuilder.setTerm(raftNode.getCurrentTerm());
+                responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
+                advanceCommitIndex(request);
                 return responseBuilder.build();
             }
 
@@ -107,18 +126,11 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.getRaftLog().append(entries);
             responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
 
-            if (raftNode.getCommitIndex() < request.getCommitIndex()) {
-                raftNode.setCommitIndex(request.getCommitIndex());
-                // apply state machine
-                for (index = raftNode.getLastAppliedIndex() + 1; index <= raftNode.getCommitIndex(); index++) {
-                    raftNode.getStateMachine().apply(
-                            raftNode.getRaftLog().getEntry(index).getData().toByteArray());
-                }
-            }
-            LOG.info("Receive AppendEntries request from server {} " +
-                            "in term {} (my term is {}), success={}",
-                    request.getServerId(), request.getTerm(),
-                    raftNode.getCurrentTerm(), responseBuilder.getSuccess());
+            advanceCommitIndex(request);
+            LOG.info("AppendEntries request from server {} " +
+                            "in term {} (my term is {}), entryCount={} success={}",
+                    request.getServerId(), request.getTerm(), raftNode.getCurrentTerm(),
+                    request.getEntriesCount(), responseBuilder.getSuccess());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();
@@ -185,13 +197,29 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             } finally {
                 RaftFileUtils.closeFile(randomAccessFile);
             }
-            LOG.info("Receive installSnapshot request from server {} " +
+            LOG.info("installSnapshot request from server {} " +
                             "in term {} (my term is {}), success={}",
                     request.getServerId(), request.getTerm(),
                     raftNode.getCurrentTerm(), responseBuilder.getSuccess());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();
+        }
+    }
+
+    // in lock, for follower
+    private void advanceCommitIndex(Raft.AppendEntriesRequest request) {
+        long newCommitIndex = Math.min(request.getCommitIndex(),
+                request.getPrevLogIndex() + request.getEntriesCount());
+        raftNode.setCommitIndex(newCommitIndex);
+        if (raftNode.getLastAppliedIndex() < raftNode.getCommitIndex()) {
+            // apply state machine
+            for (long index = raftNode.getLastAppliedIndex() + 1;
+                 index <= raftNode.getCommitIndex(); index++) {
+                raftNode.getStateMachine().apply(
+                        raftNode.getRaftLog().getEntry(index).getData().toByteArray());
+                raftNode.setLastAppliedIndex(index);
+            }
         }
     }
 

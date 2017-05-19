@@ -360,7 +360,7 @@ public class RaftNode {
             return;
         }
 
-        LOG.info("Received AppendEntries response[{}] from server {} " +
+        LOG.info("AppendEntries response[{}] from server {} " +
                         "in term {} (my term is {})",
                 response.getSuccess(), peer.getServerAddress().getServerId(),
                 response.getTerm(), currentTerm);
@@ -389,7 +389,7 @@ public class RaftNode {
         }
     }
 
-    // in lock
+    // in lock, for leader
     private void advanceCommitIndex() {
         // 获取quorum matchIndex
         int peerNum = peers.size();
@@ -400,9 +400,9 @@ public class RaftNode {
         matchIndexes[peerNum] = raftLog.getLastLogIndex();
         Arrays.sort(matchIndexes);
         long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
-        LOG.info("newCommitIndex={}, oldCommitIndex={}", newCommitIndex, commitIndex);
+        LOG.debug("newCommitIndex={}, oldCommitIndex={}", newCommitIndex, commitIndex);
         if (raftLog.getEntryTerm(newCommitIndex) != currentTerm) {
-            LOG.info("newCommitIndexTerm={}, currentTerm={}",
+            LOG.debug("newCommitIndexTerm={}, currentTerm={}",
                     raftLog.getEntryTerm(newCommitIndex), currentTerm);
             return;
         }
@@ -418,7 +418,7 @@ public class RaftNode {
             stateMachine.apply(entry.getData().toByteArray());
         }
         lastAppliedIndex = commitIndex;
-        LOG.info("commitIndex={} lastAppliedIndex={}", commitIndex, lastAppliedIndex);
+        LOG.debug("commitIndex={} lastAppliedIndex={}", commitIndex, lastAppliedIndex);
         commitIndexCondition.signalAll();
     }
 
@@ -625,6 +625,10 @@ public class RaftNode {
 
     public long getLastAppliedIndex() {
         return lastAppliedIndex;
+    }
+
+    public void setLastAppliedIndex(long lastAppliedIndex) {
+        this.lastAppliedIndex = lastAppliedIndex;
     }
 
     public SegmentedLog getRaftLog() {

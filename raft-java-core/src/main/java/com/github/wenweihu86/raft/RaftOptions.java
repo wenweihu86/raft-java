@@ -20,9 +20,6 @@ public class RaftOptions {
 
     public static int maxLogEntriesPerRequest = 5000;
 
-    // A snapshot saving would be triggered every snapshotInterval seconds
-    public static int snapshotInterval = 3600;
-
     // 单个segment文件大小，默认100m
     public static int maxSegmentFileSize = 100 * 1000 * 1000;
 

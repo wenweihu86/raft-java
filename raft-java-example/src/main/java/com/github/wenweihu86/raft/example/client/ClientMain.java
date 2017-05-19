@@ -10,31 +10,42 @@ import com.google.protobuf.util.JsonFormat;
  */
 public class ClientMain {
     public static void main(String[] args) {
-        String ipPorts = "127.0.0.1:8050,127.0.0.1:8051,127.0.0.1:8052";
-        if (args.length == 1) {
-            ipPorts = args[0];
+        // parse args
+        String ipPorts = args[0];
+        String key = args[1];
+        String value = null;
+        if (args.length > 2) {
+            value = args[2];
         }
+
+        // init rpc client
         RPCClient rpcClient = new RPCClient(ipPorts);
         ExampleService exampleService = new ExampleServiceProxy(rpcClient);
         final JsonFormat.Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
+
         // set
-        Example.SetRequest setRequest = Example.SetRequest.newBuilder()
-                .setKey("hello").setValue("raft").build();
-        Example.SetResponse setResponse = exampleService.set(setRequest);
-        try {
-            System.out.println(printer.print(setResponse));
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        if (value != null) {
+            Example.SetRequest setRequest = Example.SetRequest.newBuilder()
+                    .setKey(key).setValue(value).build();
+            Example.SetResponse setResponse = exampleService.set(setRequest);
+            try {
+                System.out.printf("set request, key=%s value=%s response=%s\n",
+                        key, value, printer.print(setResponse));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            // get
+            Example.GetRequest getRequest = Example.GetRequest.newBuilder()
+                    .setKey(key).build();
+            Example.GetResponse getResponse = exampleService.get(getRequest);
+            try {
+                System.out.printf("get request, key=%s, response=%s\n",
+                        key, printer.print(getResponse));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
-        // get
-        Example.GetRequest getRequest = Example.GetRequest.newBuilder()
-                .setKey("hello").build();
-        Example.GetResponse getResponse = exampleService.get(getRequest);
-        try {
-            System.out.println(printer.print(getResponse));
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 }

@@ -1,5 +1,6 @@
 package com.github.wenweihu86.raft.example.server;
 
+import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.ServerAddress;
@@ -41,6 +42,9 @@ public class ServerMain {
         RPCServer server = new RPCServer(localServer.getPort());
 
         ExampleStateMachine stateMachine = new ExampleStateMachine();
+        // just for test snapshot
+        RaftOptions.snapshotMinLogSize = 1 * 1024 * 1024;
+        RaftOptions.snapshotPeriodSeconds = 60;
         RaftNode raftNode = new RaftNode(localServerId, serverAddressList, stateMachine);
 
         RaftConsensusService raftConsensusService = new RaftConsensusServiceImpl(raftNode);
