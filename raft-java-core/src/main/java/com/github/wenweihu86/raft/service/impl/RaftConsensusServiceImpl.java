@@ -124,6 +124,8 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 entries.add(entry);
             }
             raftNode.getRaftLog().append(entries);
+            raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(),
+                    null, raftNode.getRaftLog().getFirstLogIndex());
             responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
 
             advanceCommitIndex(request);
@@ -177,20 +179,19 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                         request.getFileName(), "rw");
                 randomAccessFile.skipBytes((int) request.getOffset());
                 randomAccessFile.write(request.getData().toByteArray());
-                if (randomAccessFile != null) {
-                    try {
-                        randomAccessFile.close();
-                        randomAccessFile = null;
-                    } catch (Exception ex2) {
-                        LOG.warn("close failed");
-                    }
-                }
+                RaftFileUtils.closeFile(randomAccessFile);
                 // move tmp dir to snapshot dir if this is the last package
-                File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
-                if (snapshotDirFile.exists()) {
-                    snapshotDirFile.delete();
+                if (request.getIsLast()) {
+                    File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
+                    if (snapshotDirFile.exists()) {
+                        snapshotDirFile.delete();
+                    }
+                    FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
+                    // apply state machine
+                    // TODO: make this async
+                    String snapshotDataDir = raftNode.getSnapshot().getSnapshotDir() + File.separator + "data";
+                    raftNode.getStateMachine().readSnapshot(snapshotDataDir);
                 }
-                FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
                 responseBuilder.setSuccess(true);
             } catch (IOException ex) {
                 LOG.warn("io exception, msg={}", ex.getMessage());

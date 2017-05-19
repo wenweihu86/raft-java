@@ -3,6 +3,7 @@ package com.github.wenweihu86.raft.storage;
 import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,7 @@ public class Snapshot {
         String snapshotDataDir = snapshotDir + File.separator + "data";
         List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(snapshotDataDir);
         for (String fileName : fileNames) {
-            RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDir, fileName, "r");
+            RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDataDir, fileName, "r");
             SnapshotDataFile snapshotFile = new SnapshotDataFile();
             snapshotFile.fileName = fileName;
             snapshotFile.randomAccessFile = randomAccessFile;
@@ -78,26 +79,25 @@ public class Snapshot {
                 .setLastIncludedIndex(lastIncludedIndex)
                 .setLastIncludedTerm(lastIncludedTerm).build();
         this.metaData = snapshotMetaData;
-        RandomAccessFile randomAccessFile = null;
         String snapshotMetaFile = dir + File.separator + "metadata";
+        RandomAccessFile randomAccessFile = null;
         try {
+            File dirFile = new File(dir);
+            if (!dirFile.exists()) {
+                dirFile.mkdirs();
+            }
+
             File file = new File(snapshotMetaFile);
             if (file.exists()) {
-                file.delete();
-                file.createNewFile();
+                FileUtils.forceDelete(file);
             }
+            file.createNewFile();
             randomAccessFile = new RandomAccessFile(file, "rw");
             RaftFileUtils.writeProtoToFile(randomAccessFile, metaData);
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", snapshotMetaFile);
         } finally {
-            if (randomAccessFile != null) {
-                try {
-                    randomAccessFile.close();
-                } catch (Exception ex2) {
-                    LOG.warn("close failed");
-                }
-            }
+            RaftFileUtils.closeFile(randomAccessFile);
         }
     }
 

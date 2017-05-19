@@ -43,8 +43,9 @@ public class ServerMain {
 
         ExampleStateMachine stateMachine = new ExampleStateMachine();
         // just for test snapshot
-        RaftOptions.snapshotMinLogSize = 1 * 1024 * 1024;
-        RaftOptions.snapshotPeriodSeconds = 60;
+        RaftOptions.snapshotMinLogSize = 10 * 1024;
+        RaftOptions.snapshotPeriodSeconds = 30;
+        RaftOptions.maxSegmentFileSize = 1024 * 1024;
         RaftNode raftNode = new RaftNode(localServerId, serverAddressList, stateMachine);
 
         RaftConsensusService raftConsensusService = new RaftConsensusServiceImpl(raftNode);

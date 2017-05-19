@@ -80,7 +80,8 @@ public class RaftNode {
             raftLog.truncatePrefix(snapshot.getMetaData().getLastIncludedIndex() + 1);
         }
         // apply state machine
-        stateMachine.readSnapshot(snapshot.getSnapshotDir());
+        String snapshotDataDir = snapshot.getSnapshotDir() + File.separator + "data";
+        stateMachine.readSnapshot(snapshotDataDir);
         for (long index = snapshot.getMetaData().getLastIncludedIndex() + 1;
              index <= commitIndex; index++) {
             Raft.LogEntry entry = raftLog.getEntry(index);
@@ -91,12 +92,12 @@ public class RaftNode {
         // init thread pool
         executorService = Executors.newFixedThreadPool(peers.size() * 2);
         scheduledExecutorService = Executors.newScheduledThreadPool(2);
-        scheduledExecutorService.schedule(new Runnable() {
+        scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 takeSnapshot();
             }
-        }, RaftOptions.snapshotPeriodSeconds, TimeUnit.SECONDS);
+        }, RaftOptions.snapshotPeriodSeconds, RaftOptions.snapshotPeriodSeconds, TimeUnit.SECONDS);
     }
 
     public void init() {
@@ -120,6 +121,7 @@ public class RaftNode {
             List<Raft.LogEntry> entries = new ArrayList<>();
             entries.add(logEntry);
             newLastLogIndex = raftLog.append(entries);
+            raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
         } finally {
             lock.unlock();
         }
@@ -145,7 +147,7 @@ public class RaftNode {
         } finally {
             lock.unlock();
         }
-        LOG.info("commitIndex={} newLastLogIndex={}", commitIndex, newLastLogIndex);
+        LOG.debug("commitIndex={} newLastLogIndex={}", commitIndex, newLastLogIndex);
         if (commitIndex < newLastLogIndex) {
             return false;
         }
@@ -582,18 +584,27 @@ public class RaftNode {
 
                 if (!isInSnapshot) {
                     isInSnapshot = true;
+                    LOG.info("start taking snapshot");
                     // take snapshot
                     String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
                     snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
                     String tmpSnapshotDataDir = tmpSnapshotDir + File.separator + "data";
                     stateMachine.writeSnapshot(tmpSnapshotDataDir);
+                    // rename tmp snapshot dir to snapshot dir
                     try {
-                        FileUtils.moveDirectory(new File(tmpSnapshotDir), new File(snapshot.getSnapshotDir()));
+                        File snapshotDirFile = new File(snapshot.getSnapshotDir());
+                        if (snapshotDirFile.exists()) {
+                            FileUtils.deleteDirectory(snapshotDirFile);
+                        }
+                        FileUtils.moveDirectory(new File(tmpSnapshotDir),
+                                new File(snapshot.getSnapshotDir()));
                     } catch (IOException ex) {
-                        LOG.warn("move direct failed, msg={}", ex.getMessage());
+                        LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
                     }
+                    LOG.info("end taking snapshot");
                 }
             } finally {
+                isInSnapshot = false;
                 lock.unlock();
             }
         }

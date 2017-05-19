@@ -28,13 +28,13 @@ public class ExampleStateMachine implements StateMachine {
 
     @Override
     public void writeSnapshot(String snapshotDir) {
-        String tmpDir = snapshotDir + ".tmp";
         Checkpoint checkpoint = Checkpoint.create(db);
         try {
-            checkpoint.createCheckpoint(tmpDir);
-            FileUtils.moveDirectory(new File(tmpDir), new File(snapshotDir));
+            checkpoint.createCheckpoint(snapshotDir);
         } catch (Exception ex) {
-            LOG.warn("meet exception, msg={}", ex.getMessage());
+            ex.printStackTrace();
+            LOG.warn("writeSnapshot meet exception, dir={}, msg={}",
+                    snapshotDir, ex.getMessage());
         }
     }
 
