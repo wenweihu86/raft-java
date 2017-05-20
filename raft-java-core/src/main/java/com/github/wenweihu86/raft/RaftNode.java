@@ -374,8 +374,8 @@ public class RaftNode {
             } else {
                 if (response.getSuccess()) {
                     peer.setMatchIndex(prevLogIndex + numEntries);
-                    advanceCommitIndex();
                     peer.setNextIndex(peer.getMatchIndex() + 1);
+                    advanceCommitIndex();
                 } else {
                     if (peer.getNextIndex() > 1) {
                         peer.setNextIndex(peer.getNextIndex() - 1);
