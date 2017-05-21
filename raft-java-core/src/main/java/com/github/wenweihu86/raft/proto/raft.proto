@@ -4,6 +4,12 @@ package raft;
 option java_package = "com.github.wenweihu86.raft.proto";
 option java_outer_classname = "Raft";
 
+enum ResCode {
+    RES_CODE_SUCCESS = 0;
+    RES_CODE_FAIL = 1;
+    RES_CODE_NOT_LEADER = 2;
+}
+
 message LogMetaData {
     uint64 current_term = 1;
     uint32 voted_for = 2;
@@ -13,6 +19,16 @@ message LogMetaData {
 message SnapshotMetaData {
     uint64 last_included_index = 1;
     uint64 last_included_term = 2;
+}
+
+message EndPoint {
+    string host = 1;
+    uint32 port = 2;
+}
+
+message Server {
+    uint32 serverId = 1;
+    EndPoint endPoint = 2;
 }
 
 enum EntryType {
@@ -49,8 +65,8 @@ message AppendEntriesRequest {
 };
 
 message AppendEntriesResponse {
-    uint64 term = 1; // 当前的任期号，用于领导人去更新自己
-    bool success = 2; // 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
+    ResCode resCode = 1; // 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
+    uint64 term = 2; // 当前的任期号，用于领导人去更新自己
     uint64 last_log_index = 3;
 };
 
@@ -66,19 +82,22 @@ message InstallSnapshotRequest {
 }
 
 message InstallSnapshotResponse {
-    uint64 term = 1;
-    bool success = 2;
-}
-
-message EndPoint {
-    string host = 1;
-    uint32 port = 2;
+    ResCode resCode = 1;
+    uint64 term = 2;
 }
 
 message GetLeaderRequest {
 }
 
 message GetLeaderResponse {
-    bool success = 1;
+    ResCode resCode = 1;
     EndPoint leader = 2;
+}
+
+message SetConfigurationRequest {
+    repeated Server servers = 1;
+}
+
+message SetConfigurationResponse {
+    ResCode resCode = 1;
 }

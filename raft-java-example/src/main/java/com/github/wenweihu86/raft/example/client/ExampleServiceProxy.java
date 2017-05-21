@@ -68,7 +68,7 @@ public class ExampleServiceProxy implements ExampleService {
         }
         Raft.GetLeaderRequest request = Raft.GetLeaderRequest.newBuilder().build();
         Raft.GetLeaderResponse response = clusterRaftClientService.getLeader(request);
-        if (response == null || response.getSuccess() == false) {
+        if (response == null || response.getResCode() != Raft.ResCode.RES_CODE_SUCCESS) {
             LOG.warn("getLeader request failed");
         } else {
             leader = response.getLeader();

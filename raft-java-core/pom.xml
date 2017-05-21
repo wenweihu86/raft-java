@@ -4,7 +4,7 @@
 
     <groupId>com.github.wenweihu86.raft</groupId>
     <artifactId>raft-java</artifactId>
-    <version>1.0.0-ALPHA</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>raft-java</name>

@@ -27,13 +27,13 @@ public class RaftClientServiceImpl implements RaftClientService {
     public Raft.GetLeaderResponse getLeader(Raft.GetLeaderRequest request) {
         LOG.info("receive getLeader request");
         Raft.GetLeaderResponse.Builder responseBuilder = Raft.GetLeaderResponse.newBuilder();
-        responseBuilder.setSuccess(true);
+        responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
         Raft.EndPoint.Builder endPointBuilder = Raft.EndPoint.newBuilder();
         raftNode.getLock().lock();
         try {
             int leaderId = raftNode.getLeaderId();
             if (leaderId == 0) {
-                responseBuilder.setSuccess(false);
+                responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
             } else if (leaderId == raftNode.getLocalServer().getServerId()) {
                 endPointBuilder.setHost(raftNode.getLocalServer().getHost());
                 endPointBuilder.setPort(raftNode.getLocalServer().getPort());
@@ -58,6 +58,13 @@ public class RaftClientServiceImpl implements RaftClientService {
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
         }
+        return responseBuilder.build();
+    }
+
+    @Override
+    public Raft.SetConfigurationResponse setConfiguration(Raft.SetConfigurationRequest request) {
+        Raft.SetConfigurationResponse.Builder responseBuilder = Raft.SetConfigurationResponse.newBuilder();
+        responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
         return responseBuilder.build();
     }
 

@@ -364,7 +364,7 @@ public class RaftNode {
 
         LOG.info("AppendEntries response[{}] from server {} " +
                         "in term {} (my term is {})",
-                response.getSuccess(), peer.getServerAddress().getServerId(),
+                response.getResCode(), peer.getServerAddress().getServerId(),
                 response.getTerm(), currentTerm);
 
         lock.lock();
@@ -372,7 +372,7 @@ public class RaftNode {
             if (response.getTerm() > currentTerm) {
                 stepDown(response.getTerm());
             } else {
-                if (response.getSuccess()) {
+                if (response.getResCode() == Raft.ResCode.RES_CODE_SUCCESS) {
                     peer.setMatchIndex(prevLogIndex + numEntries);
                     peer.setNextIndex(peer.getMatchIndex() + 1);
                     advanceCommitIndex();

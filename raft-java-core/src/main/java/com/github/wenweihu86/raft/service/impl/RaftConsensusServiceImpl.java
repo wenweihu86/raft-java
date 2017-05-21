@@ -65,7 +65,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         try {
             Raft.AppendEntriesResponse.Builder responseBuilder = Raft.AppendEntriesResponse.newBuilder();
             responseBuilder.setTerm(raftNode.getCurrentTerm());
-            responseBuilder.setSuccess(false);
+            responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
             responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
             if (request.getTerm() < raftNode.getCurrentTerm()) {
                 return responseBuilder.build();
@@ -79,7 +79,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                                 "at term={} which was occupied by leader={}",
                         request.getServerId(), request.getTerm(), raftNode.getLeaderId());
                 raftNode.stepDown(request.getTerm() + 1);
-                responseBuilder.setSuccess(false);
+                responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
                 responseBuilder.setTerm(request.getTerm() + 1);
                 return responseBuilder.build();
             }
@@ -98,14 +98,14 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             if (request.getEntriesCount() == 0) {
                 LOG.debug("heartbeat request from peer={} at term={}, my term={}",
                         request.getServerId(), request.getTerm(), raftNode.getCurrentTerm());
-                responseBuilder.setSuccess(true);
+                responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
                 responseBuilder.setTerm(raftNode.getCurrentTerm());
                 responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
                 advanceCommitIndex(request);
                 return responseBuilder.build();
             }
 
-            responseBuilder.setSuccess(true);
+            responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
             List<Raft.LogEntry> entries = new ArrayList<>();
             long index = request.getPrevLogIndex();
             for (Raft.LogEntry entry : request.getEntriesList()) {
@@ -130,9 +130,9 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
             advanceCommitIndex(request);
             LOG.info("AppendEntries request from server {} " +
-                            "in term {} (my term is {}), entryCount={} success={}",
+                            "in term {} (my term is {}), entryCount={} resCode={}",
                     request.getServerId(), request.getTerm(), raftNode.getCurrentTerm(),
-                    request.getEntriesCount(), responseBuilder.getSuccess());
+                    request.getEntriesCount(), responseBuilder.getResCode());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();
@@ -192,16 +192,16 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     String snapshotDataDir = raftNode.getSnapshot().getSnapshotDir() + File.separator + "data";
                     raftNode.getStateMachine().readSnapshot(snapshotDataDir);
                 }
-                responseBuilder.setSuccess(true);
+                responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
             } catch (IOException ex) {
                 LOG.warn("io exception, msg={}", ex.getMessage());
             } finally {
                 RaftFileUtils.closeFile(randomAccessFile);
             }
             LOG.info("installSnapshot request from server {} " +
-                            "in term {} (my term is {}), success={}",
+                            "in term {} (my term is {}), resCode={}",
                     request.getServerId(), request.getTerm(),
-                    raftNode.getCurrentTerm(), responseBuilder.getSuccess());
+                    raftNode.getCurrentTerm(), responseBuilder.getResCode());
             return responseBuilder.build();
         } finally {
             raftNode.getLock().unlock();
