@@ -31,6 +31,10 @@ message Server {
     EndPoint endPoint = 2;
 }
 
+message Configuration {
+    repeated Server servers = 1;
+}
+
 enum EntryType {
     ENTRY_TYPE_DATA = 0;
     ENTRY_TYPE_CONFIGURATION= 1;
@@ -94,10 +98,18 @@ message GetLeaderResponse {
     EndPoint leader = 2;
 }
 
-message SetConfigurationRequest {
+message AddPeersRequest {
     repeated Server servers = 1;
 }
 
-message SetConfigurationResponse {
+message AddPeersResponse {
+    ResCode resCode = 1;
+}
+
+message RemovePeersRequest {
+    repeated Server servers = 1;
+}
+
+message RemovePeersResponse {
     ResCode resCode = 1;
 }

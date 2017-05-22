@@ -1,6 +1,5 @@
 package com.github.wenweihu86.raft.service.impl;
 
-import com.github.wenweihu86.raft.Peer;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftClientService;
@@ -8,8 +7,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Created by wenweihu86 on 2017/5/14.
@@ -35,14 +32,14 @@ public class RaftClientServiceImpl implements RaftClientService {
             if (leaderId == 0) {
                 responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
             } else if (leaderId == raftNode.getLocalServer().getServerId()) {
-                endPointBuilder.setHost(raftNode.getLocalServer().getHost());
-                endPointBuilder.setPort(raftNode.getLocalServer().getPort());
+                endPointBuilder.setHost(raftNode.getLocalServer().getEndPoint().getHost());
+                endPointBuilder.setPort(raftNode.getLocalServer().getEndPoint().getPort());
             } else {
-                List<Peer> peers = raftNode.getPeers();
-                for (Peer peer : peers) {
-                    if (peer.getServerAddress().getServerId() == leaderId) {
-                        endPointBuilder.setHost(peer.getServerAddress().getHost());
-                        endPointBuilder.setPort(peer.getServerAddress().getPort());
+                Raft.Configuration configuration = raftNode.getConfiguration();
+                for (Raft.Server server : configuration.getServersList()) {
+                    if (server.getServerId() == leaderId) {
+                        endPointBuilder.setHost(server.getEndPoint().getHost());
+                        endPointBuilder.setPort(server.getEndPoint().getPort());
                         break;
                     }
                 }
@@ -62,8 +59,15 @@ public class RaftClientServiceImpl implements RaftClientService {
     }
 
     @Override
-    public Raft.SetConfigurationResponse setConfiguration(Raft.SetConfigurationRequest request) {
-        Raft.SetConfigurationResponse.Builder responseBuilder = Raft.SetConfigurationResponse.newBuilder();
+    public Raft.AddPeersResponse addPeers(Raft.AddPeersRequest request) {
+        Raft.AddPeersResponse.Builder responseBuilder = Raft.AddPeersResponse.newBuilder();
+        responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
+        return responseBuilder.build();
+    }
+
+    @Override
+    public Raft.RemovePeersResponse removePeers(Raft.RemovePeersRequest request) {
+        Raft.RemovePeersResponse.Builder responseBuilder = Raft.RemovePeersResponse.newBuilder();
         responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
         return responseBuilder.build();
     }

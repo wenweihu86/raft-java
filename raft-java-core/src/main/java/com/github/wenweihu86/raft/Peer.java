@@ -1,5 +1,6 @@
 package com.github.wenweihu86.raft;
 
+import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
 import com.github.wenweihu86.rpc.client.EndPoint;
 import com.github.wenweihu86.rpc.client.RPCClient;
@@ -9,7 +10,7 @@ import com.github.wenweihu86.rpc.client.RPCProxy;
  * Created by wenweihu86 on 2017/5/5.
  */
 public class Peer {
-    private ServerAddress serverAddress;
+    private Raft.Server server;
     private RPCClient rpcClient;
     private RaftConsensusService raftConsensusService;
     // 需要发送给follower的下一个日志条目的索引值，只对leader有效
@@ -18,14 +19,16 @@ public class Peer {
     private long matchIndex;
     private volatile Boolean voteGranted;
 
-    public Peer(ServerAddress serverAddress) {
-        this.serverAddress = serverAddress;
-        this.rpcClient = new RPCClient(new EndPoint(serverAddress.getHost(), serverAddress.getPort()));
+    public Peer(Raft.Server server) {
+        this.server = server;
+        this.rpcClient = new RPCClient(new EndPoint(
+                server.getEndPoint().getHost(),
+                server.getEndPoint().getPort()));
         raftConsensusService = RPCProxy.getProxy(rpcClient, RaftConsensusService.class);
     }
 
-    public ServerAddress getServerAddress() {
-        return serverAddress;
+    public Raft.Server getServer() {
+        return server;
     }
 
     public RPCClient getRpcClient() {
