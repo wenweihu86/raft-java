@@ -8975,15 +8975,25 @@ public final class Raft {
     com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
 
     /**
-     * <code>optional .raft.EndPoint leader = 2;</code>
+     * <code>optional string resMsg = 2;</code>
+     */
+    java.lang.String getResMsg();
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getResMsgBytes();
+
+    /**
+     * <code>optional .raft.EndPoint leader = 3;</code>
      */
     boolean hasLeader();
     /**
-     * <code>optional .raft.EndPoint leader = 2;</code>
+     * <code>optional .raft.EndPoint leader = 3;</code>
      */
     com.github.wenweihu86.raft.proto.Raft.EndPoint getLeader();
     /**
-     * <code>optional .raft.EndPoint leader = 2;</code>
+     * <code>optional .raft.EndPoint leader = 3;</code>
      */
     com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getLeaderOrBuilder();
   }
@@ -9000,6 +9010,7 @@ public final class Raft {
     }
     private GetLeaderResponse() {
       resCode_ = 0;
+      resMsg_ = "";
     }
 
     @java.lang.Override
@@ -9034,6 +9045,12 @@ public final class Raft {
               break;
             }
             case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              resMsg_ = s;
+              break;
+            }
+            case 26: {
               com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder subBuilder = null;
               if (leader_ != null) {
                 subBuilder = leader_.toBuilder();
@@ -9085,22 +9102,56 @@ public final class Raft {
       return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
     }
 
-    public static final int LEADER_FIELD_NUMBER = 2;
+    public static final int RESMSG_FIELD_NUMBER = 2;
+    private volatile java.lang.Object resMsg_;
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    public java.lang.String getResMsg() {
+      java.lang.Object ref = resMsg_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        resMsg_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getResMsgBytes() {
+      java.lang.Object ref = resMsg_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        resMsg_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LEADER_FIELD_NUMBER = 3;
     private com.github.wenweihu86.raft.proto.Raft.EndPoint leader_;
     /**
-     * <code>optional .raft.EndPoint leader = 2;</code>
+     * <code>optional .raft.EndPoint leader = 3;</code>
      */
     public boolean hasLeader() {
       return leader_ != null;
     }
     /**
-     * <code>optional .raft.EndPoint leader = 2;</code>
+     * <code>optional .raft.EndPoint leader = 3;</code>
      */
     public com.github.wenweihu86.raft.proto.Raft.EndPoint getLeader() {
       return leader_ == null ? com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : leader_;
     }
     /**
-     * <code>optional .raft.EndPoint leader = 2;</code>
+     * <code>optional .raft.EndPoint leader = 3;</code>
      */
     public com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getLeaderOrBuilder() {
       return getLeader();
@@ -9121,8 +9172,11 @@ public final class Raft {
       if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
+      if (!getResMsgBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, resMsg_);
+      }
       if (leader_ != null) {
-        output.writeMessage(2, getLeader());
+        output.writeMessage(3, getLeader());
       }
     }
 
@@ -9135,9 +9189,12 @@ public final class Raft {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
+      if (!getResMsgBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, resMsg_);
+      }
       if (leader_ != null) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getLeader());
+          .computeMessageSize(3, getLeader());
       }
       memoizedSize = size;
       return size;
@@ -9156,6 +9213,8 @@ public final class Raft {
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
+      result = result && getResMsg()
+          .equals(other.getResMsg());
       result = result && (hasLeader() == other.hasLeader());
       if (hasLeader()) {
         result = result && getLeader()
@@ -9173,6 +9232,8 @@ public final class Raft {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + RESCODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
+      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (53 * hash) + getResMsg().hashCode();
       if (hasLeader()) {
         hash = (37 * hash) + LEADER_FIELD_NUMBER;
         hash = (53 * hash) + getLeader().hashCode();
@@ -9297,6 +9358,8 @@ public final class Raft {
         super.clear();
         resCode_ = 0;
 
+        resMsg_ = "";
+
         if (leaderBuilder_ == null) {
           leader_ = null;
         } else {
@@ -9326,6 +9389,7 @@ public final class Raft {
       public com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse buildPartial() {
         com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse result = new com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse(this);
         result.resCode_ = resCode_;
+        result.resMsg_ = resMsg_;
         if (leaderBuilder_ == null) {
           result.leader_ = leader_;
         } else {
@@ -9374,6 +9438,10 @@ public final class Raft {
         if (other == com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
+        }
+        if (!other.getResMsg().isEmpty()) {
+          resMsg_ = other.resMsg_;
+          onChanged();
         }
         if (other.hasLeader()) {
           mergeLeader(other.getLeader());
@@ -9448,17 +9516,86 @@ public final class Raft {
         return this;
       }
 
+      private java.lang.Object resMsg_ = "";
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public java.lang.String getResMsg() {
+        java.lang.Object ref = resMsg_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          resMsg_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getResMsgBytes() {
+        java.lang.Object ref = resMsg_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          resMsg_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder setResMsg(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        resMsg_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder clearResMsg() {
+        
+        resMsg_ = getDefaultInstance().getResMsg();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder setResMsgBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        resMsg_ = value;
+        onChanged();
+        return this;
+      }
+
       private com.github.wenweihu86.raft.proto.Raft.EndPoint leader_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
           com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder> leaderBuilder_;
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public boolean hasLeader() {
         return leaderBuilder_ != null || leader_ != null;
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public com.github.wenweihu86.raft.proto.Raft.EndPoint getLeader() {
         if (leaderBuilder_ == null) {
@@ -9468,7 +9605,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public Builder setLeader(com.github.wenweihu86.raft.proto.Raft.EndPoint value) {
         if (leaderBuilder_ == null) {
@@ -9484,7 +9621,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public Builder setLeader(
           com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder builderForValue) {
@@ -9498,7 +9635,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public Builder mergeLeader(com.github.wenweihu86.raft.proto.Raft.EndPoint value) {
         if (leaderBuilder_ == null) {
@@ -9516,7 +9653,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public Builder clearLeader() {
         if (leaderBuilder_ == null) {
@@ -9530,7 +9667,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder getLeaderBuilder() {
         
@@ -9538,7 +9675,7 @@ public final class Raft {
         return getLeaderFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getLeaderOrBuilder() {
         if (leaderBuilder_ != null) {
@@ -9549,7 +9686,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional .raft.EndPoint leader = 2;</code>
+       * <code>optional .raft.EndPoint leader = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder> 
@@ -10360,6 +10497,16 @@ public final class Raft {
      * <code>optional .raft.ResCode resCode = 1;</code>
      */
     com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    java.lang.String getResMsg();
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getResMsgBytes();
   }
   /**
    * Protobuf type {@code raft.AddPeersResponse}
@@ -10374,6 +10521,7 @@ public final class Raft {
     }
     private AddPeersResponse() {
       resCode_ = 0;
+      resMsg_ = "";
     }
 
     @java.lang.Override
@@ -10405,6 +10553,12 @@ public final class Raft {
               int rawValue = input.readEnum();
 
               resCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              resMsg_ = s;
               break;
             }
           }
@@ -10446,6 +10600,40 @@ public final class Raft {
       return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
     }
 
+    public static final int RESMSG_FIELD_NUMBER = 2;
+    private volatile java.lang.Object resMsg_;
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    public java.lang.String getResMsg() {
+      java.lang.Object ref = resMsg_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        resMsg_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getResMsgBytes() {
+      java.lang.Object ref = resMsg_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        resMsg_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -10461,6 +10649,9 @@ public final class Raft {
       if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
+      if (!getResMsgBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, resMsg_);
+      }
     }
 
     public int getSerializedSize() {
@@ -10471,6 +10662,9 @@ public final class Raft {
       if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
+      }
+      if (!getResMsgBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, resMsg_);
       }
       memoizedSize = size;
       return size;
@@ -10489,6 +10683,8 @@ public final class Raft {
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
+      result = result && getResMsg()
+          .equals(other.getResMsg());
       return result;
     }
 
@@ -10501,6 +10697,8 @@ public final class Raft {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + RESCODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
+      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (53 * hash) + getResMsg().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -10621,6 +10819,8 @@ public final class Raft {
         super.clear();
         resCode_ = 0;
 
+        resMsg_ = "";
+
         return this;
       }
 
@@ -10644,6 +10844,7 @@ public final class Raft {
       public com.github.wenweihu86.raft.proto.Raft.AddPeersResponse buildPartial() {
         com.github.wenweihu86.raft.proto.Raft.AddPeersResponse result = new com.github.wenweihu86.raft.proto.Raft.AddPeersResponse(this);
         result.resCode_ = resCode_;
+        result.resMsg_ = resMsg_;
         onBuilt();
         return result;
       }
@@ -10687,6 +10888,10 @@ public final class Raft {
         if (other == com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
+        }
+        if (!other.getResMsg().isEmpty()) {
+          resMsg_ = other.resMsg_;
+          onChanged();
         }
         onChanged();
         return this;
@@ -10754,6 +10959,75 @@ public final class Raft {
       public Builder clearResCode() {
         
         resCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object resMsg_ = "";
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public java.lang.String getResMsg() {
+        java.lang.Object ref = resMsg_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          resMsg_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getResMsgBytes() {
+        java.lang.Object ref = resMsg_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          resMsg_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder setResMsg(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        resMsg_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder clearResMsg() {
+        
+        resMsg_ = getDefaultInstance().getResMsg();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder setResMsgBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        resMsg_ = value;
         onChanged();
         return this;
       }
@@ -11553,6 +11827,16 @@ public final class Raft {
      * <code>optional .raft.ResCode resCode = 1;</code>
      */
     com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    java.lang.String getResMsg();
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getResMsgBytes();
   }
   /**
    * Protobuf type {@code raft.RemovePeersResponse}
@@ -11567,6 +11851,7 @@ public final class Raft {
     }
     private RemovePeersResponse() {
       resCode_ = 0;
+      resMsg_ = "";
     }
 
     @java.lang.Override
@@ -11598,6 +11883,12 @@ public final class Raft {
               int rawValue = input.readEnum();
 
               resCode_ = rawValue;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              resMsg_ = s;
               break;
             }
           }
@@ -11639,6 +11930,40 @@ public final class Raft {
       return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
     }
 
+    public static final int RESMSG_FIELD_NUMBER = 2;
+    private volatile java.lang.Object resMsg_;
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    public java.lang.String getResMsg() {
+      java.lang.Object ref = resMsg_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        resMsg_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string resMsg = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getResMsgBytes() {
+      java.lang.Object ref = resMsg_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        resMsg_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -11654,6 +11979,9 @@ public final class Raft {
       if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
+      if (!getResMsgBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, resMsg_);
+      }
     }
 
     public int getSerializedSize() {
@@ -11664,6 +11992,9 @@ public final class Raft {
       if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
+      }
+      if (!getResMsgBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, resMsg_);
       }
       memoizedSize = size;
       return size;
@@ -11682,6 +12013,8 @@ public final class Raft {
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
+      result = result && getResMsg()
+          .equals(other.getResMsg());
       return result;
     }
 
@@ -11694,6 +12027,8 @@ public final class Raft {
       hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + RESCODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
+      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (53 * hash) + getResMsg().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -11814,6 +12149,8 @@ public final class Raft {
         super.clear();
         resCode_ = 0;
 
+        resMsg_ = "";
+
         return this;
       }
 
@@ -11837,6 +12174,7 @@ public final class Raft {
       public com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse buildPartial() {
         com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse result = new com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse(this);
         result.resCode_ = resCode_;
+        result.resMsg_ = resMsg_;
         onBuilt();
         return result;
       }
@@ -11880,6 +12218,10 @@ public final class Raft {
         if (other == com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
+        }
+        if (!other.getResMsg().isEmpty()) {
+          resMsg_ = other.resMsg_;
+          onChanged();
         }
         onChanged();
         return this;
@@ -11947,6 +12289,75 @@ public final class Raft {
       public Builder clearResCode() {
         
         resCode_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object resMsg_ = "";
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public java.lang.String getResMsg() {
+        java.lang.Object ref = resMsg_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          resMsg_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getResMsgBytes() {
+        java.lang.Object ref = resMsg_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          resMsg_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder setResMsg(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        resMsg_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder clearResMsg() {
+        
+        resMsg_ = getDefaultInstance().getResMsg();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string resMsg = 2;</code>
+       */
+      public Builder setResMsgBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        resMsg_ = value;
         onChanged();
         return this;
       }
@@ -12125,19 +12536,20 @@ public final class Raft {
       "data\030\006 \001(\014\022\020\n\010is_first\030\007 \001(\010\022\017\n\007is_last\030" +
       "\010 \001(\010\"G\n\027InstallSnapshotResponse\022\036\n\007resC" +
       "ode\030\001 \001(\0162\r.raft.ResCode\022\014\n\004term\030\002 \001(\004\"\022" +
-      "\n\020GetLeaderRequest\"S\n\021GetLeaderResponse\022" +
-      "\036\n\007resCode\030\001 \001(\0162\r.raft.ResCode\022\036\n\006leade" +
-      "r\030\002 \001(\0132\016.raft.EndPoint\"0\n\017AddPeersReque",
-      "st\022\035\n\007servers\030\001 \003(\0132\014.raft.Server\"2\n\020Add" +
-      "PeersResponse\022\036\n\007resCode\030\001 \001(\0162\r.raft.Re" +
-      "sCode\"3\n\022RemovePeersRequest\022\035\n\007servers\030\001" +
-      " \003(\0132\014.raft.Server\"5\n\023RemovePeersRespons" +
-      "e\022\036\n\007resCode\030\001 \001(\0162\r.raft.ResCode*K\n\007Res" +
-      "Code\022\024\n\020RES_CODE_SUCCESS\020\000\022\021\n\rRES_CODE_F" +
-      "AIL\020\001\022\027\n\023RES_CODE_NOT_LEADER\020\002*>\n\tEntryT" +
-      "ype\022\023\n\017ENTRY_TYPE_DATA\020\000\022\034\n\030ENTRY_TYPE_C" +
-      "ONFIGURATION\020\001B(\n com.github.wenweihu86." +
-      "raft.protoB\004Raftb\006proto3"
+      "\n\020GetLeaderRequest\"c\n\021GetLeaderResponse\022" +
+      "\036\n\007resCode\030\001 \001(\0162\r.raft.ResCode\022\016\n\006resMs" +
+      "g\030\002 \001(\t\022\036\n\006leader\030\003 \001(\0132\016.raft.EndPoint\"",
+      "0\n\017AddPeersRequest\022\035\n\007servers\030\001 \003(\0132\014.ra" +
+      "ft.Server\"B\n\020AddPeersResponse\022\036\n\007resCode" +
+      "\030\001 \001(\0162\r.raft.ResCode\022\016\n\006resMsg\030\002 \001(\t\"3\n" +
+      "\022RemovePeersRequest\022\035\n\007servers\030\001 \003(\0132\014.r" +
+      "aft.Server\"E\n\023RemovePeersResponse\022\036\n\007res" +
+      "Code\030\001 \001(\0162\r.raft.ResCode\022\016\n\006resMsg\030\002 \001(" +
+      "\t*K\n\007ResCode\022\024\n\020RES_CODE_SUCCESS\020\000\022\021\n\rRE" +
+      "S_CODE_FAIL\020\001\022\027\n\023RES_CODE_NOT_LEADER\020\002*>" +
+      "\n\tEntryType\022\023\n\017ENTRY_TYPE_DATA\020\000\022\034\n\030ENTR" +
+      "Y_TYPE_CONFIGURATION\020\001B(\n com.github.wen",
+      "weihu86.raft.protoB\004Raftb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -12234,7 +12646,7 @@ public final class Raft {
     internal_static_raft_GetLeaderResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_GetLeaderResponse_descriptor,
-        new java.lang.String[] { "ResCode", "Leader", });
+        new java.lang.String[] { "ResCode", "ResMsg", "Leader", });
     internal_static_raft_AddPeersRequest_descriptor =
       getDescriptor().getMessageTypes().get(14);
     internal_static_raft_AddPeersRequest_fieldAccessorTable = new
@@ -12246,7 +12658,7 @@ public final class Raft {
     internal_static_raft_AddPeersResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_AddPeersResponse_descriptor,
-        new java.lang.String[] { "ResCode", });
+        new java.lang.String[] { "ResCode", "ResMsg", });
     internal_static_raft_RemovePeersRequest_descriptor =
       getDescriptor().getMessageTypes().get(16);
     internal_static_raft_RemovePeersRequest_fieldAccessorTable = new
@@ -12258,7 +12670,7 @@ public final class Raft {
     internal_static_raft_RemovePeersResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_RemovePeersResponse_descriptor,
-        new java.lang.String[] { "ResCode", });
+        new java.lang.String[] { "ResCode", "ResMsg", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

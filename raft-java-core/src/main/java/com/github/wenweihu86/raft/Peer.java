@@ -18,6 +18,7 @@ public class Peer {
     // 已复制日志的最高索引值
     private long matchIndex;
     private volatile Boolean voteGranted;
+    private volatile boolean isCatchUp;
 
     public Peer(Raft.Server server) {
         this.server = server;
@@ -25,6 +26,7 @@ public class Peer {
                 server.getEndPoint().getHost(),
                 server.getEndPoint().getPort()));
         raftConsensusService = RPCProxy.getProxy(rpcClient, RaftConsensusService.class);
+        isCatchUp = false;
     }
 
     public Raft.Server getServer() {
@@ -63,4 +65,12 @@ public class Peer {
         this.voteGranted = voteGranted;
     }
 
+
+    public boolean isCatchUp() {
+        return isCatchUp;
+    }
+
+    public void setCatchUp(boolean catchUp) {
+        isCatchUp = catchUp;
+    }
 }

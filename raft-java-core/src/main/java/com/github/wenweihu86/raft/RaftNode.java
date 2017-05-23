@@ -7,6 +7,7 @@ import com.google.protobuf.ByteString;
 import com.github.wenweihu86.raft.storage.Snapshot;
 import com.github.wenweihu86.rpc.client.RPCCallback;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ public class RaftNode {
 
     private Lock lock = new ReentrantLock();
     private Condition commitIndexCondition = lock.newCondition();
+    private Condition catchUpCondition = lock.newCondition();
 
     private ExecutorService executorService;
     private ScheduledExecutorService scheduledExecutorService;
@@ -110,9 +112,9 @@ public class RaftNode {
     }
 
     // client set command
-    public boolean replicate(byte[] data) {
+    public boolean replicate(byte[] data, Raft.EntryType entryType) {
         lock.lock();
-        long newLastLogIndex;
+        long newLastLogIndex = 0;
         try {
             if (state != NodeState.STATE_LEADER) {
                 LOG.debug("I'm not the leader");
@@ -120,29 +122,25 @@ public class RaftNode {
             }
             Raft.LogEntry logEntry = Raft.LogEntry.newBuilder()
                     .setTerm(currentTerm)
-                    .setType(Raft.EntryType.ENTRY_TYPE_DATA)
+                    .setType(entryType)
                     .setData(ByteString.copyFrom(data)).build();
             List<Raft.LogEntry> entries = new ArrayList<>();
             entries.add(logEntry);
             newLastLogIndex = raftLog.append(entries);
             raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
-        } finally {
-            lock.unlock();
-        }
 
-        for (final Peer peer : peerMap.values()) {
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    appendEntries(peer);
-                }
-            });
-        }
+            for (Raft.Server server : configuration.getServersList()) {
+                final Peer peer = peerMap.get(server.getServerId());
+                executorService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        appendEntries(peer);
+                    }
+                });
+            }
 
-        // sync wait commitIndex >= newLastLogIndex
-        // TODO: add timeout
-        lock.lock();
-        try {
+            // sync wait commitIndex >= newLastLogIndex
+            // TODO: add timeout
             while (commitIndex < newLastLogIndex) {
                 commitIndexCondition.await();
             }
@@ -329,7 +327,7 @@ public class RaftNode {
         resetHeartbeatTimer();
     }
 
-    private void appendEntries(Peer peer) {
+    public void appendEntries(Peer peer) {
         Raft.AppendEntriesRequest.Builder requestBuilder = Raft.AppendEntriesRequest.newBuilder();
         long prevLogIndex;
         long numEntries;
@@ -337,23 +335,23 @@ public class RaftNode {
         try {
             long firstLogIndex = raftLog.getFirstLogIndex();
             if (peer.getNextIndex() < firstLogIndex) {
-                installSnapshot(peer);
-                return;
+                lock.unlock();
+                if (!installSnapshot(peer)) {
+                    return;
+                }
             }
+            Validate.isTrue(peer.getNextIndex() >= firstLogIndex);
 
+            lock.lock();
             prevLogIndex = peer.getNextIndex() - 1;
             long prevLogTerm;
             if (prevLogIndex == 0) {
                 prevLogTerm = 0;
-            } else if (prevLogIndex >= firstLogIndex) {
-                prevLogTerm = raftLog.getEntryTerm(prevLogIndex);
             } else if (prevLogIndex == snapshot.getMetaData().getLastIncludedIndex()) {
                 prevLogTerm = snapshot.getMetaData().getLastIncludedTerm();
             } else {
-                installSnapshot(peer);
-                return;
+                prevLogTerm = raftLog.getEntryTerm(prevLogIndex);
             }
-
             requestBuilder.setServerId(localServer.getServerId());
             requestBuilder.setTerm(currentTerm);
             requestBuilder.setPrevLogTerm(prevLogTerm);
@@ -372,7 +370,6 @@ public class RaftNode {
                     peer.getServer().getEndPoint().getPort());
             return;
         }
-
         LOG.info("AppendEntries response[{}] from server {} " +
                         "in term {} (my term is {})",
                 response.getResCode(), peer.getServer().getServerId(),
@@ -386,7 +383,16 @@ public class RaftNode {
                 if (response.getResCode() == Raft.ResCode.RES_CODE_SUCCESS) {
                     peer.setMatchIndex(prevLogIndex + numEntries);
                     peer.setNextIndex(peer.getMatchIndex() + 1);
-                    advanceCommitIndex();
+                    if (ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
+                        advanceCommitIndex();
+                    } else {
+                        if (raftLog.getLastLogIndex() - peer.getMatchIndex() <= RaftOptions.catchupMargin) {
+                            LOG.info("peer catch up the leader");
+                            peer.setCatchUp(true);
+                            // signal the caller thread
+                            catchUpCondition.signalAll();
+                        }
+                    }
                 } else {
                     if (peer.getNextIndex() > 1) {
                         peer.setNextIndex(peer.getNextIndex() - 1);
@@ -450,57 +456,52 @@ public class RaftNode {
         return lastIndex - nextIndex + 1;
     }
 
-    // in lock
-    private void installSnapshot(Peer peer) {
+    private boolean installSnapshot(Peer peer) {
         LOG.info("begin installSnapshot");
-        Raft.InstallSnapshotRequest.Builder requestBuilder = Raft.InstallSnapshotRequest.newBuilder();
-        requestBuilder.setServerId(localServer.getServerId());
-        requestBuilder.setTerm(currentTerm);
-        // send snapshot
-        Raft.InstallSnapshotRequest request = this.buildInstallSnapshotRequest(
-                null, 0, 0);
-        peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
-                request, new InstallSnapshotResponseCallback(peer, request));
-        isInSnapshot = true;
-    }
-
-    private class InstallSnapshotResponseCallback implements RPCCallback<Raft.InstallSnapshotResponse> {
-        private Peer peer;
-        private Raft.InstallSnapshotRequest request;
-
-        public InstallSnapshotResponseCallback(Peer peer, Raft.InstallSnapshotRequest request) {
-            this.peer = peer;
-            this.request = request;
-        }
-
-        @Override
-        public void success(Raft.InstallSnapshotResponse response) {
+        boolean isSuccess = true;
+        boolean isLastRequest = false;
+        String lastFileName = null;
+        long lastOffset = 0;
+        long lastLength = 0;
+        while (!isLastRequest) {
             lock.lock();
+            Raft.InstallSnapshotRequest request = null;
             try {
-                TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
-                Snapshot.SnapshotDataFile lastDataFile = snapshotDataFileMap.get(request.getFileName());
-                if (request.getIsLast() == true) {
-                    isInSnapshot = false;
-                } else {
-                    Raft.InstallSnapshotRequest currentRequest = buildInstallSnapshotRequest(
-                            this.request.getFileName(),
-                            this.request.getOffset(),
-                            this.request.getData().toByteArray().length);
-                    peer.getRpcClient().asyncCall("RaftConsensusService.installSnapshot",
-                            currentRequest, new InstallSnapshotResponseCallback(peer, currentRequest));
-                }
+                isInSnapshot = true;
+                request = buildInstallSnapshotRequest(
+                        lastFileName, lastOffset, lastLength);
             } finally {
                 lock.unlock();
             }
+            if (request == null) {
+                isSuccess = false;
+                break;
+            }
+            if (request.getIsLast()) {
+                isLastRequest = true;
+            }
+            Raft.InstallSnapshotResponse response = peer.getRaftConsensusService().installSnapshot(request);
+            if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_SUCCESS) {
+                lastFileName = request.getFileName();
+                lastOffset = request.getOffset();
+                lastLength = request.getData().size();
+            } else {
+                isSuccess = false;
+                break;
+            }
         }
 
-        @Override
-        public void fail(Throwable e) {
-            LOG.warn("install snapshot failed, msg={}", e.getMessage());
-            lock.lock();
+        lock.lock();
+        try {
+            if (isSuccess) {
+                peer.setNextIndex(snapshot.getMetaData().getLastIncludedIndex() + 1);
+            }
             isInSnapshot = false;
+        } finally {
             lock.unlock();
         }
+        LOG.info("install snapshot success={}", isSuccess);
+        return isSuccess;
     }
 
     // in lock
@@ -681,11 +682,27 @@ public class RaftNode {
         return configuration;
     }
 
+    public void setConfiguration(Raft.Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     public Raft.Server getLocalServer() {
         return localServer;
     }
 
     public NodeState getState() {
         return state;
+    }
+
+    public Map<Integer, Peer> getPeerMap() {
+        return peerMap;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public Condition getCatchUpCondition() {
+        return catchUpCondition;
     }
 }

@@ -4,6 +4,7 @@ import com.github.wenweihu86.raft.example.server.ExampleStateMachine;
 import com.github.wenweihu86.raft.example.server.service.Example;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
 import com.github.wenweihu86.raft.RaftNode;
+import com.github.wenweihu86.raft.proto.Raft;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class ExampleServiceImpl implements ExampleService {
     @Override
     public Example.SetResponse set(Example.SetRequest request) {
         byte[] data = request.toByteArray();
-        boolean success = raftNode.replicate(data);
+        boolean success = raftNode.replicate(data, Raft.EntryType.ENTRY_TYPE_DATA);
         Example.SetResponse response = Example.SetResponse.newBuilder()
                 .setSuccess(success).build();
         try {

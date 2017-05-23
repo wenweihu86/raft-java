@@ -95,7 +95,8 @@ message GetLeaderRequest {
 
 message GetLeaderResponse {
     ResCode resCode = 1;
-    EndPoint leader = 2;
+    string resMsg = 2;
+    EndPoint leader = 3;
 }
 
 message AddPeersRequest {
@@ -104,6 +105,7 @@ message AddPeersRequest {
 
 message AddPeersResponse {
     ResCode resCode = 1;
+    string resMsg = 2;
 }
 
 message RemovePeersRequest {
@@ -112,4 +114,5 @@ message RemovePeersRequest {
 
 message RemovePeersResponse {
     ResCode resCode = 1;
+    string resMsg = 2;
 }

@@ -23,6 +23,9 @@ public class RaftOptions {
     // 单个segment文件大小，默认100m
     public static int maxSegmentFileSize = 100 * 1000 * 1000;
 
+    // follower与leader差距在catchupMargin，才可以参与选举和提供服务
+    public static long catchupMargin = 500;
+
     // raft的log和snapshot父目录，绝对路径
     public static String dataDir = System.getProperty("com.github.wenweihu86.raft.data.dir");
 }
