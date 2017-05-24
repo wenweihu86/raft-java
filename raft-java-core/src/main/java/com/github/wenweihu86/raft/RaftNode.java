@@ -6,6 +6,7 @@ import com.github.wenweihu86.raft.util.ConfigurationUtils;
 import com.google.protobuf.ByteString;
 import com.github.wenweihu86.raft.storage.Snapshot;
 import com.github.wenweihu86.rpc.client.RPCCallback;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -59,23 +60,13 @@ public class RaftNode {
     private ScheduledFuture heartbeatScheduledFuture;
 
     public RaftNode(List<Raft.Server> servers, Raft.Server localServer, StateMachine stateMachine) {
+        configuration.getServersList().addAll(servers);
+        this.localServer = localServer;
+        this.stateMachine = stateMachine;
+
         // load log and snapshot
         raftLog = new SegmentedLog();
         snapshot = new Snapshot();
-
-        if (configuration.getServersCount() == 0) {
-            configuration.getServersList().addAll(servers);
-        }
-        this.localServer = localServer;
-
-        for (Raft.Server server : configuration.getServersList()) {
-            if (server.getServerId() != localServer.getServerId()) {
-                Peer peer = new Peer(server);
-                peer.setNextIndex(raftLog.getLastLogIndex() + 1);
-                peerMap.put(server.getServerId(), peer);
-            }
-        }
-        this.stateMachine = stateMachine;
 
         currentTerm = raftLog.getMetaData().getCurrentTerm();
         votedFor = raftLog.getMetaData().getVotedFor();
@@ -86,14 +77,31 @@ public class RaftNode {
             raftLog.truncatePrefix(snapshot.getMetaData().getLastIncludedIndex() + 1);
         }
         // apply state machine
+        Raft.Configuration snapshotConfiguration = snapshot.getMetaData().getConfiguration();
+        if (snapshotConfiguration.getServersCount() > 0) {
+            configuration = snapshotConfiguration;
+        }
         String snapshotDataDir = snapshot.getSnapshotDir() + File.separator + "data";
         stateMachine.readSnapshot(snapshotDataDir);
         for (long index = snapshot.getMetaData().getLastIncludedIndex() + 1;
              index <= commitIndex; index++) {
             Raft.LogEntry entry = raftLog.getEntry(index);
-            stateMachine.apply(entry.getData().toByteArray());
+            if (entry.getType() == Raft.EntryType.ENTRY_TYPE_DATA) {
+                stateMachine.apply(entry.getData().toByteArray());
+            } else if (entry.getType() == Raft.EntryType.ENTRY_TYPE_CONFIGURATION) {
+                applyConfiguration(entry);
+            }
         }
         lastAppliedIndex = commitIndex;
+
+        for (Raft.Server server : configuration.getServersList()) {
+            if (!peerMap.containsKey(server.getServerId())
+                    && server.getServerId() != localServer.getServerId()) {
+                Peer peer = new Peer(server);
+                peer.setNextIndex(raftLog.getLastLogIndex() + 1);
+                peerMap.put(server.getServerId(), peer);
+            }
+        }
 
         // init thread pool
         executorService = Executors.newFixedThreadPool(peerMap.size() * 2);
@@ -605,7 +613,8 @@ public class RaftNode {
                     LOG.info("start taking snapshot");
                     // take snapshot
                     String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
-                    snapshot.updateMetaData(tmpSnapshotDir, lastAppliedIndex, lastAppliedTerm);
+                    snapshot.updateMetaData(tmpSnapshotDir,
+                            lastAppliedIndex, lastAppliedTerm, configuration);
                     String tmpSnapshotDataDir = tmpSnapshotDir + File.separator + "data";
                     stateMachine.writeSnapshot(tmpSnapshotDataDir);
                     // rename tmp snapshot dir to snapshot dir
@@ -625,6 +634,40 @@ public class RaftNode {
                 isInSnapshot = false;
                 lock.unlock();
             }
+        }
+    }
+
+    // in lock
+    public void applyConfiguration(Raft.LogEntry entry) {
+        try {
+            Raft.Configuration newConfiguration
+                    = Raft.Configuration.parseFrom(entry.getData().toByteArray());
+            configuration = newConfiguration;
+            // update peerMap
+            Set<Integer> newServerIds = new HashSet<>();
+            for (Raft.Server server : newConfiguration.getServersList()) {
+                if (!peerMap.containsKey(server.getServerId())
+                        && server.getServerId() != localServer.getServerId()) {
+                    Peer peer = new Peer(server);
+                    peer.setNextIndex(raftLog.getLastLogIndex() + 1);
+                    peerMap.put(server.getServerId(), peer);
+                }
+                newServerIds.add(server.getServerId());
+            }
+            if (peerMap.size() != newServerIds.size()) {
+                Iterator<Map.Entry<Integer, Peer>> iterator = peerMap.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<Integer, Peer> item = iterator.next();
+                    if (!newServerIds.contains(item.getKey())) {
+                        if (item.getKey() != localServer.getServerId()) {
+                            item.getValue().getRpcClient().stop();
+                        }
+                        iterator.remove();
+                    }
+                }
+            }
+        } catch (InvalidProtocolBufferException ex) {
+            ex.printStackTrace();
         }
     }
 

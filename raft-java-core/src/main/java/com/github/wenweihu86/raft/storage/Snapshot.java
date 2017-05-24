@@ -74,10 +74,14 @@ public class Snapshot {
         }
     }
 
-    public void updateMetaData(String dir, Long lastIncludedIndex, Long lastIncludedTerm) {
+    public void updateMetaData(String dir,
+                               Long lastIncludedIndex,
+                               Long lastIncludedTerm,
+                               Raft.Configuration configuration) {
         Raft.SnapshotMetaData snapshotMetaData = Raft.SnapshotMetaData.newBuilder()
                 .setLastIncludedIndex(lastIncludedIndex)
-                .setLastIncludedTerm(lastIncludedTerm).build();
+                .setLastIncludedTerm(lastIncludedTerm)
+                .setConfiguration(configuration).build();
         this.metaData = snapshotMetaData;
         String snapshotMetaFile = dir + File.separator + "metadata";
         RandomAccessFile randomAccessFile = null;

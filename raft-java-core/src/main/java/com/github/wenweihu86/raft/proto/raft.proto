@@ -10,16 +10,10 @@ enum ResCode {
     RES_CODE_NOT_LEADER = 2;
 }
 
-message LogMetaData {
-    uint64 current_term = 1;
-    uint32 voted_for = 2;
-    uint64 first_log_index = 3;
-}
-
-message SnapshotMetaData {
-    uint64 last_included_index = 1;
-    uint64 last_included_term = 2;
-}
+enum EntryType {
+    ENTRY_TYPE_DATA = 0;
+    ENTRY_TYPE_CONFIGURATION= 1;
+};
 
 message EndPoint {
     string host = 1;
@@ -35,10 +29,17 @@ message Configuration {
     repeated Server servers = 1;
 }
 
-enum EntryType {
-    ENTRY_TYPE_DATA = 0;
-    ENTRY_TYPE_CONFIGURATION= 1;
-};
+message LogMetaData {
+    uint64 current_term = 1;
+    uint32 voted_for = 2;
+    uint64 first_log_index = 3;
+}
+
+message SnapshotMetaData {
+    uint64 last_included_index = 1;
+    uint64 last_included_term = 2;
+    Configuration configuration = 3;
+}
 
 message LogEntry {
     uint64 term = 1;

@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by wenweihu86 on 2017/5/6.
  */
+@SuppressWarnings("unchecked")
 public class RaftFileUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftFileUtils.class);

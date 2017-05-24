@@ -164,7 +164,8 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             if (request.getIsFirst()) {
                 raftNode.getSnapshot().updateMetaData(tmpSnapshotDir,
                         request.getSnapshotMetaData().getLastIncludedIndex(),
-                        request.getSnapshotMetaData().getLastIncludedTerm());
+                        request.getSnapshotMetaData().getLastIncludedTerm(),
+                        request.getSnapshotMetaData().getConfiguration());
             }
             // write to file
             RandomAccessFile randomAccessFile = null;
@@ -222,34 +223,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 if (entry.getType() == Raft.EntryType.ENTRY_TYPE_DATA) {
                     raftNode.getStateMachine().apply(entry.getData().toByteArray());
                 } else if (entry.getType() == Raft.EntryType.ENTRY_TYPE_CONFIGURATION) {
-                    try {
-                        Raft.Configuration newConfiguration
-                                = Raft.Configuration.parseFrom(entry.getData().toByteArray());
-                        raftNode.setConfiguration(newConfiguration);
-                        // update peerMap
-                        Set<Integer> newServerIds = new HashSet<>();
-                        for (Raft.Server server : newConfiguration.getServersList()) {
-                            if (!raftNode.getPeerMap().containsKey(server.getServerId())) {
-                                Peer peer = new Peer(server);
-                                peer.setNextIndex(raftNode.getRaftLog().getLastLogIndex() + 1);
-                                raftNode.getPeerMap().put(server.getServerId(), peer);
-                            }
-                            newServerIds.add(server.getServerId());
-                        }
-                        if (raftNode.getPeerMap().size() != newServerIds.size()) {
-                            Iterator<Map.Entry<Integer, Peer>> iterator
-                                    = raftNode.getPeerMap().entrySet().iterator();
-                            while (iterator.hasNext()) {
-                                Map.Entry<Integer, Peer> item = iterator.next();
-                                if (!newServerIds.contains(item.getKey())) {
-                                    iterator.remove();
-                                }
-                            }
-                        }
-                    } catch (InvalidProtocolBufferException ex) {
-                        ex.printStackTrace();
-                    }
-
+                    raftNode.applyConfiguration(entry);
                 }
                 raftNode.setLastAppliedIndex(index);
             }
