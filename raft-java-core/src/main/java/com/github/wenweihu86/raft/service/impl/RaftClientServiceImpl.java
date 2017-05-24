@@ -67,7 +67,8 @@ public class RaftClientServiceImpl implements RaftClientService {
     public Raft.AddPeersResponse addPeers(Raft.AddPeersRequest request) {
         Raft.AddPeersResponse.Builder responseBuilder = Raft.AddPeersResponse.newBuilder();
         responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
-        if (request.getServersList().size() % 2 != 0) {
+        if (request.getServersCount() == 0
+                || request.getServersCount() % 2 != 0) {
             LOG.warn("added server's size can only multiple of 2");
             responseBuilder.setResMsg("added server's size can only multiple of 2");
             return responseBuilder.build();
@@ -111,7 +112,7 @@ public class RaftClientServiceImpl implements RaftClientService {
                         catchUpNum++;
                     }
                 }
-                if (catchUpNum == 2) {
+                if (catchUpNum == requestPeers.size()) {
                     break;
                 }
             }
@@ -119,27 +120,33 @@ public class RaftClientServiceImpl implements RaftClientService {
             raftNode.getLock().unlock();
         }
 
-        if (catchUpNum == 2) {
+        if (catchUpNum == requestPeers.size()) {
             raftNode.getLock().lock();
-            byte[] configurationData = null;
+            byte[] configurationData;
+            Raft.Configuration newConfiguration;
             try {
-                Raft.Configuration newConfiguration = Raft.Configuration.newBuilder(raftNode.getConfiguration())
+                newConfiguration = Raft.Configuration.newBuilder(raftNode.getConfiguration())
                         .addAllServers(request.getServersList()).build();
-                raftNode.setConfiguration(newConfiguration);
-                configurationData = raftNode.getConfiguration().toByteArray();
+                configurationData = newConfiguration.toByteArray();
             } finally {
                 raftNode.getLock().unlock();
             }
             boolean success = raftNode.replicate(configurationData, Raft.EntryType.ENTRY_TYPE_CONFIGURATION);
             if (success) {
+                raftNode.getLock().lock();
+                try {
+                    raftNode.setConfiguration(newConfiguration);
+                } finally {
+                    raftNode.getLock().unlock();
+                }
                 responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
             }
         }
         if (responseBuilder.getResCode() != Raft.ResCode.RES_CODE_SUCCESS) {
-            // TODO: close connections of request peers
             raftNode.getLock().lock();
             try {
                 for (Peer peer : requestPeers) {
+                    peer.getRpcClient().stop();
                     raftNode.getPeerMap().remove(peer.getServer().getServerId());
                 }
             } finally {
@@ -163,7 +170,8 @@ public class RaftClientServiceImpl implements RaftClientService {
         Raft.RemovePeersResponse.Builder responseBuilder = Raft.RemovePeersResponse.newBuilder();
         responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);
 
-        if (request.getServersList().size() % 2 != 0) {
+        if (request.getServersCount() == 0
+                || request.getServersCount() % 2 != 0) {
             LOG.warn("removed server's size can only multiple of 2");
             responseBuilder.setResMsg("removed server's size can only multiple of 2");
             return responseBuilder.build();
@@ -183,7 +191,7 @@ public class RaftClientServiceImpl implements RaftClientService {
 
         raftNode.getLock().lock();
         Raft.Configuration newConfiguration;
-        byte[] configurationData = null;
+        byte[] configurationData;
         try {
             newConfiguration = ConfigurationUtils.removeServers(
                     raftNode.getConfiguration(), request.getServersList());
@@ -196,10 +204,13 @@ public class RaftClientServiceImpl implements RaftClientService {
             raftNode.getLock().lock();
             try {
                 raftNode.setConfiguration(newConfiguration);
+                for (Raft.Server server : request.getServersList()) {
+                    Peer peer = raftNode.getPeerMap().remove(server.getServerId());
+                    peer.getRpcClient().stop();
+                }
             } finally {
                 raftNode.getLock().unlock();
             }
-            // TODO: close connections of request peers
             responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
         }
 

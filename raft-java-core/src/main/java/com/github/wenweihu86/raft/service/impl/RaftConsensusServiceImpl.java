@@ -1,9 +1,11 @@
 package com.github.wenweihu86.raft.service.impl;
 
+import com.github.wenweihu86.raft.Peer;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wenweihu86 on 2017/5/2.
@@ -217,8 +218,39 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             // apply state machine
             for (long index = raftNode.getLastAppliedIndex() + 1;
                  index <= raftNode.getCommitIndex(); index++) {
-                raftNode.getStateMachine().apply(
-                        raftNode.getRaftLog().getEntry(index).getData().toByteArray());
+                Raft.LogEntry entry = raftNode.getRaftLog().getEntry(index);
+                if (entry.getType() == Raft.EntryType.ENTRY_TYPE_DATA) {
+                    raftNode.getStateMachine().apply(entry.getData().toByteArray());
+                } else if (entry.getType() == Raft.EntryType.ENTRY_TYPE_CONFIGURATION) {
+                    try {
+                        Raft.Configuration newConfiguration
+                                = Raft.Configuration.parseFrom(entry.getData().toByteArray());
+                        raftNode.setConfiguration(newConfiguration);
+                        // update peerMap
+                        Set<Integer> newServerIds = new HashSet<>();
+                        for (Raft.Server server : newConfiguration.getServersList()) {
+                            if (!raftNode.getPeerMap().containsKey(server.getServerId())) {
+                                Peer peer = new Peer(server);
+                                peer.setNextIndex(raftNode.getRaftLog().getLastLogIndex() + 1);
+                                raftNode.getPeerMap().put(server.getServerId(), peer);
+                            }
+                            newServerIds.add(server.getServerId());
+                        }
+                        if (raftNode.getPeerMap().size() != newServerIds.size()) {
+                            Iterator<Map.Entry<Integer, Peer>> iterator
+                                    = raftNode.getPeerMap().entrySet().iterator();
+                            while (iterator.hasNext()) {
+                                Map.Entry<Integer, Peer> item = iterator.next();
+                                if (!newServerIds.contains(item.getKey())) {
+                                    iterator.remove();
+                                }
+                            }
+                        }
+                    } catch (InvalidProtocolBufferException ex) {
+                        ex.printStackTrace();
+                    }
+
+                }
                 raftNode.setLastAppliedIndex(index);
             }
         }

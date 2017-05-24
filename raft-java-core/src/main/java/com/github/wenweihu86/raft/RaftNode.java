@@ -129,8 +129,7 @@ public class RaftNode {
             newLastLogIndex = raftLog.append(entries);
             raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
 
-            for (Raft.Server server : configuration.getServersList()) {
-                final Peer peer = peerMap.get(server.getServerId());
+            for (final Peer peer : peerMap.values()) {
                 executorService.submit(new Runnable() {
                     @Override
                     public void run() {
@@ -140,9 +139,12 @@ public class RaftNode {
             }
 
             // sync wait commitIndex >= newLastLogIndex
-            // TODO: add timeout
+            long startTime = System.currentTimeMillis();
             while (commitIndex < newLastLogIndex) {
-                commitIndexCondition.await();
+                if (System.currentTimeMillis() - startTime >= RaftOptions.maxAwaitTimeout) {
+                    break;
+                }
+                commitIndexCondition.await(RaftOptions.maxAwaitTimeout, TimeUnit.MILLISECONDS);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -26,6 +26,9 @@ public class RaftOptions {
     // follower与leader差距在catchupMargin，才可以参与选举和提供服务
     public static long catchupMargin = 500;
 
+    // replicate最大等待超时时间，单位ms
+    public static long maxAwaitTimeout = 1000;
+
     // raft的log和snapshot父目录，绝对路径
     public static String dataDir = System.getProperty("com.github.wenweihu86.raft.data.dir");
 }
