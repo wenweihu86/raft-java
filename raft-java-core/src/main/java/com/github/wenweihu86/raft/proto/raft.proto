@@ -117,3 +117,13 @@ message RemovePeersResponse {
     ResCode resCode = 1;
     string resMsg = 2;
 }
+
+message GetConfigurationRequest {
+}
+
+message GetConfigurationResponse {
+    ResCode resCode = 1;
+    string resMsg = 2;
+    repeated Server servers = 3;
+    Server leader = 4;
+}

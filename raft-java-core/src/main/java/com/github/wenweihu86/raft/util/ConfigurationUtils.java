@@ -36,4 +36,13 @@ public class ConfigurationUtils {
         return confBuilder.build();
     }
 
+    public static Raft.Server getServer(Raft.Configuration configuration, int serverId) {
+        for (Raft.Server server : configuration.getServersList()) {
+            if (server.getServerId() == serverId) {
+                return server;
+            }
+        }
+        return null;
+    }
+
 }

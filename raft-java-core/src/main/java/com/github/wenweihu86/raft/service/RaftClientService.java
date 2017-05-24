@@ -9,6 +9,8 @@ public interface RaftClientService {
 
     Raft.GetLeaderResponse getLeader(Raft.GetLeaderRequest request);
 
+    Raft.GetConfigurationResponse getConfiguration(Raft.GetConfigurationRequest request);
+
     Raft.AddPeersResponse addPeers(Raft.AddPeersRequest request);
 
     Raft.RemovePeersResponse removePeers(Raft.RemovePeersRequest request);

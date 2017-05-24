@@ -64,6 +64,30 @@ public class RaftClientServiceImpl implements RaftClientService {
     }
 
     @Override
+    public Raft.GetConfigurationResponse getConfiguration(Raft.GetConfigurationRequest request) {
+        Raft.GetConfigurationResponse.Builder responseBuilder = Raft.GetConfigurationResponse.newBuilder();
+        responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
+        raftNode.getLock().lock();
+        try {
+            Raft.Configuration configuration = raftNode.getConfiguration();
+            Raft.Server leader = ConfigurationUtils.getServer(configuration, raftNode.getLeaderId());
+            responseBuilder.setLeader(leader);
+            responseBuilder.addAllServers(configuration.getServersList());
+        } finally {
+            raftNode.getLock().unlock();
+        }
+        Raft.GetConfigurationResponse response = responseBuilder.build();
+        try {
+            LOG.info("getConfiguration request={} response={}",
+                    PRINTER.print(request), PRINTER.print(response));
+        } catch (InvalidProtocolBufferException ex) {
+            ex.printStackTrace();
+        }
+
+        return response;
+    }
+
+    @Override
     public Raft.AddPeersResponse addPeers(Raft.AddPeersRequest request) {
         Raft.AddPeersResponse.Builder responseBuilder = Raft.AddPeersResponse.newBuilder();
         responseBuilder.setResCode(Raft.ResCode.RES_CODE_FAIL);

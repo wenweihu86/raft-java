@@ -19,8 +19,7 @@ public class ClientMain {
         }
 
         // init rpc client
-        RPCClient rpcClient = new RPCClient(ipPorts);
-        ExampleService exampleService = new ExampleServiceProxy(rpcClient);
+        ExampleService exampleService = new ExampleServiceProxy(ipPorts);
         final JsonFormat.Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
 
         // set
