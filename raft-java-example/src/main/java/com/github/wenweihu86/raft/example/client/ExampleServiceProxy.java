@@ -46,13 +46,15 @@ public class ExampleServiceProxy implements ExampleService {
         int maxTryCount = 3;
         int currentTryCount = 0;
         Example.SetResponse response = leaderExampleService.set(request);
-        while (response != null && !response.getSuccess() && currentTryCount++ < maxTryCount) {
+        while (response != null && !response.getSuccess() && ++currentTryCount < maxTryCount) {
             updateConfiguration();
             response = leaderExampleService.set(request);
         }
         try {
-            LOG.info("set request={} response={}",
-                    PRINTER.print(request), PRINTER.print(response));
+            if (response != null) {
+                LOG.info("set request={} response={}",
+                        PRINTER.print(request), PRINTER.print(response));
+            }
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
         }
@@ -75,8 +77,16 @@ public class ExampleServiceProxy implements ExampleService {
     private boolean updateConfiguration() {
         Raft.GetConfigurationRequest request = Raft.GetConfigurationRequest.newBuilder().build();
         Raft.GetConfigurationResponse response = clusterRaftClientService.getConfiguration(request);
+        try {
+            LOG.info("getConfiguration request={} response={}",
+                    PRINTER.print(request), PRINTER.print(response));
+        } catch (InvalidProtocolBufferException ex) {
+            ex.printStackTrace();
+        }
         if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_SUCCESS) {
-            leaderRPCClient.stop();
+            if (leaderRPCClient != null) {
+                leaderRPCClient.stop();
+            }
             leader = response.getLeader();
             leaderRPCClient = new RPCClient(convertEndPoint(leader.getEndPoint()));
             leaderRaftClientService = RPCProxy.getProxy(leaderRPCClient, RaftClientService.class);
@@ -88,14 +98,6 @@ public class ExampleServiceProxy implements ExampleService {
 
     private EndPoint convertEndPoint(Raft.EndPoint endPoint) {
         return new EndPoint(endPoint.getHost(), endPoint.getPort());
-    }
-
-    private List<EndPoint> convertEndPoints(List<Raft.Server> servers) {
-        List<EndPoint> endPoints = new ArrayList<>(servers.size());
-        for (Raft.Server server : servers) {
-            endPoints.add(convertEndPoint(server.getEndPoint()));
-        }
-        return endPoints;
     }
 
 }

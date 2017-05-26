@@ -31,7 +31,7 @@ public class RaftNode {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
 
-    private Raft.Configuration configuration = Raft.Configuration.newBuilder().build();
+    private Raft.Configuration configuration;
     private Map<Integer, Peer> peerMap = new HashMap<>();
     private Raft.Server localServer;
     private StateMachine stateMachine;
@@ -60,7 +60,12 @@ public class RaftNode {
     private ScheduledFuture heartbeatScheduledFuture;
 
     public RaftNode(List<Raft.Server> servers, Raft.Server localServer, StateMachine stateMachine) {
-        configuration.getServersList().addAll(servers);
+        Raft.Configuration.Builder confBuilder = Raft.Configuration.newBuilder();
+        for (Raft.Server server : servers) {
+            confBuilder.addServers(server);
+        }
+        configuration = confBuilder.build();
+
         this.localServer = localServer;
         this.stateMachine = stateMachine;
 
@@ -205,6 +210,9 @@ public class RaftNode {
         }
 
         for (Raft.Server server : configuration.getServersList()) {
+            if (server.getServerId() == localServer.getServerId()) {
+                continue;
+            }
             final Peer peer = peerMap.get(server.getServerId());
             executorService.submit(new Runnable() {
                 @Override
@@ -267,13 +275,16 @@ public class RaftNode {
                             voteGrantedNum += 1;
                         }
                         for (Raft.Server server : configuration.getServersList()) {
+                            if (server.getServerId() == localServer.getServerId()) {
+                                continue;
+                            }
                             Peer peer1 = peerMap.get(server.getServerId());
                             if (peer1.isVoteGranted() != null && peer1.isVoteGranted() == true) {
                                 voteGrantedNum += 1;
                             }
                         }
                         LOG.info("voteGrantedNum={}", voteGrantedNum);
-                        if (voteGrantedNum > (configuration.getServersCount() + 1) / 2) {
+                        if (voteGrantedNum > configuration.getServersCount() / 2) {
                             LOG.info("Got majority vote, serverId={} become leader", localServer.getServerId());
                             becomeLeader();
                         }
@@ -326,6 +337,9 @@ public class RaftNode {
     private void startNewHeartbeat() {
         LOG.debug("start new heartbeat");
         for (Raft.Server server : configuration.getServersList()) {
+            if (server.getServerId() == localServer.getServerId()) {
+                continue;
+            }
             final Peer peer = peerMap.get(server.getServerId());
             executorService.submit(new Runnable() {
                 @Override
@@ -432,7 +446,7 @@ public class RaftNode {
         }
         matchIndexes[i] = raftLog.getLastLogIndex();
         Arrays.sort(matchIndexes);
-        long newCommitIndex = matchIndexes[(peerNum + 1 + 1) / 2];
+        long newCommitIndex = matchIndexes[peerNum / 2];
         LOG.debug("newCommitIndex={}, oldCommitIndex={}", newCommitIndex, commitIndex);
         if (raftLog.getEntryTerm(newCommitIndex) != currentTerm) {
             LOG.debug("newCommitIndexTerm={}, currentTerm={}",
@@ -587,6 +601,10 @@ public class RaftNode {
             raftLog.updateMetaData(currentTerm, votedFor, null);
         }
         state = NodeState.STATE_FOLLOWER;
+        // stop heartbeat
+        if (heartbeatScheduledFuture != null && !heartbeatScheduledFuture.isDone()) {
+            heartbeatScheduledFuture.cancel(true);
+        }
         resetElectionTimer();
     }
 
