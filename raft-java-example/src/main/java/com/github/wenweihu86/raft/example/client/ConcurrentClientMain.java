@@ -17,13 +17,13 @@ public class ConcurrentClientMain {
     public static void main(String[] args) {
         // parse args
         String ipPorts = args[0];
-        final ExampleService exampleService = new ExampleServiceProxy(ipPorts);
 
         long startTime = System.currentTimeMillis();
         // set
         ExecutorService writeThreadPool = Executors.newFixedThreadPool(3);
         Future<?>[] future = new Future[3];
         for (int i = 0; i < 3; i++) {
+            ExampleService exampleService = new ExampleServiceProxy(ipPorts);
             future[i] = writeThreadPool.submit(new SetTask(exampleService, i));
         }
 
@@ -46,6 +46,7 @@ public class ConcurrentClientMain {
         startTime = System.currentTimeMillis();
         ExecutorService readThreadPool = Executors.newFixedThreadPool(3);
         for (int i = 0; i < 3; i++) {
+            ExampleService exampleService = new ExampleServiceProxy(ipPorts);
             future[i] = readThreadPool.submit(new GetTask(exampleService, i));
         }
 
