@@ -1,4 +1,4 @@
-package main.java.com.github.wenweihu86.raft.admin;
+package com.github.wenweihu86.raft.admin;
 
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftClientService;
