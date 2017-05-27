@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+java -cp dependency/*:raft-java-admin-1.0.0-SNAPSHOT.jar com.github.wenweihu86.raft.admin.AdminMain "127.0.0.1:8050,127.0.0.1:8051,127.0.0.1:8052" conf get
+
+java -cp dependency/*:raft-java-admin-1.0.0-SNAPSHOT.jar com.github.wenweihu86.raft.admin.AdminMain "127.0.0.1:8050,127.0.0.1:8051,127.0.0.1:8052" conf add "127.0.0.1:8054:4,127.0.0.1:8055:5"
+
+java -cp dependency/*:raft-java-admin-1.0.0-SNAPSHOT.jar com.github.wenweihu86.raft.admin.AdminMain "127.0.0.1:8050,127.0.0.1:8051,127.0.0.1:8052" conf del "127.0.0.1:8054:4,127.0.0.1:8055:5"

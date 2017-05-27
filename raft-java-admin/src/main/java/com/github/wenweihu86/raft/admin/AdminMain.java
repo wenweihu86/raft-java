@@ -34,7 +34,11 @@ public class AdminMain {
             Raft.GetConfigurationRequest request = Raft.GetConfigurationRequest.newBuilder().build();
             Raft.GetConfigurationResponse response = client.getConfiguration(request);
             try {
-                System.out.println(PRINTER.print(response));
+                if (response != null) {
+                    System.out.println(PRINTER.print(response));
+                } else {
+                    System.out.printf("response == null");
+                }
             } catch (InvalidProtocolBufferException ex) {
                 ex.printStackTrace();
             }
@@ -45,7 +49,11 @@ public class AdminMain {
                     .addAllServers(serverList).build();
             Raft.AddPeersResponse response = client.addPeers(request);
             try {
-                System.out.println(PRINTER.print(response));
+                if (response != null) {
+                    System.out.println(PRINTER.print(response));
+                } else {
+                    System.out.printf("response == null");
+                }
             } catch (InvalidProtocolBufferException ex) {
                 ex.printStackTrace();
             }
@@ -55,11 +63,16 @@ public class AdminMain {
                     .addAllServers(serverList).build();
             Raft.RemovePeersResponse response = client.removePeers(request);
             try {
-                System.out.println(PRINTER.print(response));
+                if (response != null) {
+                    System.out.println(PRINTER.print(response));
+                } else {
+                    System.out.printf("response == null");
+                }
             } catch (InvalidProtocolBufferException ex) {
                 ex.printStackTrace();
             }
         }
+        ((RaftClientServiceProxy) client).stop();
     }
 
     public static List<Raft.Server> parseServers(String serversString) {

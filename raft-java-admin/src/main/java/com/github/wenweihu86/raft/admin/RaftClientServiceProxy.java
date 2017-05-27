@@ -4,6 +4,7 @@ import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftClientService;
 import com.github.wenweihu86.rpc.client.EndPoint;
 import com.github.wenweihu86.rpc.client.RPCClient;
+import com.github.wenweihu86.rpc.client.RPCClientOptions;
 import com.github.wenweihu86.rpc.client.RPCProxy;
 import com.google.protobuf.util.JsonFormat;
 import org.slf4j.Logger;
@@ -19,17 +20,22 @@ public class RaftClientServiceProxy implements RaftClientService {
     private static final Logger LOG = LoggerFactory.getLogger(RaftClientServiceProxy.class);
     private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
 
-    protected List<Raft.Server> cluster;
-    protected RPCClient clusterRPCClient;
-    protected RaftClientService clusterRaftClientService;
+    private List<Raft.Server> cluster;
+    private RPCClient clusterRPCClient;
+    private RaftClientService clusterRaftClientService;
 
-    protected Raft.Server leader;
-    protected RPCClient leaderRPCClient;
-    protected RaftClientService leaderRaftClientService;
+    private Raft.Server leader;
+    private RPCClient leaderRPCClient;
+    private RaftClientService leaderRaftClientService;
+
+    private RPCClientOptions rpcClientOptions = new RPCClientOptions();
 
     // servers format is 10.1.1.1:8888,10.2.2.2:9999
     public RaftClientServiceProxy(String ipPorts) {
-        clusterRPCClient = new RPCClient(ipPorts);
+        rpcClientOptions.setConnectTimeoutMillis(1000); // 1s
+        rpcClientOptions.setReadTimeoutMillis(10000); // 10s
+        rpcClientOptions.setWriteTimeoutMillis(1000); // 1s
+        clusterRPCClient = new RPCClient(ipPorts, rpcClientOptions);
         clusterRaftClientService = RPCProxy.getProxy(clusterRPCClient, RaftClientService.class);
         updateConfiguration();
     }
@@ -49,8 +55,9 @@ public class RaftClientServiceProxy implements RaftClientService {
         Raft.AddPeersResponse response = leaderRaftClientService.addPeers(request);
         if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_NOT_LEADER) {
             updateConfiguration();
+            response = leaderRaftClientService.addPeers(request);
         }
-        return leaderRaftClientService.addPeers(request);
+        return response;
     }
 
     @Override
@@ -58,17 +65,29 @@ public class RaftClientServiceProxy implements RaftClientService {
         Raft.RemovePeersResponse response = leaderRaftClientService.removePeers(request);
         if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_NOT_LEADER) {
             updateConfiguration();
+            response = leaderRaftClientService.removePeers(request);
         }
-        return leaderRaftClientService.removePeers(request);
+        return response;
+    }
+
+    public void stop() {
+        if (leaderRPCClient != null) {
+            leaderRPCClient.stop();
+        }
+        if (clusterRPCClient != null) {
+            clusterRPCClient.stop();
+        }
     }
 
     private boolean updateConfiguration() {
         Raft.GetConfigurationRequest request = Raft.GetConfigurationRequest.newBuilder().build();
         Raft.GetConfigurationResponse response = clusterRaftClientService.getConfiguration(request);
         if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_SUCCESS) {
-            leaderRPCClient.stop();
+            if (leaderRPCClient != null) {
+                leaderRPCClient.stop();
+            }
             leader = response.getLeader();
-            leaderRPCClient = new RPCClient(convertEndPoint(leader.getEndPoint()));
+            leaderRPCClient = new RPCClient(convertEndPoint(leader.getEndPoint()), rpcClientOptions);
             leaderRaftClientService = RPCProxy.getProxy(leaderRPCClient, RaftClientService.class);
             return true;
         }

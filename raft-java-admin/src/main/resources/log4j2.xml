@@ -12,9 +12,9 @@
         </Console>
 
         <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
-        <RollingFile name="RollingFile" fileName="logs/raft_example.log" immediateFlush="false"
+        <RollingFile name="RollingFile" fileName="logs/raft_admin.log" immediateFlush="false"
                      bufferSize="65536"
-                     filePattern="logs/raft_example.log.%d{yyyy-MM-dd}" append="true">
+                     filePattern="logs/raft_admin.log.%d{yyyy-MM-dd}" append="true">
             <PatternLayout>
                 <Pattern>%d %p [%t]\t%m%n</Pattern>
             </PatternLayout>
