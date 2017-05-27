@@ -74,6 +74,15 @@ public class ExampleServiceProxy implements ExampleService {
         return response;
     }
 
+    public void stop() {
+        if (leaderRPCClient != null) {
+            leaderRPCClient.stop();
+        }
+        if (clusterRPCClient != null) {
+            clusterRPCClient.stop();
+        }
+    }
+
     private boolean updateConfiguration() {
         Raft.GetConfigurationRequest request = Raft.GetConfigurationRequest.newBuilder().build();
         Raft.GetConfigurationResponse response = clusterRaftClientService.getConfiguration(request);

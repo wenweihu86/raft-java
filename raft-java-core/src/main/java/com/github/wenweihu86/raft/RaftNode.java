@@ -360,13 +360,18 @@ public class RaftNode {
             long firstLogIndex = raftLog.getFirstLogIndex();
             if (peer.getNextIndex() < firstLogIndex) {
                 lock.unlock();
-                if (!installSnapshot(peer)) {
+                boolean success;
+                try {
+                    success = installSnapshot(peer);
+                } finally {
+                    lock.lock();
+                }
+                if (!success) {
                     return;
                 }
             }
             Validate.isTrue(peer.getNextIndex() >= firstLogIndex);
 
-            lock.lock();
             prevLogIndex = peer.getNextIndex() - 1;
             long prevLogTerm;
             if (prevLogIndex == 0) {

@@ -45,5 +45,6 @@ public class ClientMain {
             }
         }
 
+        ((ExampleServiceProxy) exampleService).stop();
     }
 }
