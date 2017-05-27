@@ -54,6 +54,8 @@ public class ExampleServiceProxy implements ExampleService {
             if (response != null) {
                 LOG.info("set request={} response={}",
                         PRINTER.print(request), PRINTER.print(response));
+            } else {
+                LOG.info("response == null");
             }
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
@@ -66,8 +68,12 @@ public class ExampleServiceProxy implements ExampleService {
         Example.GetResponse response = Example.GetResponse.newBuilder().build();
         try {
             response = clusterExampleService.get(request);
-            LOG.info("get request={} response={}",
-                    PRINTER.print(request), PRINTER.print(response));
+            if (response != null) {
+                LOG.info("get request={} response={}",
+                        PRINTER.print(request), PRINTER.print(response));
+            } else {
+                LOG.info("response == null");
+            }
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
         }
@@ -87,8 +93,12 @@ public class ExampleServiceProxy implements ExampleService {
         Raft.GetConfigurationRequest request = Raft.GetConfigurationRequest.newBuilder().build();
         Raft.GetConfigurationResponse response = clusterRaftClientService.getConfiguration(request);
         try {
-            LOG.info("getConfiguration request={} response={}",
-                    PRINTER.print(request), PRINTER.print(response));
+            if (response != null) {
+                LOG.info("getConfiguration request={} response={}",
+                        PRINTER.print(request), PRINTER.print(response));
+            } else {
+                LOG.info("response == null");
+            }
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
         }
