@@ -1,11 +1,12 @@
 package com.github.wenweihu86.raft.service.impl;
 
-import com.github.wenweihu86.raft.Peer;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.Raft;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
+import com.github.wenweihu86.raft.util.ConfigurationUtils;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,8 @@ import java.util.*;
 public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftConsensusServiceImpl.class);
+    private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
+
     private RaftNode raftNode;
 
     public RaftConsensusServiceImpl(RaftNode node) {
@@ -34,6 +37,9 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             Raft.VoteResponse.Builder responseBuilder = Raft.VoteResponse.newBuilder();
             responseBuilder.setGranted(false);
             responseBuilder.setTerm(raftNode.getCurrentTerm());
+            if (!ConfigurationUtils.containsServer(raftNode.getConfiguration(), request.getServerId())) {
+                return responseBuilder.build();
+            }
             if (request.getTerm() < raftNode.getCurrentTerm()) {
                 return responseBuilder.build();
             }
@@ -74,6 +80,13 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.stepDown(request.getTerm());
             if (raftNode.getLeaderId() == 0) {
                 raftNode.setLeaderId(request.getServerId());
+                try {
+                    LOG.info("new leaderId={}, conf={}",
+                            raftNode.getLeaderId(),
+                            PRINTER.print(raftNode.getConfiguration()));
+                } catch (InvalidProtocolBufferException ex) {
+                    ex.printStackTrace();
+                }
             }
             if (raftNode.getLeaderId() != request.getServerId()) {
                 LOG.warn("Another peer={} declares that it is the leader " +
@@ -152,6 +165,13 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.stepDown(request.getTerm());
             if (raftNode.getLeaderId() == 0) {
                 raftNode.setLeaderId(request.getServerId());
+                try {
+                    LOG.info("new leaderId={}, conf={}",
+                            raftNode.getLeaderId(),
+                            PRINTER.print(raftNode.getConfiguration()));
+                } catch (InvalidProtocolBufferException ex) {
+                    ex.printStackTrace();
+                }
             }
 
             // write snapshot data to local

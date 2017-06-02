@@ -2,6 +2,7 @@ package com.github.wenweihu86.raft.util;
 
 import com.github.wenweihu86.raft.proto.Raft;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,14 +23,14 @@ public class ConfigurationUtils {
             Raft.Configuration configuration, List<Raft.Server> servers) {
         Raft.Configuration.Builder confBuilder = Raft.Configuration.newBuilder();
         for (Raft.Server server : configuration.getServersList()) {
-            boolean isExist = false;
+            boolean toBeRemoved = false;
             for (Raft.Server server1 : servers) {
                 if (server.getServerId() == server1.getServerId()) {
-                    isExist = true;
+                    toBeRemoved = true;
                     break;
                 }
             }
-            if (!isExist) {
+            if (!toBeRemoved) {
                 confBuilder.addServers(server);
             }
         }

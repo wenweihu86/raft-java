@@ -7,6 +7,7 @@ import com.google.protobuf.ByteString;
 import com.github.wenweihu86.raft.storage.Snapshot;
 import com.github.wenweihu86.rpc.client.RPCCallback;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class RaftNode {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
+    private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
 
     private Raft.Configuration configuration;
     private Map<Integer, Peer> peerMap = new HashMap<>();
@@ -153,7 +155,7 @@ public class RaftNode {
 
             // sync wait commitIndex >= newLastLogIndex
             long startTime = System.currentTimeMillis();
-            while (commitIndex < newLastLogIndex) {
+            while (lastAppliedIndex < newLastLogIndex) {
                 if (System.currentTimeMillis() - startTime >= RaftOptions.maxAwaitTimeout) {
                     break;
                 }
@@ -164,8 +166,8 @@ public class RaftNode {
         } finally {
             lock.unlock();
         }
-        LOG.debug("commitIndex={} newLastLogIndex={}", commitIndex, newLastLogIndex);
-        if (commitIndex < newLastLogIndex) {
+        LOG.debug("lastAppliedIndex={} newLastLogIndex={}", lastAppliedIndex, newLastLogIndex);
+        if (lastAppliedIndex < newLastLogIndex) {
             return false;
         }
         return true;
@@ -289,8 +291,8 @@ public class RaftNode {
                             becomeLeader();
                         }
                     } else {
-                        LOG.info("Vote denied by server {} for term {}",
-                                peer.getServer().getServerId(), currentTerm);
+                        LOG.info("Vote denied by server {} with term {}, my term is {}",
+                                peer.getServer().getServerId(), response.getTerm(), currentTerm);
                     }
                 }
             } finally {
@@ -336,11 +338,7 @@ public class RaftNode {
     // in lock, 开始心跳，对leader有效
     private void startNewHeartbeat() {
         LOG.debug("start new heartbeat");
-        for (Raft.Server server : configuration.getServersList()) {
-            if (server.getServerId() == localServer.getServerId()) {
-                continue;
-            }
-            final Peer peer = peerMap.get(server.getServerId());
+        for (final Peer peer : peerMap.values()) {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
@@ -393,19 +391,24 @@ public class RaftNode {
 
         Raft.AppendEntriesRequest request = requestBuilder.build();
         Raft.AppendEntriesResponse response = peer.getRaftConsensusService().appendEntries(request);
-        if (response == null) {
-            LOG.warn("appendEntries with peer[{}:{}] failed",
-                    peer.getServer().getEndPoint().getHost(),
-                    peer.getServer().getEndPoint().getPort());
-            return;
-        }
-        LOG.info("AppendEntries response[{}] from server {} " +
-                        "in term {} (my term is {})",
-                response.getResCode(), peer.getServer().getServerId(),
-                response.getTerm(), currentTerm);
 
         lock.lock();
         try {
+            if (response == null) {
+                LOG.warn("appendEntries with peer[{}:{}] failed",
+                        peer.getServer().getEndPoint().getHost(),
+                        peer.getServer().getEndPoint().getPort());
+                if (!ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
+                    peerMap.remove(peer.getServer().getServerId());
+                    peer.getRpcClient().stop();
+                }
+                return;
+            }
+            LOG.info("AppendEntries response[{}] from server {} " +
+                            "in term {} (my term is {})",
+                    response.getResCode(), peer.getServer().getServerId(),
+                    response.getTerm(), currentTerm);
+
             if (response.getTerm() > currentTerm) {
                 stepDown(response.getTerm());
             } else {
@@ -416,7 +419,7 @@ public class RaftNode {
                         advanceCommitIndex();
                     } else {
                         if (raftLog.getLastLogIndex() - peer.getMatchIndex() <= RaftOptions.catchupMargin) {
-                            LOG.info("peer catch up the leader");
+                            LOG.debug("peer catch up the leader");
                             peer.setCatchUp(true);
                             // signal the caller thread
                             catchUpCondition.signalAll();
@@ -467,7 +470,11 @@ public class RaftNode {
         // 同步到状态机
         for (long index = oldCommitIndex + 1; index <= newCommitIndex; index++) {
             Raft.LogEntry entry = raftLog.getEntry(index);
-            stateMachine.apply(entry.getData().toByteArray());
+            if (entry.getType() == Raft.EntryType.ENTRY_TYPE_DATA) {
+                stateMachine.apply(entry.getData().toByteArray());
+            } else if (entry.getType() == Raft.EntryType.ENTRY_TYPE_CONFIGURATION) {
+                applyConfiguration(entry);
+            }
         }
         lastAppliedIndex = commitIndex;
         LOG.debug("commitIndex={} lastAppliedIndex={}", commitIndex, lastAppliedIndex);
@@ -667,7 +674,6 @@ public class RaftNode {
                     = Raft.Configuration.parseFrom(entry.getData().toByteArray());
             configuration = newConfiguration;
             // update peerMap
-            Set<Integer> newServerIds = new HashSet<>();
             for (Raft.Server server : newConfiguration.getServersList()) {
                 if (!peerMap.containsKey(server.getServerId())
                         && server.getServerId() != localServer.getServerId()) {
@@ -675,20 +681,8 @@ public class RaftNode {
                     peer.setNextIndex(raftLog.getLastLogIndex() + 1);
                     peerMap.put(server.getServerId(), peer);
                 }
-                newServerIds.add(server.getServerId());
             }
-            if (peerMap.size() != newServerIds.size()) {
-                Iterator<Map.Entry<Integer, Peer>> iterator = peerMap.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<Integer, Peer> item = iterator.next();
-                    if (!newServerIds.contains(item.getKey())) {
-                        if (item.getKey() != localServer.getServerId()) {
-                            item.getValue().getRpcClient().stop();
-                        }
-                        iterator.remove();
-                    }
-                }
-            }
+            LOG.info("new conf is {}, leaderId={}", PRINTER.print(newConfiguration), leaderId);
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
         }

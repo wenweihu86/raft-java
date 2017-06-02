@@ -157,12 +157,6 @@ public class RaftClientServiceImpl implements RaftClientService {
             }
             boolean success = raftNode.replicate(configurationData, Raft.EntryType.ENTRY_TYPE_CONFIGURATION);
             if (success) {
-                raftNode.getLock().lock();
-                try {
-                    raftNode.setConfiguration(newConfiguration);
-                } finally {
-                    raftNode.getLock().unlock();
-                }
                 responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
             }
         }
@@ -180,8 +174,8 @@ public class RaftClientServiceImpl implements RaftClientService {
 
         Raft.AddPeersResponse response = responseBuilder.build();
         try {
-            LOG.info("addPeers request={} response={}",
-                    PRINTER.print(request), PRINTER.print(response));
+            LOG.info("addPeers request={} resCode={}",
+                    PRINTER.print(request), response.getResCode());
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
         }
@@ -219,23 +213,25 @@ public class RaftClientServiceImpl implements RaftClientService {
         try {
             newConfiguration = ConfigurationUtils.removeServers(
                     raftNode.getConfiguration(), request.getServersList());
+            try {
+                LOG.debug("newConfiguration={}", PRINTER.print(newConfiguration));
+            } catch (InvalidProtocolBufferException ex) {
+                ex.printStackTrace();
+            }
             configurationData = newConfiguration.toByteArray();
         } finally {
             raftNode.getLock().unlock();
         }
         boolean success = raftNode.replicate(configurationData, Raft.EntryType.ENTRY_TYPE_CONFIGURATION);
         if (success) {
-            raftNode.getLock().lock();
-            try {
-                raftNode.setConfiguration(newConfiguration);
-                for (Raft.Server server : request.getServersList()) {
-                    Peer peer = raftNode.getPeerMap().remove(server.getServerId());
-                    peer.getRpcClient().stop();
-                }
-            } finally {
-                raftNode.getLock().unlock();
-            }
             responseBuilder.setResCode(Raft.ResCode.RES_CODE_SUCCESS);
+        }
+
+        try {
+            LOG.info("removePeers request={} resCode={}",
+                    PRINTER.print(request), responseBuilder.getResCode());
+        } catch (InvalidProtocolBufferException ex) {
+            ex.printStackTrace();
         }
 
         return responseBuilder.build();
