@@ -78,8 +78,13 @@ public class ConcurrentClientMain {
                         .setKey(key).setValue(value).build();
                 Example.SetResponse setResponse = exampleService.set(setRequest);
                 try {
-                    System.out.printf("set request, key=%s value=%s response=%s\n",
-                            key, value, printer.print(setResponse));
+                    if (setResponse != null) {
+                        System.out.printf("set request, key=%s value=%s response=%s\n",
+                                key, value, printer.print(setResponse));
+                    } else {
+                        System.out.printf("set request, key=%s value=%s response=null\n",
+                                key, value);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -104,8 +109,12 @@ public class ConcurrentClientMain {
                         .setKey(key).build();
                 Example.GetResponse getResponse = exampleService.get(getRequest);
                 try {
-                    System.out.printf("get request, key=%s, response=%s\n",
-                            key, printer.print(getResponse));
+                    if (getResponse != null) {
+                        System.out.printf("get request, key=%s, response=%s\n",
+                                key, printer.print(getResponse));
+                    } else {
+                        System.out.printf("get request, key=%s, response=null\n", key);
+                    }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

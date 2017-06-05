@@ -8,6 +8,7 @@ import com.github.wenweihu86.raft.util.RaftFileUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.util.JsonFormat;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,13 +100,20 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             }
 
             if (request.getPrevLogIndex() > raftNode.getRaftLog().getLastLogIndex()) {
-                LOG.info("Rejecting AppendEntries RPC: would leave gap");
+                LOG.info("Rejecting AppendEntries RPC would leave gap, " +
+                        "request prevLogIndex={}, my lastLogIndex={}",
+                        request.getPrevLogIndex(), raftNode.getRaftLog().getLastLogIndex());
                 return responseBuilder.build();
             }
             if (request.getPrevLogIndex() >= raftNode.getRaftLog().getFirstLogIndex()
                     && raftNode.getRaftLog().getEntryTerm(request.getPrevLogIndex())
                     != request.getPrevLogTerm()) {
-                LOG.debug("Rejecting AppendEntries RPC: terms don't agree");
+                LOG.info("Rejecting AppendEntries RPC: terms don't agree, " +
+                        "request prevLogTerm={} in prevLogIndex={}, my is {}",
+                        request.getPrevLogTerm(), request.getPrevLogIndex(),
+                        raftNode.getRaftLog().getEntryTerm(request.getPrevLogIndex()));
+                Validate.isTrue(request.getPrevLogIndex() > 0);
+                responseBuilder.setLastLogIndex(request.getPrevLogIndex() - 1);
                 return responseBuilder.build();
             }
 

@@ -426,13 +426,7 @@ public class RaftNode {
                         }
                     }
                 } else {
-                    if (peer.getNextIndex() > 1) {
-                        peer.setNextIndex(peer.getNextIndex() - 1);
-                    }
-                    if (response.getLastLogIndex() != 0
-                            && peer.getNextIndex() > response.getLastLogIndex() + 1) {
-                        peer.setNextIndex(response.getLastLogIndex() + 1);
-                    }
+                    peer.setNextIndex(response.getLastLogIndex() + 1);
                 }
             }
         } finally {
