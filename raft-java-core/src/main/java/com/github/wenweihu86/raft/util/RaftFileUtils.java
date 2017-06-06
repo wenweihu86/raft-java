@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.CRC32;
 
 /**
  * Created by wenweihu86 on 2017/5/6.
@@ -85,8 +86,9 @@ public class RaftFileUtils {
 
     public static <T extends GeneratedMessageV3> T readProtoFromFile(RandomAccessFile raf, Class<T> clazz) {
         try {
+            long crc32FromFile = raf.readLong();
             int dataLen = raf.readInt();
-            int hasReadLen = Integer.SIZE / Byte.SIZE;
+            int hasReadLen = (Long.SIZE + Integer.SIZE) / Byte.SIZE;
             if (raf.length() - hasReadLen < dataLen) {
                 LOG.warn("file remainLength < dataLen");
                 return null;
@@ -95,6 +97,11 @@ public class RaftFileUtils {
             int readLen = raf.read(data);
             if (readLen != dataLen) {
                 LOG.warn("readLen != dataLen");
+                return null;
+            }
+            long crc32FromData = getCRC32(data);
+            if (crc32FromFile != crc32FromData) {
+                LOG.warn("crc32 check failed");
                 return null;
             }
             Method method = clazz.getMethod("parseFrom", byte[].class);
@@ -108,13 +115,21 @@ public class RaftFileUtils {
 
     public static  <T extends GeneratedMessageV3> void writeProtoToFile(RandomAccessFile raf, T message) {
         byte[] messageBytes = message.toByteArray();
+        long crc32 = getCRC32(messageBytes);
         try {
+            raf.writeLong(crc32);
             raf.writeInt(messageBytes.length);
             raf.write(messageBytes);
         } catch (IOException ex) {
             LOG.warn("write proto to file error, msg={}", ex.getMessage());
             throw new RuntimeException("write proto to file error");
         }
+    }
+
+    public static long getCRC32(byte[] data) {
+        CRC32 crc32 = new CRC32();
+        crc32.update(data);
+        return crc32.getValue();
     }
 
 }

@@ -31,24 +31,27 @@ public class ServerMain {
         // local server
         Raft.Server localServer = parseServer(args[1]);
 
+        // 初始化RPCServer
         RPCServer server = new RPCServer(localServer.getEndPoint().getPort());
-
+        // 应用状态机
         ExampleStateMachine stateMachine = new ExampleStateMachine();
+        // 设置Raft选项，比如：
         // just for test snapshot
         RaftOptions.snapshotMinLogSize = 10 * 1024;
         RaftOptions.snapshotPeriodSeconds = 30;
         RaftOptions.maxSegmentFileSize = 1024 * 1024;
+        // 初始化RaftNode
         RaftNode raftNode = new RaftNode(serverList, localServer, stateMachine);
-
+        // 注册Raft节点之间相互调用的服务
         RaftConsensusService raftConsensusService = new RaftConsensusServiceImpl(raftNode);
         server.registerService(raftConsensusService);
-
+        // 注册给Client调用的Raft服务
         RaftClientService raftClientService = new RaftClientServiceImpl(raftNode);
         server.registerService(raftClientService);
-
+        // 注册应用自己提供的服务
         ExampleService exampleService = new ExampleServiceImpl(raftNode, stateMachine);
         server.registerService(exampleService);
-
+        // 启动RPCServer，初始化Raft节点
         server.start();
         raftNode.init();
     }

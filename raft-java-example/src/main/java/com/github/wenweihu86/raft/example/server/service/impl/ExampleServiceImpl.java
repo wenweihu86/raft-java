@@ -29,6 +29,7 @@ public class ExampleServiceImpl implements ExampleService {
     @Override
     public Example.SetResponse set(Example.SetRequest request) {
         byte[] data = request.toByteArray();
+        // 数据同步写入raft集群
         boolean success = raftNode.replicate(data, Raft.EntryType.ENTRY_TYPE_DATA);
         Example.SetResponse response = Example.SetResponse.newBuilder()
                 .setSuccess(success).build();

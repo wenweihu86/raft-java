@@ -280,6 +280,9 @@ public class SegmentedLog {
             long offset = 0;
             while (offset < totalLength) {
                 Raft.LogEntry entry = RaftFileUtils.readProtoFromFile(randomAccessFile, Raft.LogEntry.class);
+                if (entry == null) {
+                    throw new RuntimeException("read segment log failed");
+                }
                 Segment.Record record = new Segment.Record(offset, entry);
                 segment.getEntries().add(record);
                 offset = randomAccessFile.getFilePointer();
