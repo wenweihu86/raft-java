@@ -1,7 +1,9 @@
 package com.github.wenweihu86.raft.example.client;
 
-import com.github.wenweihu86.raft.example.server.service.Example;
+import com.github.wenweihu86.raft.example.server.service.ExampleMessage;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
+import com.github.wenweihu86.rpc.client.RPCClient;
+import com.github.wenweihu86.rpc.client.RPCProxy;
 import com.google.protobuf.util.JsonFormat;
 
 import java.util.concurrent.ExecutorService;
@@ -17,13 +19,14 @@ public class ConcurrentClientMain {
     public static void main(String[] args) {
         // parse args
         String ipPorts = args[0];
+        RPCClient rpcClient = new RPCClient(ipPorts);
+        ExampleService exampleService = RPCProxy.getProxy(rpcClient, ExampleService.class);
 
         long startTime = System.currentTimeMillis();
         // set
         ExecutorService writeThreadPool = Executors.newFixedThreadPool(3);
         Future<?>[] future = new Future[3];
         for (int i = 0; i < 3; i++) {
-            ExampleService exampleService = new ExampleServiceProxy(ipPorts);
             future[i] = writeThreadPool.submit(new SetTask(exampleService, i));
         }
 
@@ -46,7 +49,6 @@ public class ConcurrentClientMain {
         startTime = System.currentTimeMillis();
         ExecutorService readThreadPool = Executors.newFixedThreadPool(3);
         for (int i = 0; i < 3; i++) {
-            ExampleService exampleService = new ExampleServiceProxy(ipPorts);
             future[i] = readThreadPool.submit(new GetTask(exampleService, i));
         }
 
@@ -58,6 +60,7 @@ public class ConcurrentClientMain {
             }
         }
         System.out.printf("read elapseMS=%d\n", System.currentTimeMillis() - startTime);
+        rpcClient.stop();
     }
 
     public static class SetTask implements Runnable {
@@ -74,9 +77,9 @@ public class ConcurrentClientMain {
             for (int j = 0; j < 100000; j++) {
                 String key = "hello" + id + j;
                 String value = "world" + id + j;
-                Example.SetRequest setRequest = Example.SetRequest.newBuilder()
+                ExampleMessage.SetRequest setRequest = ExampleMessage.SetRequest.newBuilder()
                         .setKey(key).setValue(value).build();
-                Example.SetResponse setResponse = exampleService.set(setRequest);
+                ExampleMessage.SetResponse setResponse = exampleService.set(setRequest);
                 try {
                     if (setResponse != null) {
                         System.out.printf("set request, key=%s value=%s response=%s\n",
@@ -105,9 +108,9 @@ public class ConcurrentClientMain {
         public void run() {
             for (int j = 0; j < 100000; j++) {
                 String key = "hello" + id + j;
-                Example.GetRequest getRequest = Example.GetRequest.newBuilder()
+                ExampleMessage.GetRequest getRequest = ExampleMessage.GetRequest.newBuilder()
                         .setKey(key).build();
-                Example.GetResponse getResponse = exampleService.get(getRequest);
+                ExampleMessage.GetResponse getResponse = exampleService.get(getRequest);
                 try {
                     if (getResponse != null) {
                         System.out.printf("get request, key=%s, response=%s\n",

@@ -1,7 +1,9 @@
 package com.github.wenweihu86.raft.example.client;
 
-import com.github.wenweihu86.raft.example.server.service.Example;
+import com.github.wenweihu86.raft.example.server.service.ExampleMessage;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
+import com.github.wenweihu86.rpc.client.RPCClient;
+import com.github.wenweihu86.rpc.client.RPCProxy;
 import com.google.protobuf.util.JsonFormat;
 
 /**
@@ -18,14 +20,15 @@ public class ClientMain {
         }
 
         // init rpc client
-        ExampleService exampleService = new ExampleServiceProxy(ipPorts);
+        RPCClient rpcClient = new RPCClient(ipPorts);
+        ExampleService exampleService = RPCProxy.getProxy(rpcClient, ExampleService.class);
         final JsonFormat.Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
 
         // set
         if (value != null) {
-            Example.SetRequest setRequest = Example.SetRequest.newBuilder()
+            ExampleMessage.SetRequest setRequest = ExampleMessage.SetRequest.newBuilder()
                     .setKey(key).setValue(value).build();
-            Example.SetResponse setResponse = exampleService.set(setRequest);
+            ExampleMessage.SetResponse setResponse = exampleService.set(setRequest);
             try {
                 System.out.printf("set request, key=%s value=%s response=%s\n",
                         key, value, printer.print(setResponse));
@@ -34,9 +37,9 @@ public class ClientMain {
             }
         } else {
             // get
-            Example.GetRequest getRequest = Example.GetRequest.newBuilder()
+            ExampleMessage.GetRequest getRequest = ExampleMessage.GetRequest.newBuilder()
                     .setKey(key).build();
-            Example.GetResponse getResponse = exampleService.get(getRequest);
+            ExampleMessage.GetResponse getResponse = exampleService.get(getRequest);
             try {
                 System.out.printf("get request, key=%s, response=%s\n",
                         key, printer.print(getResponse));
@@ -45,6 +48,6 @@ public class ClientMain {
             }
         }
 
-        ((ExampleServiceProxy) exampleService).stop();
+        rpcClient.stop();
     }
 }

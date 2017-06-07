@@ -1,15 +1,15 @@
 package com.github.wenweihu86.raft.service;
 
-import com.github.wenweihu86.raft.proto.Raft;
+import com.github.wenweihu86.raft.proto.RaftMessage;
 
 /**
  * Created by wenweihu86 on 2017/5/2.
  */
 public interface RaftConsensusService {
 
-    Raft.VoteResponse requestVote(Raft.VoteRequest request);
+    RaftMessage.VoteResponse requestVote(RaftMessage.VoteRequest request);
 
-    Raft.AppendEntriesResponse appendEntries(Raft.AppendEntriesRequest request);
+    RaftMessage.AppendEntriesResponse appendEntries(RaftMessage.AppendEntriesRequest request);
 
-    Raft.InstallSnapshotResponse installSnapshot(Raft.InstallSnapshotRequest request);
+    RaftMessage.InstallSnapshotResponse installSnapshot(RaftMessage.InstallSnapshotRequest request);
 }

@@ -3,8 +3,8 @@
 
 package com.github.wenweihu86.raft.proto;
 
-public final class Raft {
-  private Raft() {}
+public final class RaftMessage {
+  private RaftMessage() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
@@ -95,7 +95,7 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.getDescriptor().getEnumTypes().get(0);
+      return com.github.wenweihu86.raft.proto.RaftMessage.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final ResCode[] VALUES = values();
@@ -193,7 +193,7 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.getDescriptor().getEnumTypes().get(1);
+      return com.github.wenweihu86.raft.proto.RaftMessage.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final EntryType[] VALUES = values();
@@ -303,14 +303,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_EndPoint_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_EndPoint_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_EndPoint_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_EndPoint_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.class, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.class, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder.class);
     }
 
     public static final int HOST_FIELD_NUMBER = 1;
@@ -398,10 +398,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.EndPoint)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.EndPoint)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.EndPoint other = (com.github.wenweihu86.raft.proto.Raft.EndPoint) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.EndPoint other = (com.github.wenweihu86.raft.proto.RaftMessage.EndPoint) obj;
 
       boolean result = true;
       result = result && getHost()
@@ -427,58 +427,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -490,7 +490,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.EndPoint prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -510,20 +510,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.EndPoint)
-        com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_EndPoint_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_EndPoint_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_EndPoint_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_EndPoint_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.EndPoint.class, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.class, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.EndPoint.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -549,23 +549,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_EndPoint_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_EndPoint_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint build() {
-        com.github.wenweihu86.raft.proto.Raft.EndPoint result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.EndPoint result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.EndPoint result = new com.github.wenweihu86.raft.proto.Raft.EndPoint(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.EndPoint result = new com.github.wenweihu86.raft.proto.RaftMessage.EndPoint(this);
         result.host_ = host_;
         result.port_ = port_;
         onBuilt();
@@ -599,16 +599,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.EndPoint) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.EndPoint)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.EndPoint) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.EndPoint)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.EndPoint other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance()) return this;
         if (!other.getHost().isEmpty()) {
           host_ = other.host_;
           onChanged();
@@ -628,11 +628,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.EndPoint parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.EndPoint parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.EndPoint) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.EndPoint) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -751,12 +751,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.EndPoint)
-    private static final com.github.wenweihu86.raft.proto.Raft.EndPoint DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.EndPoint DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.EndPoint();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.EndPoint();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.EndPoint getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -779,7 +779,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.EndPoint getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -790,22 +790,22 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional uint32 serverId = 1;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
     int getServerId();
 
     /**
-     * <code>optional .raft.EndPoint endPoint = 2;</code>
+     * <code>optional .raft.EndPoint end_point = 2;</code>
      */
     boolean hasEndPoint();
     /**
-     * <code>optional .raft.EndPoint endPoint = 2;</code>
+     * <code>optional .raft.EndPoint end_point = 2;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.EndPoint getEndPoint();
+    com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getEndPoint();
     /**
-     * <code>optional .raft.EndPoint endPoint = 2;</code>
+     * <code>optional .raft.EndPoint end_point = 2;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getEndPointOrBuilder();
+    com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder getEndPointOrBuilder();
   }
   /**
    * Protobuf type {@code raft.Server}
@@ -853,11 +853,11 @@ public final class Raft {
               break;
             }
             case 18: {
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder subBuilder = null;
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder subBuilder = null;
               if (endPoint_ != null) {
                 subBuilder = endPoint_.toBuilder();
               }
-              endPoint_ = input.readMessage(com.github.wenweihu86.raft.proto.Raft.EndPoint.parser(), extensionRegistry);
+              endPoint_ = input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(endPoint_);
                 endPoint_ = subBuilder.buildPartial();
@@ -878,43 +878,43 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Server_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Server_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Server_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Server_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.Server.class, com.github.wenweihu86.raft.proto.Raft.Server.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.Server.class, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder.class);
     }
 
-    public static final int SERVERID_FIELD_NUMBER = 1;
+    public static final int SERVER_ID_FIELD_NUMBER = 1;
     private int serverId_;
     /**
-     * <code>optional uint32 serverId = 1;</code>
+     * <code>optional uint32 server_id = 1;</code>
      */
     public int getServerId() {
       return serverId_;
     }
 
-    public static final int ENDPOINT_FIELD_NUMBER = 2;
-    private com.github.wenweihu86.raft.proto.Raft.EndPoint endPoint_;
+    public static final int END_POINT_FIELD_NUMBER = 2;
+    private com.github.wenweihu86.raft.proto.RaftMessage.EndPoint endPoint_;
     /**
-     * <code>optional .raft.EndPoint endPoint = 2;</code>
+     * <code>optional .raft.EndPoint end_point = 2;</code>
      */
     public boolean hasEndPoint() {
       return endPoint_ != null;
     }
     /**
-     * <code>optional .raft.EndPoint endPoint = 2;</code>
+     * <code>optional .raft.EndPoint end_point = 2;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.EndPoint getEndPoint() {
-      return endPoint_ == null ? com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : endPoint_;
+    public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getEndPoint() {
+      return endPoint_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance() : endPoint_;
     }
     /**
-     * <code>optional .raft.EndPoint endPoint = 2;</code>
+     * <code>optional .raft.EndPoint end_point = 2;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getEndPointOrBuilder() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder getEndPointOrBuilder() {
       return getEndPoint();
     }
 
@@ -961,10 +961,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.Server)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.Server)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.Server other = (com.github.wenweihu86.raft.proto.Raft.Server) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.Server other = (com.github.wenweihu86.raft.proto.RaftMessage.Server) obj;
 
       boolean result = true;
       result = result && (getServerId()
@@ -984,10 +984,10 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + SERVERID_FIELD_NUMBER;
+      hash = (37 * hash) + SERVER_ID_FIELD_NUMBER;
       hash = (53 * hash) + getServerId();
       if (hasEndPoint()) {
-        hash = (37 * hash) + ENDPOINT_FIELD_NUMBER;
+        hash = (37 * hash) + END_POINT_FIELD_NUMBER;
         hash = (53 * hash) + getEndPoint().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
@@ -995,58 +995,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Server parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1058,7 +1058,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.Server prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.Server prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1078,20 +1078,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.Server)
-        com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Server_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Server_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Server_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Server_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.Server.class, com.github.wenweihu86.raft.proto.Raft.Server.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.Server.class, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.Server.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.Server.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1121,23 +1121,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Server_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Server_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.Server getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.Server build() {
-        com.github.wenweihu86.raft.proto.Raft.Server result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.Server result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.Server buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.Server result = new com.github.wenweihu86.raft.proto.Raft.Server(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.Server result = new com.github.wenweihu86.raft.proto.RaftMessage.Server(this);
         result.serverId_ = serverId_;
         if (endPointBuilder_ == null) {
           result.endPoint_ = endPoint_;
@@ -1175,16 +1175,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.Server) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.Server)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.Server) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.Server)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.Server other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.Server other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance()) return this;
         if (other.getServerId() != 0) {
           setServerId(other.getServerId());
         }
@@ -1203,11 +1203,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.Server parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.Server parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.Server) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.Server) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1219,13 +1219,13 @@ public final class Raft {
 
       private int serverId_ ;
       /**
-       * <code>optional uint32 serverId = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public int getServerId() {
         return serverId_;
       }
       /**
-       * <code>optional uint32 serverId = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public Builder setServerId(int value) {
         
@@ -1234,7 +1234,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional uint32 serverId = 1;</code>
+       * <code>optional uint32 server_id = 1;</code>
        */
       public Builder clearServerId() {
         
@@ -1243,29 +1243,29 @@ public final class Raft {
         return this;
       }
 
-      private com.github.wenweihu86.raft.proto.Raft.EndPoint endPoint_ = null;
+      private com.github.wenweihu86.raft.proto.RaftMessage.EndPoint endPoint_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder> endPointBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.EndPoint, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder, com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder> endPointBuilder_;
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
       public boolean hasEndPoint() {
         return endPointBuilder_ != null || endPoint_ != null;
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint getEndPoint() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getEndPoint() {
         if (endPointBuilder_ == null) {
-          return endPoint_ == null ? com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : endPoint_;
+          return endPoint_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance() : endPoint_;
         } else {
           return endPointBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
-      public Builder setEndPoint(com.github.wenweihu86.raft.proto.Raft.EndPoint value) {
+      public Builder setEndPoint(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint value) {
         if (endPointBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1279,10 +1279,10 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
       public Builder setEndPoint(
-          com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder builderForValue) {
         if (endPointBuilder_ == null) {
           endPoint_ = builderForValue.build();
           onChanged();
@@ -1293,13 +1293,13 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
-      public Builder mergeEndPoint(com.github.wenweihu86.raft.proto.Raft.EndPoint value) {
+      public Builder mergeEndPoint(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint value) {
         if (endPointBuilder_ == null) {
           if (endPoint_ != null) {
             endPoint_ =
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.newBuilder(endPoint_).mergeFrom(value).buildPartial();
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.newBuilder(endPoint_).mergeFrom(value).buildPartial();
           } else {
             endPoint_ = value;
           }
@@ -1311,7 +1311,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
       public Builder clearEndPoint() {
         if (endPointBuilder_ == null) {
@@ -1325,33 +1325,33 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder getEndPointBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder getEndPointBuilder() {
         
         onChanged();
         return getEndPointFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getEndPointOrBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder getEndPointOrBuilder() {
         if (endPointBuilder_ != null) {
           return endPointBuilder_.getMessageOrBuilder();
         } else {
           return endPoint_ == null ?
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : endPoint_;
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance() : endPoint_;
         }
       }
       /**
-       * <code>optional .raft.EndPoint endPoint = 2;</code>
+       * <code>optional .raft.EndPoint end_point = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.EndPoint, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder, com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder> 
           getEndPointFieldBuilder() {
         if (endPointBuilder_ == null) {
           endPointBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder, com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder>(
                   getEndPoint(),
                   getParentForChildren(),
                   isClean());
@@ -1374,12 +1374,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.Server)
-    private static final com.github.wenweihu86.raft.proto.Raft.Server DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.Server DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.Server();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.Server();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.Server getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Server getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1402,7 +1402,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.Server getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.Server getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1415,12 +1415,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> 
+    java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> 
         getServersList();
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.Server getServers(int index);
+    com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index);
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
@@ -1428,12 +1428,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList();
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index);
   }
   /**
@@ -1478,11 +1478,11 @@ public final class Raft {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>();
+                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>();
                 mutable_bitField0_ |= 0x00000001;
               }
               servers_.add(
-                  input.readMessage(com.github.wenweihu86.raft.proto.Raft.Server.parser(), extensionRegistry));
+                  input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.Server.parser(), extensionRegistry));
               break;
             }
           }
@@ -1501,28 +1501,28 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Configuration_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Configuration_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Configuration_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Configuration_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.Configuration.class, com.github.wenweihu86.raft.proto.Raft.Configuration.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.Configuration.class, com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder.class);
     }
 
     public static final int SERVERS_FIELD_NUMBER = 1;
-    private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_;
+    private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_;
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+    public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
       return servers_;
     }
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList() {
       return servers_;
     }
@@ -1535,13 +1535,13 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+    public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
       return servers_.get(index);
     }
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index) {
       return servers_.get(index);
     }
@@ -1582,10 +1582,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.Configuration)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.Configuration)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.Configuration other = (com.github.wenweihu86.raft.proto.Raft.Configuration) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.Configuration other = (com.github.wenweihu86.raft.proto.RaftMessage.Configuration) obj;
 
       boolean result = true;
       result = result && getServersList()
@@ -1609,58 +1609,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1672,7 +1672,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.Configuration prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.Configuration prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1692,20 +1692,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.Configuration)
-        com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Configuration_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Configuration_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Configuration_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Configuration_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.Configuration.class, com.github.wenweihu86.raft.proto.Raft.Configuration.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.Configuration.class, com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.Configuration.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.Configuration.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1734,23 +1734,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_Configuration_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_Configuration_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.Configuration getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.Configuration.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.Configuration getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.Configuration.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.Configuration build() {
-        com.github.wenweihu86.raft.proto.Raft.Configuration result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.Configuration build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.Configuration result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.Configuration buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.Configuration result = new com.github.wenweihu86.raft.proto.Raft.Configuration(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.Configuration buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.Configuration result = new com.github.wenweihu86.raft.proto.RaftMessage.Configuration(this);
         int from_bitField0_ = bitField0_;
         if (serversBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1792,16 +1792,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.Configuration) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.Configuration)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.Configuration) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.Configuration)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.Configuration other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.Configuration.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.Configuration other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.Configuration.getDefaultInstance()) return this;
         if (serversBuilder_ == null) {
           if (!other.servers_.isEmpty()) {
             if (servers_.isEmpty()) {
@@ -1840,11 +1840,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.Configuration parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.Configuration parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.Configuration) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.Configuration) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1855,22 +1855,22 @@ public final class Raft {
       }
       private int bitField0_;
 
-      private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_ =
+      private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_ =
         java.util.Collections.emptyList();
       private void ensureServersIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>(servers_);
+          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>(servers_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> serversBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> serversBuilder_;
 
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
         if (serversBuilder_ == null) {
           return java.util.Collections.unmodifiableList(servers_);
         } else {
@@ -1890,7 +1890,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);
         } else {
@@ -1901,7 +1901,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1918,7 +1918,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.set(index, builderForValue.build());
@@ -1931,7 +1931,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public Builder addServers(com.github.wenweihu86.raft.proto.Raft.Server value) {
+      public Builder addServers(com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1948,7 +1948,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1965,7 +1965,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(builderForValue.build());
@@ -1979,7 +1979,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(index, builderForValue.build());
@@ -1993,7 +1993,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addAllServers(
-          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.Raft.Server> values) {
+          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.RaftMessage.Server> values) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -2033,14 +2033,14 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder getServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder getServersBuilder(
           int index) {
         return getServersFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
           int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);  } else {
@@ -2050,7 +2050,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+      public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
            getServersOrBuilderList() {
         if (serversBuilder_ != null) {
           return serversBuilder_.getMessageOrBuilderList();
@@ -2061,31 +2061,31 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder() {
         return getServersFieldBuilder().addBuilder(
-            com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder(
           int index) {
         return getServersFieldBuilder().addBuilder(
-            index, com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            index, com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server.Builder> 
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder> 
            getServersBuilderList() {
         return getServersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
           getServersFieldBuilder() {
         if (serversBuilder_ == null) {
           serversBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder>(
                   servers_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -2109,12 +2109,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.Configuration)
-    private static final com.github.wenweihu86.raft.proto.Raft.Configuration DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.Configuration DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.Configuration();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.Configuration();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.Configuration getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.Configuration getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2137,7 +2137,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.Configuration getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.Configuration getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2232,14 +2232,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogMetaData_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogMetaData_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogMetaData_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogMetaData_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.LogMetaData.class, com.github.wenweihu86.raft.proto.Raft.LogMetaData.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.class, com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.Builder.class);
     }
 
     public static final int CURRENT_TERM_FIELD_NUMBER = 1;
@@ -2319,10 +2319,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.LogMetaData)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.LogMetaData other = (com.github.wenweihu86.raft.proto.Raft.LogMetaData) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData other = (com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData) obj;
 
       boolean result = true;
       result = result && (getCurrentTerm()
@@ -2354,58 +2354,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2417,7 +2417,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.LogMetaData prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -2437,20 +2437,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.LogMetaData)
-        com.github.wenweihu86.raft.proto.Raft.LogMetaDataOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.LogMetaDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogMetaData_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogMetaData_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogMetaData_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogMetaData_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.LogMetaData.class, com.github.wenweihu86.raft.proto.Raft.LogMetaData.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.class, com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.LogMetaData.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2478,23 +2478,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogMetaData_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogMetaData_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.LogMetaData getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.LogMetaData.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.LogMetaData build() {
-        com.github.wenweihu86.raft.proto.Raft.LogMetaData result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.LogMetaData buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.LogMetaData result = new com.github.wenweihu86.raft.proto.Raft.LogMetaData(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData result = new com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData(this);
         result.currentTerm_ = currentTerm_;
         result.votedFor_ = votedFor_;
         result.firstLogIndex_ = firstLogIndex_;
@@ -2529,16 +2529,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.LogMetaData) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.LogMetaData)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.LogMetaData other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.LogMetaData.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData.getDefaultInstance()) return this;
         if (other.getCurrentTerm() != 0L) {
           setCurrentTerm(other.getCurrentTerm());
         }
@@ -2560,11 +2560,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.LogMetaData parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.LogMetaData) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2666,12 +2666,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.LogMetaData)
-    private static final com.github.wenweihu86.raft.proto.Raft.LogMetaData DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.LogMetaData();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.LogMetaData getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2694,7 +2694,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.LogMetaData getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.LogMetaData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2721,11 +2721,11 @@ public final class Raft {
     /**
      * <code>optional .raft.Configuration configuration = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.Configuration getConfiguration();
+    com.github.wenweihu86.raft.proto.RaftMessage.Configuration getConfiguration();
     /**
      * <code>optional .raft.Configuration configuration = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder getConfigurationOrBuilder();
+    com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder getConfigurationOrBuilder();
   }
   /**
    * Protobuf type {@code raft.SnapshotMetaData}
@@ -2779,11 +2779,11 @@ public final class Raft {
               break;
             }
             case 26: {
-              com.github.wenweihu86.raft.proto.Raft.Configuration.Builder subBuilder = null;
+              com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder subBuilder = null;
               if (configuration_ != null) {
                 subBuilder = configuration_.toBuilder();
               }
-              configuration_ = input.readMessage(com.github.wenweihu86.raft.proto.Raft.Configuration.parser(), extensionRegistry);
+              configuration_ = input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.Configuration.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(configuration_);
                 configuration_ = subBuilder.buildPartial();
@@ -2804,14 +2804,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_SnapshotMetaData_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_SnapshotMetaData_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_SnapshotMetaData_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_SnapshotMetaData_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.class, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.class, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder.class);
     }
 
     public static final int LAST_INCLUDED_INDEX_FIELD_NUMBER = 1;
@@ -2833,7 +2833,7 @@ public final class Raft {
     }
 
     public static final int CONFIGURATION_FIELD_NUMBER = 3;
-    private com.github.wenweihu86.raft.proto.Raft.Configuration configuration_;
+    private com.github.wenweihu86.raft.proto.RaftMessage.Configuration configuration_;
     /**
      * <code>optional .raft.Configuration configuration = 3;</code>
      */
@@ -2843,13 +2843,13 @@ public final class Raft {
     /**
      * <code>optional .raft.Configuration configuration = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.Configuration getConfiguration() {
-      return configuration_ == null ? com.github.wenweihu86.raft.proto.Raft.Configuration.getDefaultInstance() : configuration_;
+    public com.github.wenweihu86.raft.proto.RaftMessage.Configuration getConfiguration() {
+      return configuration_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.Configuration.getDefaultInstance() : configuration_;
     }
     /**
      * <code>optional .raft.Configuration configuration = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder getConfigurationOrBuilder() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder getConfigurationOrBuilder() {
       return getConfiguration();
     }
 
@@ -2903,10 +2903,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData other = (com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData other = (com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData) obj;
 
       boolean result = true;
       result = result && (getLastIncludedIndex()
@@ -2943,58 +2943,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3006,7 +3006,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -3026,20 +3026,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.SnapshotMetaData)
-        com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_SnapshotMetaData_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_SnapshotMetaData_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_SnapshotMetaData_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_SnapshotMetaData_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.class, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.class, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3071,23 +3071,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_SnapshotMetaData_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_SnapshotMetaData_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData build() {
-        com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData result = new com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData result = new com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData(this);
         result.lastIncludedIndex_ = lastIncludedIndex_;
         result.lastIncludedTerm_ = lastIncludedTerm_;
         if (configurationBuilder_ == null) {
@@ -3126,16 +3126,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.getDefaultInstance()) return this;
         if (other.getLastIncludedIndex() != 0L) {
           setLastIncludedIndex(other.getLastIncludedIndex());
         }
@@ -3157,11 +3157,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3223,9 +3223,9 @@ public final class Raft {
         return this;
       }
 
-      private com.github.wenweihu86.raft.proto.Raft.Configuration configuration_ = null;
+      private com.github.wenweihu86.raft.proto.RaftMessage.Configuration configuration_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Configuration, com.github.wenweihu86.raft.proto.Raft.Configuration.Builder, com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder> configurationBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.Configuration, com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder> configurationBuilder_;
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
@@ -3235,9 +3235,9 @@ public final class Raft {
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Configuration getConfiguration() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Configuration getConfiguration() {
         if (configurationBuilder_ == null) {
-          return configuration_ == null ? com.github.wenweihu86.raft.proto.Raft.Configuration.getDefaultInstance() : configuration_;
+          return configuration_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.Configuration.getDefaultInstance() : configuration_;
         } else {
           return configurationBuilder_.getMessage();
         }
@@ -3245,7 +3245,7 @@ public final class Raft {
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
-      public Builder setConfiguration(com.github.wenweihu86.raft.proto.Raft.Configuration value) {
+      public Builder setConfiguration(com.github.wenweihu86.raft.proto.RaftMessage.Configuration value) {
         if (configurationBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3262,7 +3262,7 @@ public final class Raft {
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
       public Builder setConfiguration(
-          com.github.wenweihu86.raft.proto.Raft.Configuration.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder builderForValue) {
         if (configurationBuilder_ == null) {
           configuration_ = builderForValue.build();
           onChanged();
@@ -3275,11 +3275,11 @@ public final class Raft {
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
-      public Builder mergeConfiguration(com.github.wenweihu86.raft.proto.Raft.Configuration value) {
+      public Builder mergeConfiguration(com.github.wenweihu86.raft.proto.RaftMessage.Configuration value) {
         if (configurationBuilder_ == null) {
           if (configuration_ != null) {
             configuration_ =
-              com.github.wenweihu86.raft.proto.Raft.Configuration.newBuilder(configuration_).mergeFrom(value).buildPartial();
+              com.github.wenweihu86.raft.proto.RaftMessage.Configuration.newBuilder(configuration_).mergeFrom(value).buildPartial();
           } else {
             configuration_ = value;
           }
@@ -3307,7 +3307,7 @@ public final class Raft {
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Configuration.Builder getConfigurationBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder getConfigurationBuilder() {
         
         onChanged();
         return getConfigurationFieldBuilder().getBuilder();
@@ -3315,23 +3315,23 @@ public final class Raft {
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder getConfigurationOrBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder getConfigurationOrBuilder() {
         if (configurationBuilder_ != null) {
           return configurationBuilder_.getMessageOrBuilder();
         } else {
           return configuration_ == null ?
-              com.github.wenweihu86.raft.proto.Raft.Configuration.getDefaultInstance() : configuration_;
+              com.github.wenweihu86.raft.proto.RaftMessage.Configuration.getDefaultInstance() : configuration_;
         }
       }
       /**
        * <code>optional .raft.Configuration configuration = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Configuration, com.github.wenweihu86.raft.proto.Raft.Configuration.Builder, com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.Configuration, com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder> 
           getConfigurationFieldBuilder() {
         if (configurationBuilder_ == null) {
           configurationBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.Configuration, com.github.wenweihu86.raft.proto.Raft.Configuration.Builder, com.github.wenweihu86.raft.proto.Raft.ConfigurationOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.Configuration, com.github.wenweihu86.raft.proto.RaftMessage.Configuration.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ConfigurationOrBuilder>(
                   getConfiguration(),
                   getParentForChildren(),
                   isClean());
@@ -3354,12 +3354,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.SnapshotMetaData)
-    private static final com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3382,7 +3382,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3409,7 +3409,7 @@ public final class Raft {
     /**
      * <code>optional .raft.EntryType type = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.EntryType getType();
+    com.github.wenweihu86.raft.proto.RaftMessage.EntryType getType();
 
     /**
      * <code>optional bytes data = 4;</code>
@@ -3493,14 +3493,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogEntry_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogEntry_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogEntry_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogEntry_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.LogEntry.class, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.class, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder.class);
     }
 
     public static final int TERM_FIELD_NUMBER = 1;
@@ -3532,9 +3532,9 @@ public final class Raft {
     /**
      * <code>optional .raft.EntryType type = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.EntryType getType() {
-      com.github.wenweihu86.raft.proto.Raft.EntryType result = com.github.wenweihu86.raft.proto.Raft.EntryType.valueOf(type_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.EntryType.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.EntryType getType() {
+      com.github.wenweihu86.raft.proto.RaftMessage.EntryType result = com.github.wenweihu86.raft.proto.RaftMessage.EntryType.valueOf(type_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.EntryType.UNRECOGNIZED : result;
     }
 
     public static final int DATA_FIELD_NUMBER = 4;
@@ -3564,7 +3564,7 @@ public final class Raft {
       if (index_ != 0L) {
         output.writeUInt64(2, index_);
       }
-      if (type_ != com.github.wenweihu86.raft.proto.Raft.EntryType.ENTRY_TYPE_DATA.getNumber()) {
+      if (type_ != com.github.wenweihu86.raft.proto.RaftMessage.EntryType.ENTRY_TYPE_DATA.getNumber()) {
         output.writeEnum(3, type_);
       }
       if (!data_.isEmpty()) {
@@ -3585,7 +3585,7 @@ public final class Raft {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(2, index_);
       }
-      if (type_ != com.github.wenweihu86.raft.proto.Raft.EntryType.ENTRY_TYPE_DATA.getNumber()) {
+      if (type_ != com.github.wenweihu86.raft.proto.RaftMessage.EntryType.ENTRY_TYPE_DATA.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, type_);
       }
@@ -3603,10 +3603,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.LogEntry)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.LogEntry)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.LogEntry other = (com.github.wenweihu86.raft.proto.Raft.LogEntry) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.LogEntry other = (com.github.wenweihu86.raft.proto.RaftMessage.LogEntry) obj;
 
       boolean result = true;
       result = result && (getTerm()
@@ -3641,58 +3641,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -3704,7 +3704,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.LogEntry prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.LogEntry prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -3724,20 +3724,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.LogEntry)
-        com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogEntry_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogEntry_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogEntry_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogEntry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.LogEntry.class, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.class, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.LogEntry.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -3767,23 +3767,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_LogEntry_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_LogEntry_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry build() {
-        com.github.wenweihu86.raft.proto.Raft.LogEntry result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.LogEntry result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.LogEntry result = new com.github.wenweihu86.raft.proto.Raft.LogEntry(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.LogEntry result = new com.github.wenweihu86.raft.proto.RaftMessage.LogEntry(this);
         result.term_ = term_;
         result.index_ = index_;
         result.type_ = type_;
@@ -3819,16 +3819,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.LogEntry) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.LogEntry)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.LogEntry) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.LogEntry)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.LogEntry other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.LogEntry other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.getDefaultInstance()) return this;
         if (other.getTerm() != 0L) {
           setTerm(other.getTerm());
         }
@@ -3853,11 +3853,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.LogEntry parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.LogEntry parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.LogEntry) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.LogEntry) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3937,14 +3937,14 @@ public final class Raft {
       /**
        * <code>optional .raft.EntryType type = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EntryType getType() {
-        com.github.wenweihu86.raft.proto.Raft.EntryType result = com.github.wenweihu86.raft.proto.Raft.EntryType.valueOf(type_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.EntryType.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.EntryType getType() {
+        com.github.wenweihu86.raft.proto.RaftMessage.EntryType result = com.github.wenweihu86.raft.proto.RaftMessage.EntryType.valueOf(type_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.EntryType.UNRECOGNIZED : result;
       }
       /**
        * <code>optional .raft.EntryType type = 3;</code>
        */
-      public Builder setType(com.github.wenweihu86.raft.proto.Raft.EntryType value) {
+      public Builder setType(com.github.wenweihu86.raft.proto.RaftMessage.EntryType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -4006,12 +4006,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.LogEntry)
-    private static final com.github.wenweihu86.raft.proto.Raft.LogEntry DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.LogEntry DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.LogEntry();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.LogEntry();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.LogEntry getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.LogEntry getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4034,7 +4034,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.LogEntry getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4156,14 +4156,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.VoteRequest.class, com.github.wenweihu86.raft.proto.Raft.VoteRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.Builder.class);
     }
 
     public static final int SERVER_ID_FIELD_NUMBER = 1;
@@ -4275,10 +4275,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.VoteRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.VoteRequest other = (com.github.wenweihu86.raft.proto.Raft.VoteRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest) obj;
 
       boolean result = true;
       result = result && (getServerId()
@@ -4315,58 +4315,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -4378,7 +4378,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.VoteRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -4398,20 +4398,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.VoteRequest)
-        com.github.wenweihu86.raft.proto.Raft.VoteRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.VoteRequest.class, com.github.wenweihu86.raft.proto.Raft.VoteRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.VoteRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4441,23 +4441,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.VoteRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.VoteRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.VoteRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.VoteRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.VoteRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.VoteRequest result = new com.github.wenweihu86.raft.proto.Raft.VoteRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest(this);
         result.serverId_ = serverId_;
         result.term_ = term_;
         result.lastLogTerm_ = lastLogTerm_;
@@ -4493,16 +4493,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.VoteRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.VoteRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.VoteRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.VoteRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest.getDefaultInstance()) return this;
         if (other.getServerId() != 0) {
           setServerId(other.getServerId());
         }
@@ -4527,11 +4527,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.VoteRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.VoteRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -4707,12 +4707,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.VoteRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.VoteRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.VoteRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.VoteRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4735,7 +4735,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.VoteRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.VoteRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4827,14 +4827,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.VoteResponse.class, com.github.wenweihu86.raft.proto.Raft.VoteResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.Builder.class);
     }
 
     public static final int TERM_FIELD_NUMBER = 1;
@@ -4906,10 +4906,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.VoteResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.VoteResponse other = (com.github.wenweihu86.raft.proto.Raft.VoteResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse) obj;
 
       boolean result = true;
       result = result && (getTerm()
@@ -4937,58 +4937,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5000,7 +5000,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.VoteResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -5020,20 +5020,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.VoteResponse)
-        com.github.wenweihu86.raft.proto.Raft.VoteResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.VoteResponse.class, com.github.wenweihu86.raft.proto.Raft.VoteResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.VoteResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5059,23 +5059,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_VoteResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_VoteResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.VoteResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.VoteResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.VoteResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.VoteResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.VoteResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.VoteResponse result = new com.github.wenweihu86.raft.proto.Raft.VoteResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse(this);
         result.term_ = term_;
         result.granted_ = granted_;
         onBuilt();
@@ -5109,16 +5109,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.VoteResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.VoteResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.VoteResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.VoteResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse.getDefaultInstance()) return this;
         if (other.getTerm() != 0L) {
           setTerm(other.getTerm());
         }
@@ -5137,11 +5137,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.VoteResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.VoteResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5241,12 +5241,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.VoteResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.VoteResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.VoteResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.VoteResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5269,7 +5269,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.VoteResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.VoteResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5322,7 +5322,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    java.util.List<com.github.wenweihu86.raft.proto.Raft.LogEntry> 
+    java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry> 
         getEntriesList();
     /**
      * <pre>
@@ -5331,7 +5331,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.LogEntry getEntries(int index);
+    com.github.wenweihu86.raft.proto.RaftMessage.LogEntry getEntries(int index);
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
@@ -5347,7 +5347,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+    java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder> 
         getEntriesOrBuilderList();
     /**
      * <pre>
@@ -5356,7 +5356,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder(
+    com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder getEntriesOrBuilder(
         int index);
 
     /**
@@ -5435,11 +5435,11 @@ public final class Raft {
             }
             case 42: {
               if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-                entries_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.LogEntry>();
+                entries_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry>();
                 mutable_bitField0_ |= 0x00000010;
               }
               entries_.add(
-                  input.readMessage(com.github.wenweihu86.raft.proto.Raft.LogEntry.parser(), extensionRegistry));
+                  input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.parser(), extensionRegistry));
               break;
             }
             case 48: {
@@ -5463,14 +5463,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.class, com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.Builder.class);
     }
 
     private int bitField0_;
@@ -5527,7 +5527,7 @@ public final class Raft {
     }
 
     public static final int ENTRIES_FIELD_NUMBER = 5;
-    private java.util.List<com.github.wenweihu86.raft.proto.Raft.LogEntry> entries_;
+    private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry> entries_;
     /**
      * <pre>
      * 准备存储的日志条目（表示心跳时为空）
@@ -5535,7 +5535,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public java.util.List<com.github.wenweihu86.raft.proto.Raft.LogEntry> getEntriesList() {
+    public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry> getEntriesList() {
       return entries_;
     }
     /**
@@ -5545,7 +5545,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+    public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder> 
         getEntriesOrBuilderList() {
       return entries_;
     }
@@ -5566,7 +5566,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.LogEntry getEntries(int index) {
+    public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry getEntries(int index) {
       return entries_.get(index);
     }
     /**
@@ -5576,7 +5576,7 @@ public final class Raft {
      *
      * <code>repeated .raft.LogEntry entries = 5;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder(
+    public com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder getEntriesOrBuilder(
         int index) {
       return entries_.get(index);
     }
@@ -5665,10 +5665,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest other = (com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest) obj;
 
       boolean result = true;
       result = result && (getServerId()
@@ -5716,58 +5716,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -5779,7 +5779,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -5799,20 +5799,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.AppendEntriesRequest)
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.class, com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5851,23 +5851,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest result = new com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         result.serverId_ = serverId_;
@@ -5916,16 +5916,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest.getDefaultInstance()) return this;
         if (other.getServerId() != 0) {
           setServerId(other.getServerId());
         }
@@ -5979,11 +5979,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -6146,17 +6146,17 @@ public final class Raft {
         return this;
       }
 
-      private java.util.List<com.github.wenweihu86.raft.proto.Raft.LogEntry> entries_ =
+      private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry> entries_ =
         java.util.Collections.emptyList();
       private void ensureEntriesIsMutable() {
         if (!((bitField0_ & 0x00000010) == 0x00000010)) {
-          entries_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.LogEntry>(entries_);
+          entries_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry>(entries_);
           bitField0_ |= 0x00000010;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.LogEntry, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> entriesBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.LogEntry, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder, com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder> entriesBuilder_;
 
       /**
        * <pre>
@@ -6165,7 +6165,7 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.LogEntry> getEntriesList() {
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry> getEntriesList() {
         if (entriesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(entries_);
         } else {
@@ -6193,7 +6193,7 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry getEntries(int index) {
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry getEntries(int index) {
         if (entriesBuilder_ == null) {
           return entries_.get(index);
         } else {
@@ -6208,7 +6208,7 @@ public final class Raft {
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder setEntries(
-          int index, com.github.wenweihu86.raft.proto.Raft.LogEntry value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6229,7 +6229,7 @@ public final class Raft {
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder setEntries(
-          int index, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.set(index, builderForValue.build());
@@ -6246,7 +6246,7 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public Builder addEntries(com.github.wenweihu86.raft.proto.Raft.LogEntry value) {
+      public Builder addEntries(com.github.wenweihu86.raft.proto.RaftMessage.LogEntry value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6267,7 +6267,7 @@ public final class Raft {
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder addEntries(
-          int index, com.github.wenweihu86.raft.proto.Raft.LogEntry value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry value) {
         if (entriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6288,7 +6288,7 @@ public final class Raft {
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder addEntries(
-          com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.add(builderForValue.build());
@@ -6306,7 +6306,7 @@ public final class Raft {
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder addEntries(
-          int index, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder builderForValue) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           entries_.add(index, builderForValue.build());
@@ -6324,7 +6324,7 @@ public final class Raft {
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
       public Builder addAllEntries(
-          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.Raft.LogEntry> values) {
+          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.RaftMessage.LogEntry> values) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -6376,7 +6376,7 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder getEntriesBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder getEntriesBuilder(
           int index) {
         return getEntriesFieldBuilder().getBuilder(index);
       }
@@ -6387,7 +6387,7 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder getEntriesOrBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder getEntriesOrBuilder(
           int index) {
         if (entriesBuilder_ == null) {
           return entries_.get(index);  } else {
@@ -6401,7 +6401,7 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+      public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder> 
            getEntriesOrBuilderList() {
         if (entriesBuilder_ != null) {
           return entriesBuilder_.getMessageOrBuilderList();
@@ -6416,9 +6416,9 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder addEntriesBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder addEntriesBuilder() {
         return getEntriesFieldBuilder().addBuilder(
-            com.github.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance());
+            com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.getDefaultInstance());
       }
       /**
        * <pre>
@@ -6427,10 +6427,10 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder addEntriesBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder addEntriesBuilder(
           int index) {
         return getEntriesFieldBuilder().addBuilder(
-            index, com.github.wenweihu86.raft.proto.Raft.LogEntry.getDefaultInstance());
+            index, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.getDefaultInstance());
       }
       /**
        * <pre>
@@ -6439,16 +6439,16 @@ public final class Raft {
        *
        * <code>repeated .raft.LogEntry entries = 5;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder> 
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder> 
            getEntriesBuilderList() {
         return getEntriesFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.LogEntry, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.LogEntry, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder, com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder> 
           getEntriesFieldBuilder() {
         if (entriesBuilder_ == null) {
           entriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.LogEntry, com.github.wenweihu86.raft.proto.Raft.LogEntry.Builder, com.github.wenweihu86.raft.proto.Raft.LogEntryOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.LogEntry, com.github.wenweihu86.raft.proto.RaftMessage.LogEntry.Builder, com.github.wenweihu86.raft.proto.RaftMessage.LogEntryOrBuilder>(
                   entries_,
                   ((bitField0_ & 0x00000010) == 0x00000010),
                   getParentForChildren(),
@@ -6510,12 +6510,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.AppendEntriesRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6538,7 +6538,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.AppendEntriesRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6553,7 +6553,7 @@ public final class Raft {
      * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
      * </pre>
      *
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     int getResCodeValue();
     /**
@@ -6561,9 +6561,9 @@ public final class Raft {
      * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
      * </pre>
      *
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+    com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode();
 
     /**
      * <pre>
@@ -6650,24 +6650,24 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.class, com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.Builder.class);
     }
 
-    public static final int RESCODE_FIELD_NUMBER = 1;
+    public static final int RES_CODE_FIELD_NUMBER = 1;
     private int resCode_;
     /**
      * <pre>
      * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
      * </pre>
      *
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     public int getResCodeValue() {
       return resCode_;
@@ -6677,11 +6677,11 @@ public final class Raft {
      * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
      * </pre>
      *
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-      com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+      com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
     }
 
     public static final int TERM_FIELD_NUMBER = 2;
@@ -6718,7 +6718,7 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
       if (term_ != 0L) {
@@ -6734,7 +6734,7 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
@@ -6756,10 +6756,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse other = (com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse) obj;
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
@@ -6777,7 +6777,7 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RESCODE_FIELD_NUMBER;
+      hash = (37 * hash) + RES_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
@@ -6790,58 +6790,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -6853,7 +6853,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -6873,20 +6873,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.AppendEntriesResponse)
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.class, com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -6914,23 +6914,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AppendEntriesResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AppendEntriesResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse result = new com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse(this);
         result.resCode_ = resCode_;
         result.term_ = term_;
         result.lastLogIndex_ = lastLogIndex_;
@@ -6965,16 +6965,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
         }
@@ -6996,11 +6996,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -7016,7 +7016,7 @@ public final class Raft {
        * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
        * </pre>
        *
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public int getResCodeValue() {
         return resCode_;
@@ -7026,7 +7026,7 @@ public final class Raft {
        * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
        * </pre>
        *
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder setResCodeValue(int value) {
         resCode_ = value;
@@ -7038,20 +7038,20 @@ public final class Raft {
        * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
        * </pre>
        *
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-        com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+        com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
       }
       /**
        * <pre>
        * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
        * </pre>
        *
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public Builder setResCode(com.github.wenweihu86.raft.proto.Raft.ResCode value) {
+      public Builder setResCode(com.github.wenweihu86.raft.proto.RaftMessage.ResCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -7065,7 +7065,7 @@ public final class Raft {
        * 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
        * </pre>
        *
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder clearResCode() {
         
@@ -7152,12 +7152,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.AppendEntriesResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -7180,7 +7180,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.AppendEntriesResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.AppendEntriesResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -7207,11 +7207,11 @@ public final class Raft {
     /**
      * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData getSnapshotMetaData();
+    com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData getSnapshotMetaData();
     /**
      * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder getSnapshotMetaDataOrBuilder();
+    com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder getSnapshotMetaDataOrBuilder();
 
     /**
      * <code>optional string file_name = 4;</code>
@@ -7300,11 +7300,11 @@ public final class Raft {
               break;
             }
             case 26: {
-              com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder subBuilder = null;
+              com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder subBuilder = null;
               if (snapshotMetaData_ != null) {
                 subBuilder = snapshotMetaData_.toBuilder();
               }
-              snapshotMetaData_ = input.readMessage(com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.parser(), extensionRegistry);
+              snapshotMetaData_ = input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(snapshotMetaData_);
                 snapshotMetaData_ = subBuilder.buildPartial();
@@ -7351,14 +7351,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.class, com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.Builder.class);
     }
 
     public static final int SERVER_ID_FIELD_NUMBER = 1;
@@ -7380,7 +7380,7 @@ public final class Raft {
     }
 
     public static final int SNAPSHOT_META_DATA_FIELD_NUMBER = 3;
-    private com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData snapshotMetaData_;
+    private com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData snapshotMetaData_;
     /**
      * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
      */
@@ -7390,13 +7390,13 @@ public final class Raft {
     /**
      * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData getSnapshotMetaData() {
-      return snapshotMetaData_ == null ? com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.getDefaultInstance() : snapshotMetaData_;
+    public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData getSnapshotMetaData() {
+      return snapshotMetaData_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.getDefaultInstance() : snapshotMetaData_;
     }
     /**
      * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder getSnapshotMetaDataOrBuilder() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder getSnapshotMetaDataOrBuilder() {
       return getSnapshotMetaData();
     }
 
@@ -7554,10 +7554,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest other = (com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest) obj;
 
       boolean result = true;
       result = result && (getServerId()
@@ -7616,58 +7616,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -7679,7 +7679,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -7699,20 +7699,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.InstallSnapshotRequest)
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.class, com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -7754,23 +7754,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest result = new com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest(this);
         result.serverId_ = serverId_;
         result.term_ = term_;
         if (snapshotMetaDataBuilder_ == null) {
@@ -7814,16 +7814,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest.getDefaultInstance()) return this;
         if (other.getServerId() != 0) {
           setServerId(other.getServerId());
         }
@@ -7861,11 +7861,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -7927,9 +7927,9 @@ public final class Raft {
         return this;
       }
 
-      private com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData snapshotMetaData_ = null;
+      private com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData snapshotMetaData_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder> snapshotMetaDataBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder> snapshotMetaDataBuilder_;
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
@@ -7939,9 +7939,9 @@ public final class Raft {
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData getSnapshotMetaData() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData getSnapshotMetaData() {
         if (snapshotMetaDataBuilder_ == null) {
-          return snapshotMetaData_ == null ? com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.getDefaultInstance() : snapshotMetaData_;
+          return snapshotMetaData_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.getDefaultInstance() : snapshotMetaData_;
         } else {
           return snapshotMetaDataBuilder_.getMessage();
         }
@@ -7949,7 +7949,7 @@ public final class Raft {
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
-      public Builder setSnapshotMetaData(com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData value) {
+      public Builder setSnapshotMetaData(com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData value) {
         if (snapshotMetaDataBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7966,7 +7966,7 @@ public final class Raft {
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
       public Builder setSnapshotMetaData(
-          com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder builderForValue) {
         if (snapshotMetaDataBuilder_ == null) {
           snapshotMetaData_ = builderForValue.build();
           onChanged();
@@ -7979,11 +7979,11 @@ public final class Raft {
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
-      public Builder mergeSnapshotMetaData(com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData value) {
+      public Builder mergeSnapshotMetaData(com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData value) {
         if (snapshotMetaDataBuilder_ == null) {
           if (snapshotMetaData_ != null) {
             snapshotMetaData_ =
-              com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.newBuilder(snapshotMetaData_).mergeFrom(value).buildPartial();
+              com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.newBuilder(snapshotMetaData_).mergeFrom(value).buildPartial();
           } else {
             snapshotMetaData_ = value;
           }
@@ -8011,7 +8011,7 @@ public final class Raft {
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder getSnapshotMetaDataBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder getSnapshotMetaDataBuilder() {
         
         onChanged();
         return getSnapshotMetaDataFieldBuilder().getBuilder();
@@ -8019,23 +8019,23 @@ public final class Raft {
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder getSnapshotMetaDataOrBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder getSnapshotMetaDataOrBuilder() {
         if (snapshotMetaDataBuilder_ != null) {
           return snapshotMetaDataBuilder_.getMessageOrBuilder();
         } else {
           return snapshotMetaData_ == null ?
-              com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.getDefaultInstance() : snapshotMetaData_;
+              com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.getDefaultInstance() : snapshotMetaData_;
         }
       }
       /**
        * <code>optional .raft.SnapshotMetaData snapshot_meta_data = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder> 
           getSnapshotMetaDataFieldBuilder() {
         if (snapshotMetaDataBuilder_ == null) {
           snapshotMetaDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaData.Builder, com.github.wenweihu86.raft.proto.Raft.SnapshotMetaDataOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaData.Builder, com.github.wenweihu86.raft.proto.RaftMessage.SnapshotMetaDataOrBuilder>(
                   getSnapshotMetaData(),
                   getParentForChildren(),
                   isClean());
@@ -8234,12 +8234,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.InstallSnapshotRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8262,7 +8262,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8273,13 +8273,13 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     int getResCodeValue();
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+    com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode();
 
     /**
      * <code>optional uint64 term = 2;</code>
@@ -8351,30 +8351,30 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.class, com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.Builder.class);
     }
 
-    public static final int RESCODE_FIELD_NUMBER = 1;
+    public static final int RES_CODE_FIELD_NUMBER = 1;
     private int resCode_;
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     public int getResCodeValue() {
       return resCode_;
     }
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-      com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+      com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
     }
 
     public static final int TERM_FIELD_NUMBER = 2;
@@ -8398,7 +8398,7 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
       if (term_ != 0L) {
@@ -8411,7 +8411,7 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
@@ -8429,10 +8429,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse other = (com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse) obj;
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
@@ -8448,7 +8448,7 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RESCODE_FIELD_NUMBER;
+      hash = (37 * hash) + RES_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
       hash = (37 * hash) + TERM_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
@@ -8458,58 +8458,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -8521,7 +8521,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -8541,20 +8541,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.InstallSnapshotResponse)
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.class, com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -8580,23 +8580,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_InstallSnapshotResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_InstallSnapshotResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse result = new com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse(this);
         result.resCode_ = resCode_;
         result.term_ = term_;
         onBuilt();
@@ -8630,16 +8630,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
         }
@@ -8658,11 +8658,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -8674,13 +8674,13 @@ public final class Raft {
 
       private int resCode_ = 0;
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public int getResCodeValue() {
         return resCode_;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder setResCodeValue(int value) {
         resCode_ = value;
@@ -8688,16 +8688,16 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-        com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+        com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public Builder setResCode(com.github.wenweihu86.raft.proto.Raft.ResCode value) {
+      public Builder setResCode(com.github.wenweihu86.raft.proto.RaftMessage.ResCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -8707,7 +8707,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder clearResCode() {
         
@@ -8756,12 +8756,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.InstallSnapshotResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8784,7 +8784,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.InstallSnapshotResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.InstallSnapshotResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -8845,14 +8845,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.class, com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -8884,10 +8884,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest other = (com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest) obj;
 
       boolean result = true;
       return result;
@@ -8905,58 +8905,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -8968,7 +8968,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -8988,20 +8988,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.GetLeaderRequest)
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.class, com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -9023,23 +9023,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest result = new com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest(this);
         onBuilt();
         return result;
       }
@@ -9071,16 +9071,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest.getDefaultInstance()) return this;
         onChanged();
         return this;
       }
@@ -9093,11 +9093,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -9121,12 +9121,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.GetLeaderRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9149,7 +9149,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.GetLeaderRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9160,20 +9160,20 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     int getResCodeValue();
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+    com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode();
 
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     java.lang.String getResMsg();
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     com.google.protobuf.ByteString
         getResMsgBytes();
@@ -9185,11 +9185,11 @@ public final class Raft {
     /**
      * <code>optional .raft.EndPoint leader = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.EndPoint getLeader();
+    com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getLeader();
     /**
      * <code>optional .raft.EndPoint leader = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getLeaderOrBuilder();
+    com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder getLeaderOrBuilder();
   }
   /**
    * Protobuf type {@code raft.GetLeaderResponse}
@@ -9245,11 +9245,11 @@ public final class Raft {
               break;
             }
             case 26: {
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder subBuilder = null;
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder subBuilder = null;
               if (leader_ != null) {
                 subBuilder = leader_.toBuilder();
               }
-              leader_ = input.readMessage(com.github.wenweihu86.raft.proto.Raft.EndPoint.parser(), extensionRegistry);
+              leader_ = input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(leader_);
                 leader_ = subBuilder.buildPartial();
@@ -9270,36 +9270,36 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.class, com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.Builder.class);
     }
 
-    public static final int RESCODE_FIELD_NUMBER = 1;
+    public static final int RES_CODE_FIELD_NUMBER = 1;
     private int resCode_;
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     public int getResCodeValue() {
       return resCode_;
     }
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-      com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+      com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
     }
 
-    public static final int RESMSG_FIELD_NUMBER = 2;
+    public static final int RES_MSG_FIELD_NUMBER = 2;
     private volatile java.lang.Object resMsg_;
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public java.lang.String getResMsg() {
       java.lang.Object ref = resMsg_;
@@ -9314,7 +9314,7 @@ public final class Raft {
       }
     }
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public com.google.protobuf.ByteString
         getResMsgBytes() {
@@ -9331,7 +9331,7 @@ public final class Raft {
     }
 
     public static final int LEADER_FIELD_NUMBER = 3;
-    private com.github.wenweihu86.raft.proto.Raft.EndPoint leader_;
+    private com.github.wenweihu86.raft.proto.RaftMessage.EndPoint leader_;
     /**
      * <code>optional .raft.EndPoint leader = 3;</code>
      */
@@ -9341,13 +9341,13 @@ public final class Raft {
     /**
      * <code>optional .raft.EndPoint leader = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.EndPoint getLeader() {
-      return leader_ == null ? com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : leader_;
+    public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getLeader() {
+      return leader_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance() : leader_;
     }
     /**
      * <code>optional .raft.EndPoint leader = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getLeaderOrBuilder() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder getLeaderOrBuilder() {
       return getLeader();
     }
 
@@ -9363,7 +9363,7 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
       if (!getResMsgBytes().isEmpty()) {
@@ -9379,7 +9379,7 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
@@ -9400,10 +9400,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse other = (com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse) obj;
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
@@ -9424,9 +9424,9 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RESCODE_FIELD_NUMBER;
+      hash = (37 * hash) + RES_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
-      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (37 * hash) + RES_MSG_FIELD_NUMBER;
       hash = (53 * hash) + getResMsg().hashCode();
       if (hasLeader()) {
         hash = (37 * hash) + LEADER_FIELD_NUMBER;
@@ -9437,58 +9437,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -9500,7 +9500,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -9520,20 +9520,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.GetLeaderResponse)
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.class, com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -9565,23 +9565,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetLeaderResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetLeaderResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse result = new com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse(this);
         result.resCode_ = resCode_;
         result.resMsg_ = resMsg_;
         if (leaderBuilder_ == null) {
@@ -9620,16 +9620,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
         }
@@ -9652,11 +9652,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -9668,13 +9668,13 @@ public final class Raft {
 
       private int resCode_ = 0;
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public int getResCodeValue() {
         return resCode_;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder setResCodeValue(int value) {
         resCode_ = value;
@@ -9682,16 +9682,16 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-        com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+        com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public Builder setResCode(com.github.wenweihu86.raft.proto.Raft.ResCode value) {
+      public Builder setResCode(com.github.wenweihu86.raft.proto.RaftMessage.ResCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -9701,7 +9701,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder clearResCode() {
         
@@ -9712,7 +9712,7 @@ public final class Raft {
 
       private java.lang.Object resMsg_ = "";
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public java.lang.String getResMsg() {
         java.lang.Object ref = resMsg_;
@@ -9727,7 +9727,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public com.google.protobuf.ByteString
           getResMsgBytes() {
@@ -9743,7 +9743,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsg(
           java.lang.String value) {
@@ -9756,7 +9756,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder clearResMsg() {
         
@@ -9765,7 +9765,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsgBytes(
           com.google.protobuf.ByteString value) {
@@ -9779,9 +9779,9 @@ public final class Raft {
         return this;
       }
 
-      private com.github.wenweihu86.raft.proto.Raft.EndPoint leader_ = null;
+      private com.github.wenweihu86.raft.proto.RaftMessage.EndPoint leader_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder> leaderBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.EndPoint, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder, com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder> leaderBuilder_;
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
@@ -9791,9 +9791,9 @@ public final class Raft {
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint getLeader() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint getLeader() {
         if (leaderBuilder_ == null) {
-          return leader_ == null ? com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : leader_;
+          return leader_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance() : leader_;
         } else {
           return leaderBuilder_.getMessage();
         }
@@ -9801,7 +9801,7 @@ public final class Raft {
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
-      public Builder setLeader(com.github.wenweihu86.raft.proto.Raft.EndPoint value) {
+      public Builder setLeader(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint value) {
         if (leaderBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -9818,7 +9818,7 @@ public final class Raft {
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
       public Builder setLeader(
-          com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder builderForValue) {
         if (leaderBuilder_ == null) {
           leader_ = builderForValue.build();
           onChanged();
@@ -9831,11 +9831,11 @@ public final class Raft {
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
-      public Builder mergeLeader(com.github.wenweihu86.raft.proto.Raft.EndPoint value) {
+      public Builder mergeLeader(com.github.wenweihu86.raft.proto.RaftMessage.EndPoint value) {
         if (leaderBuilder_ == null) {
           if (leader_ != null) {
             leader_ =
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.newBuilder(leader_).mergeFrom(value).buildPartial();
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.newBuilder(leader_).mergeFrom(value).buildPartial();
           } else {
             leader_ = value;
           }
@@ -9863,7 +9863,7 @@ public final class Raft {
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder getLeaderBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder getLeaderBuilder() {
         
         onChanged();
         return getLeaderFieldBuilder().getBuilder();
@@ -9871,23 +9871,23 @@ public final class Raft {
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder getLeaderOrBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder getLeaderOrBuilder() {
         if (leaderBuilder_ != null) {
           return leaderBuilder_.getMessageOrBuilder();
         } else {
           return leader_ == null ?
-              com.github.wenweihu86.raft.proto.Raft.EndPoint.getDefaultInstance() : leader_;
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.getDefaultInstance() : leader_;
         }
       }
       /**
        * <code>optional .raft.EndPoint leader = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.EndPoint, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder, com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder> 
           getLeaderFieldBuilder() {
         if (leaderBuilder_ == null) {
           leaderBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.EndPoint, com.github.wenweihu86.raft.proto.Raft.EndPoint.Builder, com.github.wenweihu86.raft.proto.Raft.EndPointOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.EndPoint, com.github.wenweihu86.raft.proto.RaftMessage.EndPoint.Builder, com.github.wenweihu86.raft.proto.RaftMessage.EndPointOrBuilder>(
                   getLeader(),
                   getParentForChildren(),
                   isClean());
@@ -9910,12 +9910,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.GetLeaderResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9938,7 +9938,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.GetLeaderResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.GetLeaderResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -9951,12 +9951,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> 
+    java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> 
         getServersList();
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.Server getServers(int index);
+    com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index);
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
@@ -9964,12 +9964,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList();
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index);
   }
   /**
@@ -10014,11 +10014,11 @@ public final class Raft {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>();
+                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>();
                 mutable_bitField0_ |= 0x00000001;
               }
               servers_.add(
-                  input.readMessage(com.github.wenweihu86.raft.proto.Raft.Server.parser(), extensionRegistry));
+                  input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.Server.parser(), extensionRegistry));
               break;
             }
           }
@@ -10037,28 +10037,28 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.class, com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.Builder.class);
     }
 
     public static final int SERVERS_FIELD_NUMBER = 1;
-    private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_;
+    private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_;
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+    public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
       return servers_;
     }
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList() {
       return servers_;
     }
@@ -10071,13 +10071,13 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+    public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
       return servers_.get(index);
     }
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index) {
       return servers_.get(index);
     }
@@ -10118,10 +10118,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.AddPeersRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.AddPeersRequest other = (com.github.wenweihu86.raft.proto.Raft.AddPeersRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest) obj;
 
       boolean result = true;
       result = result && getServersList()
@@ -10145,58 +10145,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -10208,7 +10208,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.AddPeersRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -10228,20 +10228,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.AddPeersRequest)
-        com.github.wenweihu86.raft.proto.Raft.AddPeersRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.class, com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -10270,23 +10270,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AddPeersRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AddPeersRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.AddPeersRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AddPeersRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.AddPeersRequest result = new com.github.wenweihu86.raft.proto.Raft.AddPeersRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest(this);
         int from_bitField0_ = bitField0_;
         if (serversBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -10328,16 +10328,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.AddPeersRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.AddPeersRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.AddPeersRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.AddPeersRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest.getDefaultInstance()) return this;
         if (serversBuilder_ == null) {
           if (!other.servers_.isEmpty()) {
             if (servers_.isEmpty()) {
@@ -10376,11 +10376,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.AddPeersRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.AddPeersRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -10391,22 +10391,22 @@ public final class Raft {
       }
       private int bitField0_;
 
-      private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_ =
+      private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_ =
         java.util.Collections.emptyList();
       private void ensureServersIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>(servers_);
+          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>(servers_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> serversBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> serversBuilder_;
 
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
         if (serversBuilder_ == null) {
           return java.util.Collections.unmodifiableList(servers_);
         } else {
@@ -10426,7 +10426,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);
         } else {
@@ -10437,7 +10437,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10454,7 +10454,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.set(index, builderForValue.build());
@@ -10467,7 +10467,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public Builder addServers(com.github.wenweihu86.raft.proto.Raft.Server value) {
+      public Builder addServers(com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10484,7 +10484,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10501,7 +10501,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(builderForValue.build());
@@ -10515,7 +10515,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(index, builderForValue.build());
@@ -10529,7 +10529,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addAllServers(
-          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.Raft.Server> values) {
+          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.RaftMessage.Server> values) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -10569,14 +10569,14 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder getServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder getServersBuilder(
           int index) {
         return getServersFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
           int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);  } else {
@@ -10586,7 +10586,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+      public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
            getServersOrBuilderList() {
         if (serversBuilder_ != null) {
           return serversBuilder_.getMessageOrBuilderList();
@@ -10597,31 +10597,31 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder() {
         return getServersFieldBuilder().addBuilder(
-            com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder(
           int index) {
         return getServersFieldBuilder().addBuilder(
-            index, com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            index, com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server.Builder> 
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder> 
            getServersBuilderList() {
         return getServersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
           getServersFieldBuilder() {
         if (serversBuilder_ == null) {
           serversBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder>(
                   servers_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -10645,12 +10645,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.AddPeersRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.AddPeersRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.AddPeersRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10673,7 +10673,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.AddPeersRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10684,20 +10684,20 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     int getResCodeValue();
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+    com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode();
 
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     java.lang.String getResMsg();
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     com.google.protobuf.ByteString
         getResMsgBytes();
@@ -10768,36 +10768,36 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.class, com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.Builder.class);
     }
 
-    public static final int RESCODE_FIELD_NUMBER = 1;
+    public static final int RES_CODE_FIELD_NUMBER = 1;
     private int resCode_;
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     public int getResCodeValue() {
       return resCode_;
     }
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-      com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+      com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
     }
 
-    public static final int RESMSG_FIELD_NUMBER = 2;
+    public static final int RES_MSG_FIELD_NUMBER = 2;
     private volatile java.lang.Object resMsg_;
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public java.lang.String getResMsg() {
       java.lang.Object ref = resMsg_;
@@ -10812,7 +10812,7 @@ public final class Raft {
       }
     }
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public com.google.protobuf.ByteString
         getResMsgBytes() {
@@ -10840,7 +10840,7 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
       if (!getResMsgBytes().isEmpty()) {
@@ -10853,7 +10853,7 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
@@ -10870,10 +10870,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.AddPeersResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.AddPeersResponse other = (com.github.wenweihu86.raft.proto.Raft.AddPeersResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse) obj;
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
@@ -10889,67 +10889,67 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RESCODE_FIELD_NUMBER;
+      hash = (37 * hash) + RES_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
-      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (37 * hash) + RES_MSG_FIELD_NUMBER;
       hash = (53 * hash) + getResMsg().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -10961,7 +10961,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.AddPeersResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -10981,20 +10981,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.AddPeersResponse)
-        com.github.wenweihu86.raft.proto.Raft.AddPeersResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.class, com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -11020,23 +11020,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_AddPeersResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_AddPeersResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AddPeersResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AddPeersResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.AddPeersResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.AddPeersResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.AddPeersResponse result = new com.github.wenweihu86.raft.proto.Raft.AddPeersResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse(this);
         result.resCode_ = resCode_;
         result.resMsg_ = resMsg_;
         onBuilt();
@@ -11070,16 +11070,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.AddPeersResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.AddPeersResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.AddPeersResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.AddPeersResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
         }
@@ -11099,11 +11099,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.AddPeersResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.AddPeersResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -11115,13 +11115,13 @@ public final class Raft {
 
       private int resCode_ = 0;
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public int getResCodeValue() {
         return resCode_;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder setResCodeValue(int value) {
         resCode_ = value;
@@ -11129,16 +11129,16 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-        com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+        com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public Builder setResCode(com.github.wenweihu86.raft.proto.Raft.ResCode value) {
+      public Builder setResCode(com.github.wenweihu86.raft.proto.RaftMessage.ResCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -11148,7 +11148,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder clearResCode() {
         
@@ -11159,7 +11159,7 @@ public final class Raft {
 
       private java.lang.Object resMsg_ = "";
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public java.lang.String getResMsg() {
         java.lang.Object ref = resMsg_;
@@ -11174,7 +11174,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public com.google.protobuf.ByteString
           getResMsgBytes() {
@@ -11190,7 +11190,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsg(
           java.lang.String value) {
@@ -11203,7 +11203,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder clearResMsg() {
         
@@ -11212,7 +11212,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsgBytes(
           com.google.protobuf.ByteString value) {
@@ -11240,12 +11240,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.AddPeersResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.AddPeersResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.AddPeersResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.AddPeersResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -11268,7 +11268,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.AddPeersResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.AddPeersResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -11281,12 +11281,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> 
+    java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> 
         getServersList();
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.Server getServers(int index);
+    com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index);
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
@@ -11294,12 +11294,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList();
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index);
   }
   /**
@@ -11344,11 +11344,11 @@ public final class Raft {
             }
             case 10: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>();
+                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>();
                 mutable_bitField0_ |= 0x00000001;
               }
               servers_.add(
-                  input.readMessage(com.github.wenweihu86.raft.proto.Raft.Server.parser(), extensionRegistry));
+                  input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.Server.parser(), extensionRegistry));
               break;
             }
           }
@@ -11367,28 +11367,28 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.class, com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.Builder.class);
     }
 
     public static final int SERVERS_FIELD_NUMBER = 1;
-    private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_;
+    private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_;
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+    public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
       return servers_;
     }
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList() {
       return servers_;
     }
@@ -11401,13 +11401,13 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+    public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
       return servers_.get(index);
     }
     /**
      * <code>repeated .raft.Server servers = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index) {
       return servers_.get(index);
     }
@@ -11448,10 +11448,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest other = (com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest) obj;
 
       boolean result = true;
       result = result && getServersList()
@@ -11475,58 +11475,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -11538,7 +11538,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -11558,20 +11558,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.RemovePeersRequest)
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.class, com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -11600,23 +11600,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest result = new com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest(this);
         int from_bitField0_ = bitField0_;
         if (serversBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -11658,16 +11658,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest.getDefaultInstance()) return this;
         if (serversBuilder_ == null) {
           if (!other.servers_.isEmpty()) {
             if (servers_.isEmpty()) {
@@ -11706,11 +11706,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -11721,22 +11721,22 @@ public final class Raft {
       }
       private int bitField0_;
 
-      private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_ =
+      private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_ =
         java.util.Collections.emptyList();
       private void ensureServersIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>(servers_);
+          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>(servers_);
           bitField0_ |= 0x00000001;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> serversBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> serversBuilder_;
 
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
         if (serversBuilder_ == null) {
           return java.util.Collections.unmodifiableList(servers_);
         } else {
@@ -11756,7 +11756,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);
         } else {
@@ -11767,7 +11767,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11784,7 +11784,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.set(index, builderForValue.build());
@@ -11797,7 +11797,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public Builder addServers(com.github.wenweihu86.raft.proto.Raft.Server value) {
+      public Builder addServers(com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11814,7 +11814,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11831,7 +11831,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(builderForValue.build());
@@ -11845,7 +11845,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(index, builderForValue.build());
@@ -11859,7 +11859,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 1;</code>
        */
       public Builder addAllServers(
-          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.Raft.Server> values) {
+          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.RaftMessage.Server> values) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -11899,14 +11899,14 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder getServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder getServersBuilder(
           int index) {
         return getServersFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
           int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);  } else {
@@ -11916,7 +11916,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+      public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
            getServersOrBuilderList() {
         if (serversBuilder_ != null) {
           return serversBuilder_.getMessageOrBuilderList();
@@ -11927,31 +11927,31 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder() {
         return getServersFieldBuilder().addBuilder(
-            com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder(
           int index) {
         return getServersFieldBuilder().addBuilder(
-            index, com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            index, com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 1;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server.Builder> 
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder> 
            getServersBuilderList() {
         return getServersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
           getServersFieldBuilder() {
         if (serversBuilder_ == null) {
           serversBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder>(
                   servers_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
                   getParentForChildren(),
@@ -11975,12 +11975,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.RemovePeersRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12003,7 +12003,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.RemovePeersRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12014,20 +12014,20 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     int getResCodeValue();
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+    com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode();
 
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     java.lang.String getResMsg();
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     com.google.protobuf.ByteString
         getResMsgBytes();
@@ -12098,36 +12098,36 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.class, com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.Builder.class);
     }
 
-    public static final int RESCODE_FIELD_NUMBER = 1;
+    public static final int RES_CODE_FIELD_NUMBER = 1;
     private int resCode_;
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     public int getResCodeValue() {
       return resCode_;
     }
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-      com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+      com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
     }
 
-    public static final int RESMSG_FIELD_NUMBER = 2;
+    public static final int RES_MSG_FIELD_NUMBER = 2;
     private volatile java.lang.Object resMsg_;
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public java.lang.String getResMsg() {
       java.lang.Object ref = resMsg_;
@@ -12142,7 +12142,7 @@ public final class Raft {
       }
     }
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public com.google.protobuf.ByteString
         getResMsgBytes() {
@@ -12170,7 +12170,7 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
       if (!getResMsgBytes().isEmpty()) {
@@ -12183,7 +12183,7 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
@@ -12200,10 +12200,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse other = (com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse) obj;
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
@@ -12219,67 +12219,67 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RESCODE_FIELD_NUMBER;
+      hash = (37 * hash) + RES_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
-      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (37 * hash) + RES_MSG_FIELD_NUMBER;
       hash = (53 * hash) + getResMsg().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -12291,7 +12291,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -12311,20 +12311,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.RemovePeersResponse)
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.class, com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -12350,23 +12350,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_RemovePeersResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_RemovePeersResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse result = new com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse(this);
         result.resCode_ = resCode_;
         result.resMsg_ = resMsg_;
         onBuilt();
@@ -12400,16 +12400,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
         }
@@ -12429,11 +12429,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -12445,13 +12445,13 @@ public final class Raft {
 
       private int resCode_ = 0;
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public int getResCodeValue() {
         return resCode_;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder setResCodeValue(int value) {
         resCode_ = value;
@@ -12459,16 +12459,16 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-        com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+        com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public Builder setResCode(com.github.wenweihu86.raft.proto.Raft.ResCode value) {
+      public Builder setResCode(com.github.wenweihu86.raft.proto.RaftMessage.ResCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -12478,7 +12478,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder clearResCode() {
         
@@ -12489,7 +12489,7 @@ public final class Raft {
 
       private java.lang.Object resMsg_ = "";
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public java.lang.String getResMsg() {
         java.lang.Object ref = resMsg_;
@@ -12504,7 +12504,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public com.google.protobuf.ByteString
           getResMsgBytes() {
@@ -12520,7 +12520,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsg(
           java.lang.String value) {
@@ -12533,7 +12533,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder clearResMsg() {
         
@@ -12542,7 +12542,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsgBytes(
           com.google.protobuf.ByteString value) {
@@ -12570,12 +12570,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.RemovePeersResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12598,7 +12598,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.RemovePeersResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.RemovePeersResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12659,14 +12659,14 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationRequest_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.class, com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.Builder.class);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -12698,10 +12698,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest other = (com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest other = (com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest) obj;
 
       boolean result = true;
       return result;
@@ -12719,58 +12719,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -12782,7 +12782,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -12802,20 +12802,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.GetConfigurationRequest)
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequestOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.class, com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.class, com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -12837,23 +12837,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationRequest_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationRequest_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest build() {
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest result = new com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest result = new com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest(this);
         onBuilt();
         return result;
       }
@@ -12885,16 +12885,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest.getDefaultInstance()) return this;
         onChanged();
         return this;
       }
@@ -12907,11 +12907,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -12935,12 +12935,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.GetConfigurationRequest)
-    private static final com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12963,7 +12963,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.GetConfigurationRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12974,20 +12974,20 @@ public final class Raft {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     int getResCodeValue();
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ResCode getResCode();
+    com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode();
 
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     java.lang.String getResMsg();
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     com.google.protobuf.ByteString
         getResMsgBytes();
@@ -12995,12 +12995,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> 
+    java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> 
         getServersList();
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.Server getServers(int index);
+    com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index);
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
@@ -13008,12 +13008,12 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList();
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index);
 
     /**
@@ -13023,11 +13023,11 @@ public final class Raft {
     /**
      * <code>optional .raft.Server leader = 4;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.Server getLeader();
+    com.github.wenweihu86.raft.proto.RaftMessage.Server getLeader();
     /**
      * <code>optional .raft.Server leader = 4;</code>
      */
-    com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getLeaderOrBuilder();
+    com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getLeaderOrBuilder();
   }
   /**
    * Protobuf type {@code raft.GetConfigurationResponse}
@@ -13085,19 +13085,19 @@ public final class Raft {
             }
             case 26: {
               if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
-                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>();
+                servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>();
                 mutable_bitField0_ |= 0x00000004;
               }
               servers_.add(
-                  input.readMessage(com.github.wenweihu86.raft.proto.Raft.Server.parser(), extensionRegistry));
+                  input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.Server.parser(), extensionRegistry));
               break;
             }
             case 34: {
-              com.github.wenweihu86.raft.proto.Raft.Server.Builder subBuilder = null;
+              com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder subBuilder = null;
               if (leader_ != null) {
                 subBuilder = leader_.toBuilder();
               }
-              leader_ = input.readMessage(com.github.wenweihu86.raft.proto.Raft.Server.parser(), extensionRegistry);
+              leader_ = input.readMessage(com.github.wenweihu86.raft.proto.RaftMessage.Server.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(leader_);
                 leader_ = subBuilder.buildPartial();
@@ -13121,37 +13121,37 @@ public final class Raft {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationResponse_descriptor;
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.class, com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.Builder.class);
+              com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.Builder.class);
     }
 
     private int bitField0_;
-    public static final int RESCODE_FIELD_NUMBER = 1;
+    public static final int RES_CODE_FIELD_NUMBER = 1;
     private int resCode_;
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
     public int getResCodeValue() {
       return resCode_;
     }
     /**
-     * <code>optional .raft.ResCode resCode = 1;</code>
+     * <code>optional .raft.ResCode res_code = 1;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-      com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-      return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+    public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+      com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+      return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
     }
 
-    public static final int RESMSG_FIELD_NUMBER = 2;
+    public static final int RES_MSG_FIELD_NUMBER = 2;
     private volatile java.lang.Object resMsg_;
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public java.lang.String getResMsg() {
       java.lang.Object ref = resMsg_;
@@ -13166,7 +13166,7 @@ public final class Raft {
       }
     }
     /**
-     * <code>optional string resMsg = 2;</code>
+     * <code>optional string res_msg = 2;</code>
      */
     public com.google.protobuf.ByteString
         getResMsgBytes() {
@@ -13183,17 +13183,17 @@ public final class Raft {
     }
 
     public static final int SERVERS_FIELD_NUMBER = 3;
-    private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_;
+    private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_;
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+    public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
       return servers_;
     }
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+    public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
         getServersOrBuilderList() {
       return servers_;
     }
@@ -13206,19 +13206,19 @@ public final class Raft {
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+    public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
       return servers_.get(index);
     }
     /**
      * <code>repeated .raft.Server servers = 3;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+    public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
         int index) {
       return servers_.get(index);
     }
 
     public static final int LEADER_FIELD_NUMBER = 4;
-    private com.github.wenweihu86.raft.proto.Raft.Server leader_;
+    private com.github.wenweihu86.raft.proto.RaftMessage.Server leader_;
     /**
      * <code>optional .raft.Server leader = 4;</code>
      */
@@ -13228,13 +13228,13 @@ public final class Raft {
     /**
      * <code>optional .raft.Server leader = 4;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.Server getLeader() {
-      return leader_ == null ? com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance() : leader_;
+    public com.github.wenweihu86.raft.proto.RaftMessage.Server getLeader() {
+      return leader_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance() : leader_;
     }
     /**
      * <code>optional .raft.Server leader = 4;</code>
      */
-    public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getLeaderOrBuilder() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getLeaderOrBuilder() {
       return getLeader();
     }
 
@@ -13250,7 +13250,7 @@ public final class Raft {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         output.writeEnum(1, resCode_);
       }
       if (!getResMsgBytes().isEmpty()) {
@@ -13269,7 +13269,7 @@ public final class Raft {
       if (size != -1) return size;
 
       size = 0;
-      if (resCode_ != com.github.wenweihu86.raft.proto.Raft.ResCode.RES_CODE_SUCCESS.getNumber()) {
+      if (resCode_ != com.github.wenweihu86.raft.proto.RaftMessage.ResCode.RES_CODE_SUCCESS.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(1, resCode_);
       }
@@ -13294,10 +13294,10 @@ public final class Raft {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse)) {
         return super.equals(obj);
       }
-      com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse other = (com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse) obj;
+      com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse other = (com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse) obj;
 
       boolean result = true;
       result = result && resCode_ == other.resCode_;
@@ -13320,9 +13320,9 @@ public final class Raft {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (37 * hash) + RESCODE_FIELD_NUMBER;
+      hash = (37 * hash) + RES_CODE_FIELD_NUMBER;
       hash = (53 * hash) + resCode_;
-      hash = (37 * hash) + RESMSG_FIELD_NUMBER;
+      hash = (37 * hash) + RES_MSG_FIELD_NUMBER;
       hash = (53 * hash) + getResMsg().hashCode();
       if (getServersCount() > 0) {
         hash = (37 * hash) + SERVERS_FIELD_NUMBER;
@@ -13337,58 +13337,58 @@ public final class Raft {
       return hash;
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parseFrom(
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -13400,7 +13400,7 @@ public final class Raft {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -13420,20 +13420,20 @@ public final class Raft {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:raft.GetConfigurationResponse)
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponseOrBuilder {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.class, com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.Builder.class);
+                com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.class, com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.Builder.class);
       }
 
-      // Construct using com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -13472,23 +13472,23 @@ public final class Raft {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.github.wenweihu86.raft.proto.Raft.internal_static_raft_GetConfigurationResponse_descriptor;
+        return com.github.wenweihu86.raft.proto.RaftMessage.internal_static_raft_GetConfigurationResponse_descriptor;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse getDefaultInstanceForType() {
-        return com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.getDefaultInstance();
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse build() {
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse result = buildPartial();
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse build() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse buildPartial() {
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse result = new com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse(this);
+      public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse buildPartial() {
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse result = new com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         result.resCode_ = resCode_;
@@ -13539,16 +13539,16 @@ public final class Raft {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse) {
-          return mergeFrom((com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse other) {
-        if (other == com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse other) {
+        if (other == com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse.getDefaultInstance()) return this;
         if (other.resCode_ != 0) {
           setResCodeValue(other.getResCodeValue());
         }
@@ -13597,11 +13597,11 @@ public final class Raft {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse parsedMessage = null;
+        com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -13614,13 +13614,13 @@ public final class Raft {
 
       private int resCode_ = 0;
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public int getResCodeValue() {
         return resCode_;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder setResCodeValue(int value) {
         resCode_ = value;
@@ -13628,16 +13628,16 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ResCode getResCode() {
-        com.github.wenweihu86.raft.proto.Raft.ResCode result = com.github.wenweihu86.raft.proto.Raft.ResCode.valueOf(resCode_);
-        return result == null ? com.github.wenweihu86.raft.proto.Raft.ResCode.UNRECOGNIZED : result;
+      public com.github.wenweihu86.raft.proto.RaftMessage.ResCode getResCode() {
+        com.github.wenweihu86.raft.proto.RaftMessage.ResCode result = com.github.wenweihu86.raft.proto.RaftMessage.ResCode.valueOf(resCode_);
+        return result == null ? com.github.wenweihu86.raft.proto.RaftMessage.ResCode.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
-      public Builder setResCode(com.github.wenweihu86.raft.proto.Raft.ResCode value) {
+      public Builder setResCode(com.github.wenweihu86.raft.proto.RaftMessage.ResCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -13647,7 +13647,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional .raft.ResCode resCode = 1;</code>
+       * <code>optional .raft.ResCode res_code = 1;</code>
        */
       public Builder clearResCode() {
         
@@ -13658,7 +13658,7 @@ public final class Raft {
 
       private java.lang.Object resMsg_ = "";
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public java.lang.String getResMsg() {
         java.lang.Object ref = resMsg_;
@@ -13673,7 +13673,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public com.google.protobuf.ByteString
           getResMsgBytes() {
@@ -13689,7 +13689,7 @@ public final class Raft {
         }
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsg(
           java.lang.String value) {
@@ -13702,7 +13702,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder clearResMsg() {
         
@@ -13711,7 +13711,7 @@ public final class Raft {
         return this;
       }
       /**
-       * <code>optional string resMsg = 2;</code>
+       * <code>optional string res_msg = 2;</code>
        */
       public Builder setResMsgBytes(
           com.google.protobuf.ByteString value) {
@@ -13725,22 +13725,22 @@ public final class Raft {
         return this;
       }
 
-      private java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> servers_ =
+      private java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> servers_ =
         java.util.Collections.emptyList();
       private void ensureServersIsMutable() {
         if (!((bitField0_ & 0x00000004) == 0x00000004)) {
-          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.Raft.Server>(servers_);
+          servers_ = new java.util.ArrayList<com.github.wenweihu86.raft.proto.RaftMessage.Server>(servers_);
           bitField0_ |= 0x00000004;
          }
       }
 
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> serversBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> serversBuilder_;
 
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server> getServersList() {
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server> getServersList() {
         if (serversBuilder_ == null) {
           return java.util.Collections.unmodifiableList(servers_);
         } else {
@@ -13760,7 +13760,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server getServers(int index) {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server getServers(int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);
         } else {
@@ -13771,7 +13771,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 3;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -13788,7 +13788,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 3;</code>
        */
       public Builder setServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.set(index, builderForValue.build());
@@ -13801,7 +13801,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public Builder addServers(com.github.wenweihu86.raft.proto.Raft.Server value) {
+      public Builder addServers(com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -13818,7 +13818,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 3;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server value) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (serversBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -13835,7 +13835,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 3;</code>
        */
       public Builder addServers(
-          com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(builderForValue.build());
@@ -13849,7 +13849,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 3;</code>
        */
       public Builder addServers(
-          int index, com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          int index, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           servers_.add(index, builderForValue.build());
@@ -13863,7 +13863,7 @@ public final class Raft {
        * <code>repeated .raft.Server servers = 3;</code>
        */
       public Builder addAllServers(
-          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.Raft.Server> values) {
+          java.lang.Iterable<? extends com.github.wenweihu86.raft.proto.RaftMessage.Server> values) {
         if (serversBuilder_ == null) {
           ensureServersIsMutable();
           com.google.protobuf.AbstractMessageLite.Builder.addAll(
@@ -13903,14 +13903,14 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder getServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder getServersBuilder(
           int index) {
         return getServersFieldBuilder().getBuilder(index);
       }
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getServersOrBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getServersOrBuilder(
           int index) {
         if (serversBuilder_ == null) {
           return servers_.get(index);  } else {
@@ -13920,7 +13920,7 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public java.util.List<? extends com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+      public java.util.List<? extends com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
            getServersOrBuilderList() {
         if (serversBuilder_ != null) {
           return serversBuilder_.getMessageOrBuilderList();
@@ -13931,31 +13931,31 @@ public final class Raft {
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder() {
         return getServersFieldBuilder().addBuilder(
-            com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder addServersBuilder(
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder addServersBuilder(
           int index) {
         return getServersFieldBuilder().addBuilder(
-            index, com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance());
+            index, com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance());
       }
       /**
        * <code>repeated .raft.Server servers = 3;</code>
        */
-      public java.util.List<com.github.wenweihu86.raft.proto.Raft.Server.Builder> 
+      public java.util.List<com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder> 
            getServersBuilderList() {
         return getServersFieldBuilder().getBuilderList();
       }
       private com.google.protobuf.RepeatedFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
           getServersFieldBuilder() {
         if (serversBuilder_ == null) {
           serversBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder>(
                   servers_,
                   ((bitField0_ & 0x00000004) == 0x00000004),
                   getParentForChildren(),
@@ -13965,9 +13965,9 @@ public final class Raft {
         return serversBuilder_;
       }
 
-      private com.github.wenweihu86.raft.proto.Raft.Server leader_ = null;
+      private com.github.wenweihu86.raft.proto.RaftMessage.Server leader_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> leaderBuilder_;
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> leaderBuilder_;
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
@@ -13977,9 +13977,9 @@ public final class Raft {
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server getLeader() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server getLeader() {
         if (leaderBuilder_ == null) {
-          return leader_ == null ? com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance() : leader_;
+          return leader_ == null ? com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance() : leader_;
         } else {
           return leaderBuilder_.getMessage();
         }
@@ -13987,7 +13987,7 @@ public final class Raft {
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
-      public Builder setLeader(com.github.wenweihu86.raft.proto.Raft.Server value) {
+      public Builder setLeader(com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (leaderBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14004,7 +14004,7 @@ public final class Raft {
        * <code>optional .raft.Server leader = 4;</code>
        */
       public Builder setLeader(
-          com.github.wenweihu86.raft.proto.Raft.Server.Builder builderForValue) {
+          com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder builderForValue) {
         if (leaderBuilder_ == null) {
           leader_ = builderForValue.build();
           onChanged();
@@ -14017,11 +14017,11 @@ public final class Raft {
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
-      public Builder mergeLeader(com.github.wenweihu86.raft.proto.Raft.Server value) {
+      public Builder mergeLeader(com.github.wenweihu86.raft.proto.RaftMessage.Server value) {
         if (leaderBuilder_ == null) {
           if (leader_ != null) {
             leader_ =
-              com.github.wenweihu86.raft.proto.Raft.Server.newBuilder(leader_).mergeFrom(value).buildPartial();
+              com.github.wenweihu86.raft.proto.RaftMessage.Server.newBuilder(leader_).mergeFrom(value).buildPartial();
           } else {
             leader_ = value;
           }
@@ -14049,7 +14049,7 @@ public final class Raft {
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.Server.Builder getLeaderBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder getLeaderBuilder() {
         
         onChanged();
         return getLeaderFieldBuilder().getBuilder();
@@ -14057,23 +14057,23 @@ public final class Raft {
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
-      public com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder getLeaderOrBuilder() {
+      public com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder getLeaderOrBuilder() {
         if (leaderBuilder_ != null) {
           return leaderBuilder_.getMessageOrBuilder();
         } else {
           return leader_ == null ?
-              com.github.wenweihu86.raft.proto.Raft.Server.getDefaultInstance() : leader_;
+              com.github.wenweihu86.raft.proto.RaftMessage.Server.getDefaultInstance() : leader_;
         }
       }
       /**
        * <code>optional .raft.Server leader = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
-          com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder> 
+          com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder> 
           getLeaderFieldBuilder() {
         if (leaderBuilder_ == null) {
           leaderBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              com.github.wenweihu86.raft.proto.Raft.Server, com.github.wenweihu86.raft.proto.Raft.Server.Builder, com.github.wenweihu86.raft.proto.Raft.ServerOrBuilder>(
+              com.github.wenweihu86.raft.proto.RaftMessage.Server, com.github.wenweihu86.raft.proto.RaftMessage.Server.Builder, com.github.wenweihu86.raft.proto.RaftMessage.ServerOrBuilder>(
                   getLeader(),
                   getParentForChildren(),
                   isClean());
@@ -14096,12 +14096,12 @@ public final class Raft {
     }
 
     // @@protoc_insertion_point(class_scope:raft.GetConfigurationResponse)
-    private static final com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse();
     }
 
-    public static com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -14124,7 +14124,7 @@ public final class Raft {
       return PARSER;
     }
 
-    public com.github.wenweihu86.raft.proto.Raft.GetConfigurationResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.proto.RaftMessage.GetConfigurationResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -14240,52 +14240,52 @@ public final class Raft {
   static {
     java.lang.String[] descriptorData = {
       "\n\nraft.proto\022\004raft\"&\n\010EndPoint\022\014\n\004host\030\001" +
-      " \001(\t\022\014\n\004port\030\002 \001(\r\"<\n\006Server\022\020\n\010serverId" +
-      "\030\001 \001(\r\022 \n\010endPoint\030\002 \001(\0132\016.raft.EndPoint" +
-      "\".\n\rConfiguration\022\035\n\007servers\030\001 \003(\0132\014.raf" +
-      "t.Server\"O\n\013LogMetaData\022\024\n\014current_term\030" +
-      "\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017first_log_in" +
-      "dex\030\003 \001(\004\"w\n\020SnapshotMetaData\022\033\n\023last_in" +
-      "cluded_index\030\001 \001(\004\022\032\n\022last_included_term" +
-      "\030\002 \001(\004\022*\n\rconfiguration\030\003 \001(\0132\023.raft.Con" +
-      "figuration\"T\n\010LogEntry\022\014\n\004term\030\001 \001(\004\022\r\n\005",
-      "index\030\002 \001(\004\022\035\n\004type\030\003 \001(\0162\017.raft.EntryTy" +
-      "pe\022\014\n\004data\030\004 \001(\014\"]\n\013VoteRequest\022\021\n\tserve" +
-      "r_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\022\025\n\rlast_log_ter" +
-      "m\030\003 \001(\004\022\026\n\016last_log_index\030\004 \001(\004\"-\n\014VoteR" +
-      "esponse\022\014\n\004term\030\001 \001(\004\022\017\n\007granted\030\002 \001(\010\"\235" +
-      "\001\n\024AppendEntriesRequest\022\021\n\tserver_id\030\001 \001" +
-      "(\r\022\014\n\004term\030\002 \001(\004\022\026\n\016prev_log_index\030\003 \001(\004" +
-      "\022\025\n\rprev_log_term\030\004 \001(\004\022\037\n\007entries\030\005 \003(\013" +
-      "2\016.raft.LogEntry\022\024\n\014commit_index\030\006 \001(\004\"]" +
-      "\n\025AppendEntriesResponse\022\036\n\007resCode\030\001 \001(\016",
-      "2\r.raft.ResCode\022\014\n\004term\030\002 \001(\004\022\026\n\016last_lo" +
-      "g_index\030\003 \001(\004\"\301\001\n\026InstallSnapshotRequest" +
-      "\022\021\n\tserver_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\0222\n\022sna" +
-      "pshot_meta_data\030\003 \001(\0132\026.raft.SnapshotMet" +
-      "aData\022\021\n\tfile_name\030\004 \001(\t\022\016\n\006offset\030\005 \001(\004" +
-      "\022\014\n\004data\030\006 \001(\014\022\020\n\010is_first\030\007 \001(\010\022\017\n\007is_l" +
-      "ast\030\010 \001(\010\"G\n\027InstallSnapshotResponse\022\036\n\007" +
-      "resCode\030\001 \001(\0162\r.raft.ResCode\022\014\n\004term\030\002 \001" +
-      "(\004\"\022\n\020GetLeaderRequest\"c\n\021GetLeaderRespo" +
-      "nse\022\036\n\007resCode\030\001 \001(\0162\r.raft.ResCode\022\016\n\006r",
-      "esMsg\030\002 \001(\t\022\036\n\006leader\030\003 \001(\0132\016.raft.EndPo" +
-      "int\"0\n\017AddPeersRequest\022\035\n\007servers\030\001 \003(\0132" +
-      "\014.raft.Server\"B\n\020AddPeersResponse\022\036\n\007res" +
-      "Code\030\001 \001(\0162\r.raft.ResCode\022\016\n\006resMsg\030\002 \001(" +
-      "\t\"3\n\022RemovePeersRequest\022\035\n\007servers\030\001 \003(\013" +
-      "2\014.raft.Server\"E\n\023RemovePeersResponse\022\036\n" +
-      "\007resCode\030\001 \001(\0162\r.raft.ResCode\022\016\n\006resMsg\030" +
-      "\002 \001(\t\"\031\n\027GetConfigurationRequest\"\207\001\n\030Get" +
-      "ConfigurationResponse\022\036\n\007resCode\030\001 \001(\0162\r" +
-      ".raft.ResCode\022\016\n\006resMsg\030\002 \001(\t\022\035\n\007servers",
-      "\030\003 \003(\0132\014.raft.Server\022\034\n\006leader\030\004 \001(\0132\014.r" +
-      "aft.Server*K\n\007ResCode\022\024\n\020RES_CODE_SUCCES" +
-      "S\020\000\022\021\n\rRES_CODE_FAIL\020\001\022\027\n\023RES_CODE_NOT_L" +
-      "EADER\020\002*>\n\tEntryType\022\023\n\017ENTRY_TYPE_DATA\020" +
-      "\000\022\034\n\030ENTRY_TYPE_CONFIGURATION\020\001B(\n com.g" +
-      "ithub.wenweihu86.raft.protoB\004Raftb\006proto" +
-      "3"
+      " \001(\t\022\014\n\004port\030\002 \001(\r\">\n\006Server\022\021\n\tserver_i" +
+      "d\030\001 \001(\r\022!\n\tend_point\030\002 \001(\0132\016.raft.EndPoi" +
+      "nt\".\n\rConfiguration\022\035\n\007servers\030\001 \003(\0132\014.r" +
+      "aft.Server\"O\n\013LogMetaData\022\024\n\014current_ter" +
+      "m\030\001 \001(\004\022\021\n\tvoted_for\030\002 \001(\r\022\027\n\017first_log_" +
+      "index\030\003 \001(\004\"w\n\020SnapshotMetaData\022\033\n\023last_" +
+      "included_index\030\001 \001(\004\022\032\n\022last_included_te" +
+      "rm\030\002 \001(\004\022*\n\rconfiguration\030\003 \001(\0132\023.raft.C" +
+      "onfiguration\"T\n\010LogEntry\022\014\n\004term\030\001 \001(\004\022\r",
+      "\n\005index\030\002 \001(\004\022\035\n\004type\030\003 \001(\0162\017.raft.Entry" +
+      "Type\022\014\n\004data\030\004 \001(\014\"]\n\013VoteRequest\022\021\n\tser" +
+      "ver_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\022\025\n\rlast_log_t" +
+      "erm\030\003 \001(\004\022\026\n\016last_log_index\030\004 \001(\004\"-\n\014Vot" +
+      "eResponse\022\014\n\004term\030\001 \001(\004\022\017\n\007granted\030\002 \001(\010" +
+      "\"\235\001\n\024AppendEntriesRequest\022\021\n\tserver_id\030\001" +
+      " \001(\r\022\014\n\004term\030\002 \001(\004\022\026\n\016prev_log_index\030\003 \001" +
+      "(\004\022\025\n\rprev_log_term\030\004 \001(\004\022\037\n\007entries\030\005 \003" +
+      "(\0132\016.raft.LogEntry\022\024\n\014commit_index\030\006 \001(\004" +
+      "\"^\n\025AppendEntriesResponse\022\037\n\010res_code\030\001 ",
+      "\001(\0162\r.raft.ResCode\022\014\n\004term\030\002 \001(\004\022\026\n\016last" +
+      "_log_index\030\003 \001(\004\"\301\001\n\026InstallSnapshotRequ" +
+      "est\022\021\n\tserver_id\030\001 \001(\r\022\014\n\004term\030\002 \001(\004\0222\n\022" +
+      "snapshot_meta_data\030\003 \001(\0132\026.raft.Snapshot" +
+      "MetaData\022\021\n\tfile_name\030\004 \001(\t\022\016\n\006offset\030\005 " +
+      "\001(\004\022\014\n\004data\030\006 \001(\014\022\020\n\010is_first\030\007 \001(\010\022\017\n\007i" +
+      "s_last\030\010 \001(\010\"H\n\027InstallSnapshotResponse\022" +
+      "\037\n\010res_code\030\001 \001(\0162\r.raft.ResCode\022\014\n\004term" +
+      "\030\002 \001(\004\"\022\n\020GetLeaderRequest\"e\n\021GetLeaderR" +
+      "esponse\022\037\n\010res_code\030\001 \001(\0162\r.raft.ResCode",
+      "\022\017\n\007res_msg\030\002 \001(\t\022\036\n\006leader\030\003 \001(\0132\016.raft" +
+      ".EndPoint\"0\n\017AddPeersRequest\022\035\n\007servers\030" +
+      "\001 \003(\0132\014.raft.Server\"D\n\020AddPeersResponse\022" +
+      "\037\n\010res_code\030\001 \001(\0162\r.raft.ResCode\022\017\n\007res_" +
+      "msg\030\002 \001(\t\"3\n\022RemovePeersRequest\022\035\n\007serve" +
+      "rs\030\001 \003(\0132\014.raft.Server\"G\n\023RemovePeersRes" +
+      "ponse\022\037\n\010res_code\030\001 \001(\0162\r.raft.ResCode\022\017" +
+      "\n\007res_msg\030\002 \001(\t\"\031\n\027GetConfigurationReque" +
+      "st\"\211\001\n\030GetConfigurationResponse\022\037\n\010res_c" +
+      "ode\030\001 \001(\0162\r.raft.ResCode\022\017\n\007res_msg\030\002 \001(",
+      "\t\022\035\n\007servers\030\003 \003(\0132\014.raft.Server\022\034\n\006lead" +
+      "er\030\004 \001(\0132\014.raft.Server*K\n\007ResCode\022\024\n\020RES" +
+      "_CODE_SUCCESS\020\000\022\021\n\rRES_CODE_FAIL\020\001\022\027\n\023RE" +
+      "S_CODE_NOT_LEADER\020\002*>\n\tEntryType\022\023\n\017ENTR" +
+      "Y_TYPE_DATA\020\000\022\034\n\030ENTRY_TYPE_CONFIGURATIO" +
+      "N\020\001B/\n com.github.wenweihu86.raft.protoB" +
+      "\013RaftMessageb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

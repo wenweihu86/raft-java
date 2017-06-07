@@ -1,7 +1,7 @@
 package com.github.wenweihu86.raft.storage;
 
 import com.github.wenweihu86.raft.RaftOptions;
-import com.github.wenweihu86.raft.proto.Raft;
+import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class Snapshot {
 
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
     private String snapshotDir = RaftOptions.dataDir + File.separator + "snapshot";
-    private Raft.SnapshotMetaData metaData;
+    private RaftMessage.SnapshotMetaData metaData;
     private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
 
     public Snapshot() {
@@ -42,7 +42,7 @@ public class Snapshot {
                 LOG.error("No readable metadata file but found snapshot in {}", snapshotDir);
                 throw new RuntimeException("No readable metadata file but found snapshot");
             }
-            metaData = Raft.SnapshotMetaData.newBuilder().build();
+            metaData = RaftMessage.SnapshotMetaData.newBuilder().build();
             snapshotDataFileMap = new TreeMap<>();
         }
     }
@@ -61,12 +61,12 @@ public class Snapshot {
         return snapshotDataFileMap;
     }
 
-    public Raft.SnapshotMetaData readMetaData() {
+    public RaftMessage.SnapshotMetaData readMetaData() {
         String fileName = snapshotDir + File.separator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            Raft.SnapshotMetaData metadata = RaftFileUtils.readProtoFromFile(
-                    randomAccessFile, Raft.SnapshotMetaData.class);
+            RaftMessage.SnapshotMetaData metadata = RaftFileUtils.readProtoFromFile(
+                    randomAccessFile, RaftMessage.SnapshotMetaData.class);
             return metadata;
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
@@ -77,8 +77,8 @@ public class Snapshot {
     public void updateMetaData(String dir,
                                Long lastIncludedIndex,
                                Long lastIncludedTerm,
-                               Raft.Configuration configuration) {
-        Raft.SnapshotMetaData snapshotMetaData = Raft.SnapshotMetaData.newBuilder()
+                               RaftMessage.Configuration configuration) {
+        RaftMessage.SnapshotMetaData snapshotMetaData = RaftMessage.SnapshotMetaData.newBuilder()
                 .setLastIncludedIndex(lastIncludedIndex)
                 .setLastIncludedTerm(lastIncludedTerm)
                 .setConfiguration(configuration).build();
@@ -105,7 +105,7 @@ public class Snapshot {
         }
     }
 
-    public Raft.SnapshotMetaData getMetaData() {
+    public RaftMessage.SnapshotMetaData getMetaData() {
         return metaData;
     }
 

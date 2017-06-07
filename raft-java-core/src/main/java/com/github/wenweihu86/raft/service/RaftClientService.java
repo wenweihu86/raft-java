@@ -1,17 +1,17 @@
 package com.github.wenweihu86.raft.service;
 
-import com.github.wenweihu86.raft.proto.Raft;
+import com.github.wenweihu86.raft.proto.RaftMessage;
 
 /**
  * Created by wenweihu86 on 2017/5/14.
  */
 public interface RaftClientService {
 
-    Raft.GetLeaderResponse getLeader(Raft.GetLeaderRequest request);
+    RaftMessage.GetLeaderResponse getLeader(RaftMessage.GetLeaderRequest request);
 
-    Raft.GetConfigurationResponse getConfiguration(Raft.GetConfigurationRequest request);
+    RaftMessage.GetConfigurationResponse getConfiguration(RaftMessage.GetConfigurationRequest request);
 
-    Raft.AddPeersResponse addPeers(Raft.AddPeersRequest request);
+    RaftMessage.AddPeersResponse addPeers(RaftMessage.AddPeersRequest request);
 
-    Raft.RemovePeersResponse removePeers(Raft.RemovePeersRequest request);
+    RaftMessage.RemovePeersResponse removePeers(RaftMessage.RemovePeersRequest request);
 }

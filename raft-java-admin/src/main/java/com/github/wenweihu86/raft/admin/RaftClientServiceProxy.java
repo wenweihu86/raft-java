@@ -1,6 +1,6 @@
 package com.github.wenweihu86.raft.admin;
 
-import com.github.wenweihu86.raft.proto.Raft;
+import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.service.RaftClientService;
 import com.github.wenweihu86.rpc.client.EndPoint;
 import com.github.wenweihu86.rpc.client.RPCClient;
@@ -20,11 +20,11 @@ public class RaftClientServiceProxy implements RaftClientService {
     private static final Logger LOG = LoggerFactory.getLogger(RaftClientServiceProxy.class);
     private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
 
-    private List<Raft.Server> cluster;
+    private List<RaftMessage.Server> cluster;
     private RPCClient clusterRPCClient;
     private RaftClientService clusterRaftClientService;
 
-    private Raft.Server leader;
+    private RaftMessage.Server leader;
     private RPCClient leaderRPCClient;
     private RaftClientService leaderRaftClientService;
 
@@ -41,19 +41,19 @@ public class RaftClientServiceProxy implements RaftClientService {
     }
 
     @Override
-    public Raft.GetLeaderResponse getLeader(Raft.GetLeaderRequest request) {
+    public RaftMessage.GetLeaderResponse getLeader(RaftMessage.GetLeaderRequest request) {
         return clusterRaftClientService.getLeader(request);
     }
 
     @Override
-    public Raft.GetConfigurationResponse getConfiguration(Raft.GetConfigurationRequest request) {
+    public RaftMessage.GetConfigurationResponse getConfiguration(RaftMessage.GetConfigurationRequest request) {
         return clusterRaftClientService.getConfiguration(request);
     }
 
     @Override
-    public Raft.AddPeersResponse addPeers(Raft.AddPeersRequest request) {
-        Raft.AddPeersResponse response = leaderRaftClientService.addPeers(request);
-        if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_NOT_LEADER) {
+    public RaftMessage.AddPeersResponse addPeers(RaftMessage.AddPeersRequest request) {
+        RaftMessage.AddPeersResponse response = leaderRaftClientService.addPeers(request);
+        if (response != null && response.getResCode() == RaftMessage.ResCode.RES_CODE_NOT_LEADER) {
             updateConfiguration();
             response = leaderRaftClientService.addPeers(request);
         }
@@ -61,9 +61,9 @@ public class RaftClientServiceProxy implements RaftClientService {
     }
 
     @Override
-    public Raft.RemovePeersResponse removePeers(Raft.RemovePeersRequest request) {
-        Raft.RemovePeersResponse response = leaderRaftClientService.removePeers(request);
-        if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_NOT_LEADER) {
+    public RaftMessage.RemovePeersResponse removePeers(RaftMessage.RemovePeersRequest request) {
+        RaftMessage.RemovePeersResponse response = leaderRaftClientService.removePeers(request);
+        if (response != null && response.getResCode() == RaftMessage.ResCode.RES_CODE_NOT_LEADER) {
             updateConfiguration();
             response = leaderRaftClientService.removePeers(request);
         }
@@ -80,9 +80,9 @@ public class RaftClientServiceProxy implements RaftClientService {
     }
 
     private boolean updateConfiguration() {
-        Raft.GetConfigurationRequest request = Raft.GetConfigurationRequest.newBuilder().build();
-        Raft.GetConfigurationResponse response = clusterRaftClientService.getConfiguration(request);
-        if (response != null && response.getResCode() == Raft.ResCode.RES_CODE_SUCCESS) {
+        RaftMessage.GetConfigurationRequest request = RaftMessage.GetConfigurationRequest.newBuilder().build();
+        RaftMessage.GetConfigurationResponse response = clusterRaftClientService.getConfiguration(request);
+        if (response != null && response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
             if (leaderRPCClient != null) {
                 leaderRPCClient.stop();
             }
@@ -94,7 +94,7 @@ public class RaftClientServiceProxy implements RaftClientService {
         return false;
     }
 
-    private EndPoint convertEndPoint(Raft.EndPoint endPoint) {
+    private EndPoint convertEndPoint(RaftMessage.EndPoint endPoint) {
         return new EndPoint(endPoint.getHost(), endPoint.getPort());
     }
 

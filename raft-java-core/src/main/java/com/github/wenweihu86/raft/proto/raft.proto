@@ -2,7 +2,7 @@ syntax="proto3";
 
 package raft;
 option java_package = "com.github.wenweihu86.raft.proto";
-option java_outer_classname = "Raft";
+option java_outer_classname = "RaftMessage";
 
 enum ResCode {
     RES_CODE_SUCCESS = 0;
@@ -21,8 +21,8 @@ message EndPoint {
 }
 
 message Server {
-    uint32 serverId = 1;
-    EndPoint endPoint = 2;
+    uint32 server_id = 1;
+    EndPoint end_point = 2;
 }
 
 message Configuration {
@@ -70,7 +70,7 @@ message AppendEntriesRequest {
 };
 
 message AppendEntriesResponse {
-    ResCode resCode = 1; // 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
+    ResCode res_code = 1; // 跟随者包含了匹配上 prevLogIndex 和 prevLogTerm 的日志时为真
     uint64 term = 2; // 当前的任期号，用于领导人去更新自己
     uint64 last_log_index = 3;
 };
@@ -87,7 +87,7 @@ message InstallSnapshotRequest {
 }
 
 message InstallSnapshotResponse {
-    ResCode resCode = 1;
+    ResCode res_code = 1;
     uint64 term = 2;
 }
 
@@ -95,8 +95,8 @@ message GetLeaderRequest {
 }
 
 message GetLeaderResponse {
-    ResCode resCode = 1;
-    string resMsg = 2;
+    ResCode res_code = 1;
+    string res_msg = 2;
     EndPoint leader = 3;
 }
 
@@ -105,8 +105,8 @@ message AddPeersRequest {
 }
 
 message AddPeersResponse {
-    ResCode resCode = 1;
-    string resMsg = 2;
+    ResCode res_code = 1;
+    string res_msg = 2;
 }
 
 message RemovePeersRequest {
@@ -114,16 +114,16 @@ message RemovePeersRequest {
 }
 
 message RemovePeersResponse {
-    ResCode resCode = 1;
-    string resMsg = 2;
+    ResCode res_code = 1;
+    string res_msg = 2;
 }
 
 message GetConfigurationRequest {
 }
 
 message GetConfigurationResponse {
-    ResCode resCode = 1;
-    string resMsg = 2;
+    ResCode res_code = 1;
+    string res_msg = 2;
     repeated Server servers = 3;
     Server leader = 4;
 }

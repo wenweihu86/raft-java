@@ -3,8 +3,8 @@
 
 package com.github.wenweihu86.raft.example.server.service;
 
-public final class Example {
-  private Example() {}
+public final class ExampleMessage {
+  private ExampleMessage() {}
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
@@ -104,14 +104,14 @@ public final class Example {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return Example.internal_static_service_SetRequest_descriptor;
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return Example.internal_static_service_SetRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              Example.SetRequest.class, Example.SetRequest.Builder.class);
+              com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.Builder.class);
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
@@ -223,10 +223,10 @@ public final class Example {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof Example.SetRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest)) {
         return super.equals(obj);
       }
-      Example.SetRequest other = (Example.SetRequest) obj;
+      com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest other = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest) obj;
 
       boolean result = true;
       result = result && getKey()
@@ -252,58 +252,58 @@ public final class Example {
       return hash;
     }
 
-    public static Example.SetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.SetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.SetRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.SetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.SetRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.SetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.SetRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static Example.SetRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.SetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.SetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -315,7 +315,7 @@ public final class Example {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Example.SetRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -335,20 +335,20 @@ public final class Example {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:service.SetRequest)
-        Example.SetRequestOrBuilder {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return Example.internal_static_service_SetRequest_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return Example.internal_static_service_SetRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                Example.SetRequest.class, Example.SetRequest.Builder.class);
+                com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.Builder.class);
       }
 
-      // Construct using Example.SetRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -374,23 +374,23 @@ public final class Example {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return Example.internal_static_service_SetRequest_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetRequest_descriptor;
       }
 
-      public Example.SetRequest getDefaultInstanceForType() {
-        return Example.SetRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.getDefaultInstance();
       }
 
-      public Example.SetRequest build() {
-        Example.SetRequest result = buildPartial();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest build() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public Example.SetRequest buildPartial() {
-        Example.SetRequest result = new Example.SetRequest(this);
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest buildPartial() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest result = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest(this);
         result.key_ = key_;
         result.value_ = value_;
         onBuilt();
@@ -424,16 +424,16 @@ public final class Example {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof Example.SetRequest) {
-          return mergeFrom((Example.SetRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(Example.SetRequest other) {
-        if (other == Example.SetRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest other) {
+        if (other == com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest.getDefaultInstance()) return this;
         if (!other.getKey().isEmpty()) {
           key_ = other.key_;
           onChanged();
@@ -454,11 +454,11 @@ public final class Example {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Example.SetRequest parsedMessage = null;
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (Example.SetRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -620,12 +620,12 @@ public final class Example {
     }
 
     // @@protoc_insertion_point(class_scope:service.SetRequest)
-    private static final Example.SetRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Example.SetRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest();
     }
 
-    public static Example.SetRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -648,7 +648,7 @@ public final class Example {
       return PARSER;
     }
 
-    public Example.SetRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -721,14 +721,14 @@ public final class Example {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return Example.internal_static_service_SetResponse_descriptor;
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return Example.internal_static_service_SetResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              Example.SetResponse.class, Example.SetResponse.Builder.class);
+              com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.Builder.class);
     }
 
     public static final int SUCCESS_FIELD_NUMBER = 1;
@@ -776,10 +776,10 @@ public final class Example {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof Example.SetResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse)) {
         return super.equals(obj);
       }
-      Example.SetResponse other = (Example.SetResponse) obj;
+      com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse other = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse) obj;
 
       boolean result = true;
       result = result && (getSuccess()
@@ -802,58 +802,58 @@ public final class Example {
       return hash;
     }
 
-    public static Example.SetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.SetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.SetResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.SetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.SetResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.SetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.SetResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static Example.SetResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.SetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.SetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -865,7 +865,7 @@ public final class Example {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Example.SetResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -885,20 +885,20 @@ public final class Example {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:service.SetResponse)
-        Example.SetResponseOrBuilder {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return Example.internal_static_service_SetResponse_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return Example.internal_static_service_SetResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                Example.SetResponse.class, Example.SetResponse.Builder.class);
+                com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.Builder.class);
       }
 
-      // Construct using Example.SetResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -922,23 +922,23 @@ public final class Example {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return Example.internal_static_service_SetResponse_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_SetResponse_descriptor;
       }
 
-      public Example.SetResponse getDefaultInstanceForType() {
-        return Example.SetResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.getDefaultInstance();
       }
 
-      public Example.SetResponse build() {
-        Example.SetResponse result = buildPartial();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse build() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public Example.SetResponse buildPartial() {
-        Example.SetResponse result = new Example.SetResponse(this);
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse buildPartial() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse result = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse(this);
         result.success_ = success_;
         onBuilt();
         return result;
@@ -971,16 +971,16 @@ public final class Example {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof Example.SetResponse) {
-          return mergeFrom((Example.SetResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(Example.SetResponse other) {
-        if (other == Example.SetResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse other) {
+        if (other == com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse.getDefaultInstance()) return this;
         if (other.getSuccess() != false) {
           setSuccess(other.getSuccess());
         }
@@ -996,11 +996,11 @@ public final class Example {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Example.SetResponse parsedMessage = null;
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (Example.SetResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1050,12 +1050,12 @@ public final class Example {
     }
 
     // @@protoc_insertion_point(class_scope:service.SetResponse)
-    private static final Example.SetResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Example.SetResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse();
     }
 
-    public static Example.SetResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1078,7 +1078,7 @@ public final class Example {
       return PARSER;
     }
 
-    public Example.SetResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.example.server.service.ExampleMessage.SetResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1157,14 +1157,14 @@ public final class Example {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return Example.internal_static_service_GetRequest_descriptor;
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetRequest_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return Example.internal_static_service_GetRequest_fieldAccessorTable
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              Example.GetRequest.class, Example.GetRequest.Builder.class);
+              com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.Builder.class);
     }
 
     public static final int KEY_FIELD_NUMBER = 1;
@@ -1236,10 +1236,10 @@ public final class Example {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof Example.GetRequest)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest)) {
         return super.equals(obj);
       }
-      Example.GetRequest other = (Example.GetRequest) obj;
+      com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest other = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest) obj;
 
       boolean result = true;
       result = result && getKey()
@@ -1261,58 +1261,58 @@ public final class Example {
       return hash;
     }
 
-    public static Example.GetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.GetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.GetRequest parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.GetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.GetRequest parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.GetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.GetRequest parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static Example.GetRequest parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.GetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.GetRequest parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1324,7 +1324,7 @@ public final class Example {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Example.GetRequest prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1344,20 +1344,20 @@ public final class Example {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:service.GetRequest)
-        Example.GetRequestOrBuilder {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequestOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return Example.internal_static_service_GetRequest_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetRequest_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return Example.internal_static_service_GetRequest_fieldAccessorTable
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                Example.GetRequest.class, Example.GetRequest.Builder.class);
+                com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.Builder.class);
       }
 
-      // Construct using Example.GetRequest.newBuilder()
+      // Construct using com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1381,23 +1381,23 @@ public final class Example {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return Example.internal_static_service_GetRequest_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetRequest_descriptor;
       }
 
-      public Example.GetRequest getDefaultInstanceForType() {
-        return Example.GetRequest.getDefaultInstance();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.getDefaultInstance();
       }
 
-      public Example.GetRequest build() {
-        Example.GetRequest result = buildPartial();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest build() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public Example.GetRequest buildPartial() {
-        Example.GetRequest result = new Example.GetRequest(this);
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest buildPartial() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest result = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest(this);
         result.key_ = key_;
         onBuilt();
         return result;
@@ -1430,16 +1430,16 @@ public final class Example {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof Example.GetRequest) {
-          return mergeFrom((Example.GetRequest)other);
+        if (other instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest) {
+          return mergeFrom((com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(Example.GetRequest other) {
-        if (other == Example.GetRequest.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest other) {
+        if (other == com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest.getDefaultInstance()) return this;
         if (!other.getKey().isEmpty()) {
           key_ = other.key_;
           onChanged();
@@ -1456,11 +1456,11 @@ public final class Example {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Example.GetRequest parsedMessage = null;
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (Example.GetRequest) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1553,12 +1553,12 @@ public final class Example {
     }
 
     // @@protoc_insertion_point(class_scope:service.GetRequest)
-    private static final Example.GetRequest DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Example.GetRequest();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest();
     }
 
-    public static Example.GetRequest getDefaultInstance() {
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1581,7 +1581,7 @@ public final class Example {
       return PARSER;
     }
 
-    public Example.GetRequest getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetRequest getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -1660,14 +1660,14 @@ public final class Example {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return Example.internal_static_service_GetResponse_descriptor;
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetResponse_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return Example.internal_static_service_GetResponse_fieldAccessorTable
+      return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              Example.GetResponse.class, Example.GetResponse.Builder.class);
+              com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.Builder.class);
     }
 
     public static final int VALUE_FIELD_NUMBER = 1;
@@ -1739,10 +1739,10 @@ public final class Example {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof Example.GetResponse)) {
+      if (!(obj instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse)) {
         return super.equals(obj);
       }
-      Example.GetResponse other = (Example.GetResponse) obj;
+      com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse other = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse) obj;
 
       boolean result = true;
       result = result && getValue()
@@ -1764,58 +1764,58 @@ public final class Example {
       return hash;
     }
 
-    public static Example.GetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.GetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.GetResponse parseFrom(byte[] data)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static Example.GetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static Example.GetResponse parseFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.GetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.GetResponse parseDelimitedFrom(java.io.InputStream input)
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static Example.GetResponse parseDelimitedFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static Example.GetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static Example.GetResponse parseFrom(
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1827,7 +1827,7 @@ public final class Example {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(Example.GetResponse prototype) {
+    public static Builder newBuilder(com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -1847,20 +1847,20 @@ public final class Example {
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:service.GetResponse)
-        Example.GetResponseOrBuilder {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return Example.internal_static_service_GetResponse_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetResponse_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return Example.internal_static_service_GetResponse_fieldAccessorTable
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                Example.GetResponse.class, Example.GetResponse.Builder.class);
+                com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.class, com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.Builder.class);
       }
 
-      // Construct using Example.GetResponse.newBuilder()
+      // Construct using com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1884,23 +1884,23 @@ public final class Example {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return Example.internal_static_service_GetResponse_descriptor;
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.internal_static_service_GetResponse_descriptor;
       }
 
-      public Example.GetResponse getDefaultInstanceForType() {
-        return Example.GetResponse.getDefaultInstance();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse getDefaultInstanceForType() {
+        return com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.getDefaultInstance();
       }
 
-      public Example.GetResponse build() {
-        Example.GetResponse result = buildPartial();
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse build() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public Example.GetResponse buildPartial() {
-        Example.GetResponse result = new Example.GetResponse(this);
+      public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse buildPartial() {
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse result = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse(this);
         result.value_ = value_;
         onBuilt();
         return result;
@@ -1933,16 +1933,16 @@ public final class Example {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof Example.GetResponse) {
-          return mergeFrom((Example.GetResponse)other);
+        if (other instanceof com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse) {
+          return mergeFrom((com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(Example.GetResponse other) {
-        if (other == Example.GetResponse.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse other) {
+        if (other == com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse.getDefaultInstance()) return this;
         if (!other.getValue().isEmpty()) {
           value_ = other.value_;
           onChanged();
@@ -1959,11 +1959,11 @@ public final class Example {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Example.GetResponse parsedMessage = null;
+        com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (Example.GetResponse) e.getUnfinishedMessage();
+          parsedMessage = (com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2056,12 +2056,12 @@ public final class Example {
     }
 
     // @@protoc_insertion_point(class_scope:service.GetResponse)
-    private static final Example.GetResponse DEFAULT_INSTANCE;
+    private static final com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new Example.GetResponse();
+      DEFAULT_INSTANCE = new com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse();
     }
 
-    public static Example.GetResponse getDefaultInstance() {
+    public static com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2084,7 +2084,7 @@ public final class Example {
       return PARSER;
     }
 
-    public Example.GetResponse getDefaultInstanceForType() {
+    public com.github.wenweihu86.raft.example.server.service.ExampleMessage.GetResponse getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2122,9 +2122,9 @@ public final class Example {
       "\n\rexample.proto\022\007service\"(\n\nSetRequest\022\013" +
       "\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"\036\n\013SetRespons" +
       "e\022\017\n\007success\030\001 \001(\010\"\031\n\nGetRequest\022\013\n\003key\030" +
-      "\001 \001(\t\"\034\n\013GetResponse\022\r\n\005value\030\001 \001(\tB.\n#c" +
-      "om.wenweihu86.raft.example.serviceB\007Exam" +
-      "pleb\006proto3"
+      "\001 \001(\t\"\034\n\013GetResponse\022\r\n\005value\030\001 \001(\tBC\n1c" +
+      "om.github.wenweihu86.raft.example.server" +
+      ".serviceB\016ExampleMessageb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {

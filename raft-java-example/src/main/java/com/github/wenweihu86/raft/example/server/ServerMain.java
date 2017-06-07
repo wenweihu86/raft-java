@@ -4,7 +4,7 @@ import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.example.server.service.impl.ExampleServiceImpl;
-import com.github.wenweihu86.raft.proto.Raft;
+import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.service.RaftClientService;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
 import com.github.wenweihu86.raft.service.impl.RaftClientServiceImpl;
@@ -23,13 +23,13 @@ public class ServerMain {
         // peers, format is "host:port:serverId,host2:port2:serverId2"
         String servers = args[0];
         String[] splitArray = servers.split(",");
-        List<Raft.Server> serverList = new ArrayList<>();
+        List<RaftMessage.Server> serverList = new ArrayList<>();
         for (String serverString : splitArray) {
-            Raft.Server server = parseServer(serverString);
+            RaftMessage.Server server = parseServer(serverString);
             serverList.add(server);
         }
         // local server
-        Raft.Server localServer = parseServer(args[1]);
+        RaftMessage.Server localServer = parseServer(args[1]);
 
         // 初始化RPCServer
         RPCServer server = new RPCServer(localServer.getEndPoint().getPort());
@@ -56,15 +56,15 @@ public class ServerMain {
         raftNode.init();
     }
 
-    private static Raft.Server parseServer(String serverString) {
+    private static RaftMessage.Server parseServer(String serverString) {
         String[] splitServer = serverString.split(":");
         String host = splitServer[0];
         Integer port = Integer.parseInt(splitServer[1]);
         Integer serverId = Integer.parseInt(splitServer[2]);
-        Raft.EndPoint endPoint = Raft.EndPoint.newBuilder()
+        RaftMessage.EndPoint endPoint = RaftMessage.EndPoint.newBuilder()
                 .setHost(host).setPort(port).build();
-        Raft.Server.Builder serverBuilder = Raft.Server.newBuilder();
-        Raft.Server server = serverBuilder.setServerId(serverId).setEndPoint(endPoint).build();
+        RaftMessage.Server.Builder serverBuilder = RaftMessage.Server.newBuilder();
+        RaftMessage.Server server = serverBuilder.setServerId(serverId).setEndPoint(endPoint).build();
         return server;
     }
 }
