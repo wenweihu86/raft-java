@@ -13,6 +13,9 @@ import java.io.RandomAccessFile;
 
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by wenweihu86 on 2017/5/6.
@@ -28,6 +31,8 @@ public class Snapshot {
     private String snapshotDir = RaftOptions.dataDir + File.separator + "snapshot";
     private RaftMessage.SnapshotMetaData metaData;
     private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
+    private AtomicBoolean isInSnapshot = new AtomicBoolean(false);
+    private Lock lock = new ReentrantLock();
 
     public Snapshot() {
         String snapshotDataDir = snapshotDir + File.separator + "data";
@@ -115,5 +120,17 @@ public class Snapshot {
 
     public TreeMap<String, SnapshotDataFile> getSnapshotDataFileMap() {
         return snapshotDataFileMap;
+    }
+
+    public AtomicBoolean getIsInSnapshot() {
+        return isInSnapshot;
+    }
+
+    public void setIsInSnapshot(AtomicBoolean isInSnapshot) {
+        this.isInSnapshot = isInSnapshot;
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 }

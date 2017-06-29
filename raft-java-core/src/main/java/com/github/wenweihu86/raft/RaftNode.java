@@ -50,7 +50,6 @@ public class RaftNode {
     private long commitIndex;
     // 最后被应用到状态机的日志条目索引值（初始化为 0，持续递增）
     private volatile long lastAppliedIndex;
-    private volatile boolean isInSnapshot;
 
     private Lock lock = new ReentrantLock();
     private Condition commitIndexCondition = lock.newCondition();
@@ -353,23 +352,28 @@ public class RaftNode {
         RaftMessage.AppendEntriesRequest.Builder requestBuilder = RaftMessage.AppendEntriesRequest.newBuilder();
         long prevLogIndex;
         long numEntries;
+
+        boolean isNeedInstallSnapshot = false;
         lock.lock();
         try {
             long firstLogIndex = raftLog.getFirstLogIndex();
             if (peer.getNextIndex() < firstLogIndex) {
-                lock.unlock();
-                boolean success;
-                try {
-                    success = installSnapshot(peer);
-                } finally {
-                    lock.lock();
-                }
-                if (!success) {
-                    return;
-                }
+                isNeedInstallSnapshot = true;
             }
-            Validate.isTrue(peer.getNextIndex() >= firstLogIndex);
+        } finally {
+            lock.unlock();
+        }
 
+        if (isNeedInstallSnapshot) {
+            if (!installSnapshot(peer)) {
+                return;
+            }
+        }
+
+        lock.lock();
+        try {
+            long firstLogIndex = raftLog.getFirstLogIndex();
+            Validate.isTrue(peer.getNextIndex() >= firstLogIndex);
             prevLogIndex = peer.getNextIndex() - 1;
             long prevLogTerm;
             if (prevLogIndex == 0) {
@@ -487,6 +491,11 @@ public class RaftNode {
     }
 
     private boolean installSnapshot(Peer peer) {
+        if (!snapshot.getIsInSnapshot().compareAndSet(false, true)) {
+            LOG.info("already in snapshot");
+            return false;
+        }
+
         LOG.info("begin installSnapshot");
         boolean isSuccess = true;
         boolean isLastRequest = false;
@@ -494,15 +503,8 @@ public class RaftNode {
         long lastOffset = 0;
         long lastLength = 0;
         while (!isLastRequest) {
-            lock.lock();
-            RaftMessage.InstallSnapshotRequest request = null;
-            try {
-                isInSnapshot = true;
-                request = buildInstallSnapshotRequest(
-                        lastFileName, lastOffset, lastLength);
-            } finally {
-                lock.unlock();
-            }
+            RaftMessage.InstallSnapshotRequest request
+                    = buildInstallSnapshotRequest(lastFileName, lastOffset, lastLength);
             if (request == null) {
                 isSuccess = false;
                 break;
@@ -526,18 +528,20 @@ public class RaftNode {
             if (isSuccess) {
                 peer.setNextIndex(snapshot.getMetaData().getLastIncludedIndex() + 1);
             }
-            isInSnapshot = false;
         } finally {
             lock.unlock();
         }
+
+        snapshot.getIsInSnapshot().compareAndSet(true, false);
         LOG.info("install snapshot success={}", isSuccess);
         return isSuccess;
     }
 
-    // in lock
     private RaftMessage.InstallSnapshotRequest buildInstallSnapshotRequest(
             String lastFileName, long lastOffset, long lastLength) {
         RaftMessage.InstallSnapshotRequest.Builder requestBuilder = RaftMessage.InstallSnapshotRequest.newBuilder();
+
+        snapshot.getLock().lock();
         try {
             TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
             if (lastFileName == null) {
@@ -574,8 +578,6 @@ public class RaftNode {
             requestBuilder.setData(ByteString.copyFrom(currentData));
             requestBuilder.setFileName(currentFileName);
             requestBuilder.setOffset(currentOffset);
-            requestBuilder.setTerm(currentTerm);
-            requestBuilder.setServerId(localServer.getServerId());
             requestBuilder.setIsFirst(false);
             if (currentFileName.equals(snapshotDataFileMap.lastKey())
                     && currentOffset + currentDataSize >= currentDataFile.randomAccessFile.length()) {
@@ -585,13 +587,25 @@ public class RaftNode {
             }
             if (currentFileName.equals(snapshotDataFileMap.firstKey()) && currentOffset == 0) {
                 requestBuilder.setIsFirst(true);
+                requestBuilder.setSnapshotMetaData(snapshot.getMetaData());
             } else {
                 requestBuilder.setIsFirst(false);
             }
-            return requestBuilder.build();
         } catch (IOException ex) {
             return null;
+        } finally {
+            snapshot.getLock().unlock();
         }
+
+        lock.lock();
+        try {
+            requestBuilder.setTerm(currentTerm);
+            requestBuilder.setServerId(localServer.getServerId());
+        } finally {
+            lock.unlock();
+        }
+
+        return requestBuilder.build();
     }
 
     // in lock
@@ -615,50 +629,59 @@ public class RaftNode {
     }
 
     private void takeSnapshot() {
-        if (isInSnapshot) {
+        if (!snapshot.getIsInSnapshot().compareAndSet(false, true)) {
+            LOG.info("already in snapshot");
             return;
         }
-        if (lock.tryLock()) {
-            try {
-                if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
-                    return;
-                }
-                if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
-                    return;
-                }
-                long lastAppliedTerm = 0;
-                if (lastAppliedIndex >= raftLog.getFirstLogIndex()
-                        && lastAppliedIndex <= raftLog.getLastLogIndex()) {
-                    lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
-                }
 
-                if (!isInSnapshot) {
-                    isInSnapshot = true;
-                    LOG.info("start taking snapshot");
-                    // take snapshot
-                    String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
-                    snapshot.updateMetaData(tmpSnapshotDir,
-                            lastAppliedIndex, lastAppliedTerm, configuration);
-                    String tmpSnapshotDataDir = tmpSnapshotDir + File.separator + "data";
-                    stateMachine.writeSnapshot(tmpSnapshotDataDir);
-                    // rename tmp snapshot dir to snapshot dir
-                    try {
-                        File snapshotDirFile = new File(snapshot.getSnapshotDir());
-                        if (snapshotDirFile.exists()) {
-                            FileUtils.deleteDirectory(snapshotDirFile);
-                        }
-                        FileUtils.moveDirectory(new File(tmpSnapshotDir),
-                                new File(snapshot.getSnapshotDir()));
-                    } catch (IOException ex) {
-                        LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
+        long localLastAppliedIndex;
+        long lastAppliedTerm = 0;
+        RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
+        lock.lock();
+        try {
+            if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
+                return;
+            }
+            if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
+                return;
+            }
+            localLastAppliedIndex = lastAppliedIndex;
+            if (lastAppliedIndex >= raftLog.getFirstLogIndex()
+                    && lastAppliedIndex <= raftLog.getLastLogIndex()) {
+                lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
+            }
+            localConfiguration.mergeFrom(configuration);
+        } finally {
+            lock.unlock();
+        }
+
+        if (snapshot.getLock().tryLock()) {
+            try {
+                LOG.info("start taking snapshot");
+                // take snapshot
+                String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
+                snapshot.updateMetaData(tmpSnapshotDir, localLastAppliedIndex,
+                        lastAppliedTerm, localConfiguration.build());
+                String tmpSnapshotDataDir = tmpSnapshotDir + File.separator + "data";
+                stateMachine.writeSnapshot(tmpSnapshotDataDir);
+                // rename tmp snapshot dir to snapshot dir
+                try {
+                    File snapshotDirFile = new File(snapshot.getSnapshotDir());
+                    if (snapshotDirFile.exists()) {
+                        FileUtils.deleteDirectory(snapshotDirFile);
                     }
-                    LOG.info("end taking snapshot");
+                    FileUtils.moveDirectory(new File(tmpSnapshotDir),
+                            new File(snapshot.getSnapshotDir()));
+                } catch (IOException ex) {
+                    LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
                 }
+                LOG.info("end taking snapshot");
             } finally {
-                isInSnapshot = false;
                 lock.unlock();
             }
         }
+
+        snapshot.getIsInSnapshot().compareAndSet(true, false);
     }
 
     // in lock

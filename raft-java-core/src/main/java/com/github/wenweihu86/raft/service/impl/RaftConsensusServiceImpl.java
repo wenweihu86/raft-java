@@ -164,10 +164,11 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
     @Override
     public RaftMessage.InstallSnapshotResponse installSnapshot(RaftMessage.InstallSnapshotRequest request) {
+        RaftMessage.InstallSnapshotResponse.Builder responseBuilder
+                = RaftMessage.InstallSnapshotResponse.newBuilder();
+
         raftNode.getLock().lock();
         try {
-            RaftMessage.InstallSnapshotResponse.Builder responseBuilder
-                    = RaftMessage.InstallSnapshotResponse.newBuilder();
             responseBuilder.setTerm(raftNode.getCurrentTerm());
             if (request.getTerm() < raftNode.getCurrentTerm()) {
                 return responseBuilder.build();
@@ -183,7 +184,12 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     ex.printStackTrace();
                 }
             }
+        } finally {
+            raftNode.getLock().unlock();
+        }
 
+        raftNode.getSnapshot().getLock().lock();
+        try {
             // write snapshot data to local
             String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
             File file = new File(tmpSnapshotDir);
@@ -236,7 +242,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     raftNode.getCurrentTerm(), responseBuilder.getResCode());
             return responseBuilder.build();
         } finally {
-            raftNode.getLock().unlock();
+            raftNode.getSnapshot().getLock().unlock();
         }
     }
 

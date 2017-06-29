@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class ConfigurationUtils {
 
+    // configuration不会太大，所以这里直接遍历了
     public static boolean containsServer(RaftMessage.Configuration configuration, int serverId) {
         for (RaftMessage.Server server : configuration.getServersList()) {
             if (server.getServerId() == serverId) {
