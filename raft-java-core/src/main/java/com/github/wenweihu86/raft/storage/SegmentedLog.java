@@ -171,62 +171,26 @@ public class SegmentedLog {
         if (newFirstIndex <= getFirstLogIndex()) {
             return;
         }
-        LOG.info("Truncating log from old first index {} to new first index {}",
-                getFirstLogIndex(), newFirstIndex);
+        long oldFirstIndex = getFirstLogIndex();
         while (!startLogIndexSegmentMap.isEmpty()) {
             Segment segment = startLogIndexSegmentMap.firstEntry().getValue();
-            if (newFirstIndex <= segment.getEndIndex()) {
-                List<Segment.Record> newEntries = new ArrayList<>();
-                List<Segment.Record> oldEntries = segment.getEntries();
-                int oldEntrySize = oldEntries.size();
-                long newFirstOffset = 0;
-                for (int index = (int) (newFirstIndex - segment.getStartIndex());
-                     index < oldEntrySize; index++) {
-                    Segment.Record record = segment.getEntries().get(index);
-                    if (newFirstOffset == 0) {
-                        newFirstOffset = record.offset;
-                    }
-                    record.offset -= newFirstOffset;
-                    newEntries.add(record);
-                }
-                segment.setEntries(newEntries);
-                segment.setStartIndex(newFirstIndex);
-                segment.setFileSize(segment.getFileSize() - newFirstOffset);
-
-                // 截取文件后半部分
-                FileInputStream oldFileStream = null;
-                FileOutputStream newFileStream = null;
-                try {
-                    File oldFile = new File(logDataDir + File.separator + segment.getFileName());
-                    oldFileStream = new FileInputStream(oldFile);
-
-                    String newFileName = String.format("%020d-%020d",
-                            segment.getStartIndex(), segment.getEndIndex());
-                    File newFile = new File(logDataDir + File.separator + newFileName);
-                    newFile.createNewFile();
-                    newFileStream = new FileOutputStream(newFile);
-
-                    IOUtils.copyLarge(oldFileStream, newFileStream, newFirstOffset, segment.getFileSize());
-
-                    segment.setFileName(newFileName);
-                    RaftFileUtils.closeFile(segment.getRandomAccessFile());
-                    oldFile.delete();
-                    segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, segment.getFileName(), "rw"));
-                    segment.setCanWrite(false);
-                } catch (Exception ex) {
-                    LOG.warn("exception, msg={}", ex.getMessage());
-                } finally {
-                    RaftFileUtils.closeFile(oldFileStream);
-                    RaftFileUtils.closeFile(newFileStream);
-                }
-                break;
-            } else if (newFirstIndex > segment.getEndIndex()){
+            if (newFirstIndex > segment.getEndIndex()) {
                 File oldFile = new File(logDataDir + File.separator + segment.getFileName());
-                oldFile.delete();
-                startLogIndexSegmentMap.remove(segment.getStartIndex());
+                try {
+                    RaftFileUtils.closeFile(segment.getRandomAccessFile());
+                    FileUtils.forceDelete(oldFile);
+                    startLogIndexSegmentMap.remove(segment.getStartIndex());
+                } catch (Exception ex2) {
+                    LOG.warn("delete file exception:", ex2);
+                }
+            } else {
+                break;
             }
         }
-        updateMetaData(null, null, newFirstIndex);
+        long newActualFirstIndex = getFirstLogIndex();
+        updateMetaData(null, null, newActualFirstIndex);
+        LOG.info("Truncating log from old first index {} to new first index {}",
+                oldFirstIndex, newActualFirstIndex);
     }
 
     public void truncateSuffix(long newEndIndex) {

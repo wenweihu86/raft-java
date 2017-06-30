@@ -496,43 +496,57 @@ public class RaftNode {
             return false;
         }
 
-        LOG.info("begin installSnapshot");
+        LOG.info("begin install snapshot");
         boolean isSuccess = true;
-        boolean isLastRequest = false;
-        String lastFileName = null;
-        long lastOffset = 0;
-        long lastLength = 0;
-        while (!isLastRequest) {
-            RaftMessage.InstallSnapshotRequest request
-                    = buildInstallSnapshotRequest(lastFileName, lastOffset, lastLength);
-            if (request == null) {
-                isSuccess = false;
-                break;
-            }
-            if (request.getIsLast()) {
-                isLastRequest = true;
-            }
-            RaftMessage.InstallSnapshotResponse response = peer.getRaftConsensusService().installSnapshot(request);
-            if (response != null && response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
-                lastFileName = request.getFileName();
-                lastOffset = request.getOffset();
-                lastLength = request.getData().size();
-            } else {
-                isSuccess = false;
-                break;
-            }
-        }
-
-        lock.lock();
         try {
+            boolean isLastRequest = false;
+            String lastFileName = null;
+            long lastOffset = 0;
+            long lastLength = 0;
+            while (!isLastRequest) {
+                RaftMessage.InstallSnapshotRequest request
+                        = buildInstallSnapshotRequest(lastFileName, lastOffset, lastLength);
+                if (request == null) {
+                    LOG.warn("snapshot request == null");
+                    isSuccess = false;
+                    break;
+                }
+                if (request.getIsLast()) {
+                    isLastRequest = true;
+                }
+                LOG.info("install snapshot request, fileName={}, offset={}, size={}, isFirst={}, isLast={}",
+                        request.getFileName(), request.getOffset(), request.getData().toByteArray().length,
+                        request.getIsFirst(), request.getIsLast());
+                RaftMessage.InstallSnapshotResponse response = peer.getRaftConsensusService().installSnapshot(request);
+                if (response != null && response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
+                    lastFileName = request.getFileName();
+                    lastOffset = request.getOffset();
+                    lastLength = request.getData().size();
+                } else {
+                    isSuccess = false;
+                    break;
+                }
+            }
+
             if (isSuccess) {
-                peer.setNextIndex(snapshot.getMetaData().getLastIncludedIndex() + 1);
+                long lastIncludedIndexInSnapshot;
+                snapshot.getLock().lock();
+                try {
+                    lastIncludedIndexInSnapshot = snapshot.getMetaData().getLastIncludedIndex();
+                } finally {
+                    snapshot.getLock().unlock();
+                }
+
+                lock.lock();
+                try {
+                    peer.setNextIndex(lastIncludedIndexInSnapshot + 1);
+                } finally {
+                    lock.unlock();
+                }
             }
         } finally {
-            lock.unlock();
+            snapshot.getIsInSnapshot().compareAndSet(true, false);
         }
-
-        snapshot.getIsInSnapshot().compareAndSet(true, false);
         LOG.info("install snapshot success={}", isSuccess);
         return isSuccess;
     }
@@ -563,6 +577,7 @@ public class RaftNode {
                 Map.Entry<String, Snapshot.SnapshotDataFile> currentEntry
                         = snapshotDataFileMap.higherEntry(lastFileName);
                 if (currentEntry == null) {
+                    LOG.warn("reach the last file={}", lastFileName);
                     return null;
                 }
                 currentDataFile = currentEntry.getValue();
@@ -574,6 +589,7 @@ public class RaftNode {
                 }
             }
             byte[] currentData = new byte[currentDataSize];
+            currentDataFile.randomAccessFile.seek(currentOffset);
             currentDataFile.randomAccessFile.read(currentData);
             requestBuilder.setData(ByteString.copyFrom(currentData));
             requestBuilder.setFileName(currentFileName);
@@ -591,7 +607,8 @@ public class RaftNode {
             } else {
                 requestBuilder.setIsFirst(false);
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            LOG.warn("meet exception:", ex);
             return null;
         } finally {
             snapshot.getLock().unlock();
@@ -630,32 +647,34 @@ public class RaftNode {
 
     private void takeSnapshot() {
         if (!snapshot.getIsInSnapshot().compareAndSet(false, true)) {
-            LOG.info("already in snapshot");
+            LOG.info("already in snapshot, ignore takeSnapshot");
             return;
         }
 
-        long localLastAppliedIndex;
-        long lastAppliedTerm = 0;
-        RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
-        lock.lock();
         try {
-            if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
-                return;
+            long localLastAppliedIndex;
+            long lastAppliedTerm = 0;
+            RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
+            lock.lock();
+            try {
+                if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
+                    return;
+                }
+                if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
+                    return;
+                }
+                localLastAppliedIndex = lastAppliedIndex;
+                if (lastAppliedIndex >= raftLog.getFirstLogIndex()
+                        && lastAppliedIndex <= raftLog.getLastLogIndex()) {
+                    lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
+                }
+                localConfiguration.mergeFrom(configuration);
+            } finally {
+                lock.unlock();
             }
-            if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
-                return;
-            }
-            localLastAppliedIndex = lastAppliedIndex;
-            if (lastAppliedIndex >= raftLog.getFirstLogIndex()
-                    && lastAppliedIndex <= raftLog.getLastLogIndex()) {
-                lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
-            }
-            localConfiguration.mergeFrom(configuration);
-        } finally {
-            lock.unlock();
-        }
 
-        if (snapshot.getLock().tryLock()) {
+            long snapshotLastIncludedIndex = 0;
+            snapshot.getLock().lock();
             try {
                 LOG.info("start taking snapshot");
                 // take snapshot
@@ -672,16 +691,27 @@ public class RaftNode {
                     }
                     FileUtils.moveDirectory(new File(tmpSnapshotDir),
                             new File(snapshot.getSnapshotDir()));
+                    LOG.info("end taking snapshot, result=success");
+                    snapshotLastIncludedIndex = snapshot.getMetaData().getLastIncludedIndex();
                 } catch (IOException ex) {
                     LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
                 }
-                LOG.info("end taking snapshot");
+            } finally {
+                snapshot.getLock().unlock();
+            }
+
+            // discard old log entries
+            lock.lock();
+            try {
+                if (snapshotLastIncludedIndex > 0 && raftLog.getFirstLogIndex() <= snapshotLastIncludedIndex) {
+                    raftLog.truncatePrefix(snapshotLastIncludedIndex + 1);
+                }
             } finally {
                 lock.unlock();
             }
+        } finally {
+            snapshot.getIsInSnapshot().compareAndSet(true, false);
         }
-
-        snapshot.getIsInSnapshot().compareAndSet(true, false);
     }
 
     // in lock

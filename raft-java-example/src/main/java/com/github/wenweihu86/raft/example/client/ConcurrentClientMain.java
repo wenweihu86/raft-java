@@ -6,6 +6,7 @@ import com.github.wenweihu86.rpc.client.RPCClient;
 import com.github.wenweihu86.rpc.client.RPCProxy;
 import com.google.protobuf.util.JsonFormat;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -22,71 +23,40 @@ public class ConcurrentClientMain {
         RPCClient rpcClient = new RPCClient(ipPorts);
         ExampleService exampleService = RPCProxy.getProxy(rpcClient, ExampleService.class);
 
-        long startTime = System.currentTimeMillis();
-        // set
+        ExecutorService readThreadPool = Executors.newFixedThreadPool(3);
         ExecutorService writeThreadPool = Executors.newFixedThreadPool(3);
         Future<?>[] future = new Future[3];
         for (int i = 0; i < 3; i++) {
-            future[i] = writeThreadPool.submit(new SetTask(exampleService, i));
+            future[i] = writeThreadPool.submit(new SetTask(exampleService, readThreadPool));
         }
-
-        while (!future[0].isDone() || !future[1].isDone() || !future[2].isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-        System.out.printf("write elapseMS=%d\n", System.currentTimeMillis() - startTime);
-
-        try {
-            Thread.sleep(30000);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-
-        // get
-        startTime = System.currentTimeMillis();
-        ExecutorService readThreadPool = Executors.newFixedThreadPool(3);
-        for (int i = 0; i < 3; i++) {
-            future[i] = readThreadPool.submit(new GetTask(exampleService, i));
-        }
-
-        while (!future[0].isDone() || !future[1].isDone() || !future[2].isDone()) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        }
-        System.out.printf("read elapseMS=%d\n", System.currentTimeMillis() - startTime);
-        rpcClient.stop();
     }
 
     public static class SetTask implements Runnable {
         private ExampleService exampleService;
-        private int id;
+        ExecutorService readThreadPool;
 
-        public SetTask(ExampleService exampleService, int id) {
+        public SetTask(ExampleService exampleService, ExecutorService readThreadPool) {
             this.exampleService = exampleService;
-            this.id = id;
+            this.readThreadPool = readThreadPool;
         }
 
         @Override
         public void run() {
-            for (int j = 0; j < 100000; j++) {
-                String key = "hello" + id + j;
-                String value = "world" + id + j;
+            while (true) {
+                String key = UUID.randomUUID().toString();
+                String value = UUID.randomUUID().toString();
                 ExampleMessage.SetRequest setRequest = ExampleMessage.SetRequest.newBuilder()
                         .setKey(key).setValue(value).build();
+
+                long startTime = System.currentTimeMillis();
                 ExampleMessage.SetResponse setResponse = exampleService.set(setRequest);
                 try {
                     if (setResponse != null) {
-                        System.out.printf("set request, key=%s value=%s response=%s\n",
-                                key, value, printer.print(setResponse));
+                        System.out.printf("set request, key=%s, value=%s, response=%s, elapseMS=%d\n",
+                                key, value, printer.print(setResponse), System.currentTimeMillis() - startTime);
+                        readThreadPool.submit(new GetTask(exampleService, key));
                     } else {
-                        System.out.printf("set request, key=%s value=%s response=null\n",
-                                key, value);
+                        System.out.printf("set request failed, key=%s value=%s\n", key, value);
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -97,30 +67,28 @@ public class ConcurrentClientMain {
 
     public static class GetTask implements Runnable {
         private ExampleService exampleService;
-        private int id;
+        private String key;
 
-        public GetTask(ExampleService exampleService, int id) {
+        public GetTask(ExampleService exampleService, String key) {
             this.exampleService = exampleService;
-            this.id = id;
+            this.key = key;
         }
 
         @Override
         public void run() {
-            for (int j = 0; j < 100000; j++) {
-                String key = "hello" + id + j;
-                ExampleMessage.GetRequest getRequest = ExampleMessage.GetRequest.newBuilder()
-                        .setKey(key).build();
-                ExampleMessage.GetResponse getResponse = exampleService.get(getRequest);
-                try {
-                    if (getResponse != null) {
-                        System.out.printf("get request, key=%s, response=%s\n",
-                                key, printer.print(getResponse));
-                    } else {
-                        System.out.printf("get request, key=%s, response=null\n", key);
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+            ExampleMessage.GetRequest getRequest = ExampleMessage.GetRequest.newBuilder()
+                    .setKey(key).build();
+            long startTime = System.currentTimeMillis();
+            ExampleMessage.GetResponse getResponse = exampleService.get(getRequest);
+            try {
+                if (getResponse != null) {
+                    System.out.printf("get request, key=%s, response=%s, elapseMS=%d\n",
+                            key, printer.print(getResponse), System.currentTimeMillis() - startTime);
+                } else {
+                    System.out.printf("get request failed, key=%s\n", key);
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }

@@ -112,8 +112,12 @@ public class RaftClientServiceImpl implements RaftClientService {
             requestPeers.add(peer);
 
             raftNode.getLock().lock();
-            raftNode.getPeerMap().put(server.getServerId(), peer);
-            raftNode.getLock().unlock();
+            try {
+                raftNode.getPeerMap().put(server.getServerId(), peer);
+            } finally {
+                raftNode.getLock().unlock();
+            }
+
             raftNode.getExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {

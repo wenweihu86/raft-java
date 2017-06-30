@@ -166,6 +166,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
     public RaftMessage.InstallSnapshotResponse installSnapshot(RaftMessage.InstallSnapshotRequest request) {
         RaftMessage.InstallSnapshotResponse.Builder responseBuilder
                 = RaftMessage.InstallSnapshotResponse.newBuilder();
+        responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_FAIL);
 
         raftNode.getLock().lock();
         try {
@@ -188,6 +189,12 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.getLock().unlock();
         }
 
+        if (!raftNode.getSnapshot().getIsInSnapshot().compareAndSet(false, true)) {
+            LOG.warn("alreay in snapshot");
+            return responseBuilder.build();
+        }
+
+        RandomAccessFile randomAccessFile = null;
         raftNode.getSnapshot().getLock().lock();
         try {
             // write snapshot data to local
@@ -204,45 +211,47 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                         request.getSnapshotMetaData().getConfiguration());
             }
             // write to file
-            RandomAccessFile randomAccessFile = null;
-            try {
-                String currentDataFileName = tmpSnapshotDir + File.separator
-                        + "data" + File.separator + request.getFileName();
-                File currentDataFile = new File(currentDataFileName);
-                if (!currentDataFile.exists()) {
-                    currentDataFile.createNewFile();
-                }
-                randomAccessFile = RaftFileUtils.openFile(
-                        tmpSnapshotDir + File.separator + "data",
-                        request.getFileName(), "rw");
-                randomAccessFile.skipBytes((int) request.getOffset());
-                randomAccessFile.write(request.getData().toByteArray());
-                RaftFileUtils.closeFile(randomAccessFile);
-                // move tmp dir to snapshot dir if this is the last package
-                if (request.getIsLast()) {
-                    File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
-                    if (snapshotDirFile.exists()) {
-                        snapshotDirFile.delete();
-                    }
-                    FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
-                    // apply state machine
-                    // TODO: make this async
-                    String snapshotDataDir = raftNode.getSnapshot().getSnapshotDir() + File.separator + "data";
-                    raftNode.getStateMachine().readSnapshot(snapshotDataDir);
-                }
-                responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
-            } catch (IOException ex) {
-                LOG.warn("io exception, msg={}", ex.getMessage());
-            } finally {
-                RaftFileUtils.closeFile(randomAccessFile);
+            String currentDataDirName = tmpSnapshotDir + File.separator + "data";
+            File currentDataDir = new File(currentDataDirName);
+            if (!currentDataDir.exists()) {
+                currentDataDir.mkdirs();
             }
+
+            String currentDataFileName = currentDataDirName + File.separator + request.getFileName();
+            File currentDataFile = new File(currentDataFileName);
+            if (!currentDataFile.exists()) {
+                currentDataFile.createNewFile();
+            }
+            randomAccessFile = RaftFileUtils.openFile(
+                    tmpSnapshotDir + File.separator + "data",
+                    request.getFileName(), "rw");
+            randomAccessFile.seek(request.getOffset());
+            randomAccessFile.write(request.getData().toByteArray());
+            // move tmp dir to snapshot dir if this is the last package
+            if (request.getIsLast()) {
+                File snapshotDirFile = new File(raftNode.getSnapshot().getSnapshotDir());
+                if (snapshotDirFile.exists()) {
+                    FileUtils.deleteDirectory(snapshotDirFile);
+                }
+                FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
+                // apply state machine
+                // TODO: make this async
+                String snapshotDataDir = raftNode.getSnapshot().getSnapshotDir() + File.separator + "data";
+                raftNode.getStateMachine().readSnapshot(snapshotDataDir);
+            }
+            responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
             LOG.info("installSnapshot request from server {} " +
                             "in term {} (my term is {}), resCode={}",
                     request.getServerId(), request.getTerm(),
                     raftNode.getCurrentTerm(), responseBuilder.getResCode());
             return responseBuilder.build();
+        } catch (IOException ex) {
+            LOG.warn("io exception, msg={}", ex.getMessage());
+            return responseBuilder.build();
         } finally {
+            RaftFileUtils.closeFile(randomAccessFile);
             raftNode.getSnapshot().getLock().unlock();
+            raftNode.getSnapshot().getIsInSnapshot().compareAndSet(true, false);
         }
     }
 
