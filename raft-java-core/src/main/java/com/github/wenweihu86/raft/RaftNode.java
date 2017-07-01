@@ -34,7 +34,7 @@ public class RaftNode {
     private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
 
     private RaftMessage.Configuration configuration;
-    private Map<Integer, Peer> peerMap = new HashMap<>();
+    private ConcurrentMap<Integer, Peer> peerMap = new ConcurrentHashMap<>();
     private RaftMessage.Server localServer;
     private StateMachine stateMachine;
     private SegmentedLog raftLog;
@@ -73,6 +73,7 @@ public class RaftNode {
         // load log and snapshot
         raftLog = new SegmentedLog();
         snapshot = new Snapshot();
+        snapshot.reload();
 
         currentTerm = raftLog.getMetaData().getCurrentTerm();
         votedFor = raftLog.getMetaData().getVotedFor();
@@ -110,7 +111,12 @@ public class RaftNode {
         }
 
         // init thread pool
-        executorService = Executors.newFixedThreadPool(peerMap.size() * 2);
+        executorService = new ThreadPoolExecutor(
+                peerMap.size() * 2,
+                peerMap.size() * 4,
+                60,
+                TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>());
         scheduledExecutorService = Executors.newScheduledThreadPool(2);
         scheduledExecutorService.scheduleWithFixedDelay(new Runnable() {
             @Override
@@ -143,7 +149,8 @@ public class RaftNode {
             newLastLogIndex = raftLog.append(entries);
             raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
 
-            for (final Peer peer : peerMap.values()) {
+            for (RaftMessage.Server server : configuration.getServersList()) {
+                final Peer peer = peerMap.get(server.getServerId());
                 executorService.submit(new Runnable() {
                     @Override
                     public void run() {
@@ -234,7 +241,7 @@ public class RaftNode {
             requestBuilder.setServerId(localServer.getServerId())
                     .setTerm(currentTerm)
                     .setLastLogIndex(raftLog.getLastLogIndex())
-                    .setLastLogTerm(raftLog.getLastLogTerm());
+                    .setLastLogTerm(getLastLogTerm());
         } finally {
             lock.unlock();
         }
@@ -370,6 +377,16 @@ public class RaftNode {
             }
         }
 
+        long lastSnapshotIndex;
+        long lastSnapshotTerm;
+        snapshot.getLock().lock();
+        try {
+            lastSnapshotIndex = snapshot.getMetaData().getLastIncludedIndex();
+            lastSnapshotTerm = snapshot.getMetaData().getLastIncludedTerm();
+        } finally {
+            snapshot.getLock().unlock();
+        }
+
         lock.lock();
         try {
             long firstLogIndex = raftLog.getFirstLogIndex();
@@ -378,8 +395,8 @@ public class RaftNode {
             long prevLogTerm;
             if (prevLogIndex == 0) {
                 prevLogTerm = 0;
-            } else if (prevLogIndex == snapshot.getMetaData().getLastIncludedIndex()) {
-                prevLogTerm = snapshot.getMetaData().getLastIncludedTerm();
+            } else if (prevLogIndex == lastSnapshotIndex) {
+                prevLogTerm = lastSnapshotTerm;
             } else {
                 prevLogTerm = raftLog.getEntryTerm(prevLogIndex);
             }
@@ -673,7 +690,7 @@ public class RaftNode {
                 lock.unlock();
             }
 
-            long snapshotLastIncludedIndex = 0;
+            boolean success = false;
             snapshot.getLock().lock();
             try {
                 LOG.info("start taking snapshot");
@@ -692,7 +709,7 @@ public class RaftNode {
                     FileUtils.moveDirectory(new File(tmpSnapshotDir),
                             new File(snapshot.getSnapshotDir()));
                     LOG.info("end taking snapshot, result=success");
-                    snapshotLastIncludedIndex = snapshot.getMetaData().getLastIncludedIndex();
+                    success = true;
                 } catch (IOException ex) {
                     LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
                 }
@@ -700,14 +717,26 @@ public class RaftNode {
                 snapshot.getLock().unlock();
             }
 
-            // discard old log entries
-            lock.lock();
-            try {
-                if (snapshotLastIncludedIndex > 0 && raftLog.getFirstLogIndex() <= snapshotLastIncludedIndex) {
-                    raftLog.truncatePrefix(snapshotLastIncludedIndex + 1);
+            if (success) {
+                // 重新加载snapshot
+                long lastSnapshotIndex = 0;
+                snapshot.getLock().lock();
+                try {
+                    snapshot.reload();
+                    lastSnapshotIndex = snapshot.getMetaData().getLastIncludedIndex();
+                } finally {
+                    snapshot.getLock().unlock();
                 }
-            } finally {
-                lock.unlock();
+
+                // discard old log entries
+                lock.lock();
+                try {
+                    if (lastSnapshotIndex > 0 && raftLog.getFirstLogIndex() <= lastSnapshotIndex) {
+                        raftLog.truncatePrefix(lastSnapshotIndex + 1);
+                    }
+                } finally {
+                    lock.unlock();
+                }
             }
         } finally {
             snapshot.getIsInSnapshot().compareAndSet(true, false);
@@ -732,6 +761,17 @@ public class RaftNode {
             LOG.info("new conf is {}, leaderId={}", PRINTER.print(newConfiguration), leaderId);
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public long getLastLogTerm() {
+        long lastLogIndex = raftLog.getLastLogIndex();
+        if (lastLogIndex >= raftLog.getFirstLogIndex()) {
+            return raftLog.getEntryTerm(lastLogIndex);
+        } else {
+            // log为空，lastLogIndex == lastSnapshotIndex
+            // TODO: 是否加锁？如何避免死锁？
+            return snapshot.getMetaData().getLastIncludedTerm();
         }
     }
 

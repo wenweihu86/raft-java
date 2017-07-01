@@ -3,6 +3,7 @@ package com.github.wenweihu86.raft.service.impl;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
+import com.github.wenweihu86.raft.storage.Snapshot;
 import com.github.wenweihu86.raft.util.ConfigurationUtils;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -47,8 +48,8 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             if (request.getTerm() > raftNode.getCurrentTerm()) {
                 raftNode.stepDown(request.getTerm());
             }
-            boolean logIsOk = request.getLastLogTerm() > raftNode.getRaftLog().getLastLogTerm()
-                    || (request.getLastLogTerm() == raftNode.getRaftLog().getLastLogTerm()
+            boolean logIsOk = request.getLastLogTerm() > raftNode.getLastLogTerm()
+                    || (request.getLastLogTerm() == raftNode.getLastLogTerm()
                     && request.getLastLogIndex() >= raftNode.getRaftLog().getLastLogIndex());
             if (raftNode.getVotedFor() == 0 && logIsOk) {
                 raftNode.stepDown(request.getTerm());
@@ -205,6 +206,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 file.mkdir();
             }
             if (request.getIsFirst()) {
+                LOG.info("begin accept install snapshot request from serverId={}", request.getServerId());
                 raftNode.getSnapshot().updateMetaData(tmpSnapshotDir,
                         request.getSnapshotMetaData().getLastIncludedIndex(),
                         request.getSnapshotMetaData().getLastIncludedTerm(),
@@ -234,25 +236,46 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                     FileUtils.deleteDirectory(snapshotDirFile);
                 }
                 FileUtils.moveDirectory(new File(tmpSnapshotDir), snapshotDirFile);
-                // apply state machine
-                // TODO: make this async
-                String snapshotDataDir = raftNode.getSnapshot().getSnapshotDir() + File.separator + "data";
-                raftNode.getStateMachine().readSnapshot(snapshotDataDir);
             }
             responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
-            LOG.info("installSnapshot request from server {} " +
+            LOG.info("install snapshot request from server {} " +
                             "in term {} (my term is {}), resCode={}",
                     request.getServerId(), request.getTerm(),
                     raftNode.getCurrentTerm(), responseBuilder.getResCode());
-            return responseBuilder.build();
         } catch (IOException ex) {
-            LOG.warn("io exception, msg={}", ex.getMessage());
-            return responseBuilder.build();
+            LOG.warn("when handle installSnapshot request, meet exception:", ex);
         } finally {
             RaftFileUtils.closeFile(randomAccessFile);
             raftNode.getSnapshot().getLock().unlock();
             raftNode.getSnapshot().getIsInSnapshot().compareAndSet(true, false);
         }
+
+        if (request.getIsLast() && responseBuilder.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
+            // apply state machine
+            // TODO: make this async
+            String snapshotDataDir = raftNode.getSnapshot().getSnapshotDir() + File.separator + "data";
+            raftNode.getStateMachine().readSnapshot(snapshotDataDir);
+            long lastSnapshotIndex;
+            // 重新加载snapshot
+            raftNode.getSnapshot().getLock().lock();
+            try {
+                raftNode.getSnapshot().reload();
+                lastSnapshotIndex = raftNode.getSnapshot().getMetaData().getLastIncludedIndex();
+            } finally {
+                raftNode.getSnapshot().getLock().unlock();
+            }
+
+            // discard old log entries
+            raftNode.getLock().lock();
+            try {
+                raftNode.getRaftLog().truncatePrefix(lastSnapshotIndex + 1);
+            } finally {
+                raftNode.getLock().unlock();
+            }
+            LOG.info("end accept install snapshot request from serverId={}", request.getServerId());
+        }
+
+        return responseBuilder.build();
     }
 
     // in lock, for follower
@@ -265,10 +288,12 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             for (long index = raftNode.getLastAppliedIndex() + 1;
                  index <= raftNode.getCommitIndex(); index++) {
                 RaftMessage.LogEntry entry = raftNode.getRaftLog().getEntry(index);
-                if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_DATA) {
-                    raftNode.getStateMachine().apply(entry.getData().toByteArray());
-                } else if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_CONFIGURATION) {
-                    raftNode.applyConfiguration(entry);
+                if (entry != null) {
+                    if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_DATA) {
+                        raftNode.getStateMachine().apply(entry.getData().toByteArray());
+                    } else if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_CONFIGURATION) {
+                        raftNode.applyConfiguration(entry);
+                    }
                 }
                 raftNode.setLastAppliedIndex(index);
             }

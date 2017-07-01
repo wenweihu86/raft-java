@@ -108,16 +108,9 @@ public class RaftClientServiceImpl implements RaftClientService {
         List<Peer> requestPeers = new ArrayList<>(request.getServersCount());
         for (RaftMessage.Server server : request.getServersList()) {
             final Peer peer = new Peer(server);
-            peer.setNextIndex(raftNode.getRaftLog().getLastLogIndex() + 1);
+            peer.setNextIndex(1);
             requestPeers.add(peer);
-
-            raftNode.getLock().lock();
-            try {
-                raftNode.getPeerMap().put(server.getServerId(), peer);
-            } finally {
-                raftNode.getLock().unlock();
-            }
-
+            raftNode.getPeerMap().put(server.getServerId(), peer);
             raftNode.getExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {

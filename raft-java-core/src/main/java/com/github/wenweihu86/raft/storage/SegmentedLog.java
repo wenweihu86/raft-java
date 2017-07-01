@@ -44,7 +44,7 @@ public class SegmentedLog {
                 LOG.error("No readable metadata file but found segments in {}", logDir);
                 throw new RuntimeException("No readable metadata file but found segments");
             }
-            metaData = RaftMessage.LogMetaData.newBuilder().setFirstLogIndex(0).build();
+            metaData = RaftMessage.LogMetaData.newBuilder().setFirstLogIndex(1).build();
         }
     }
 
@@ -72,27 +72,18 @@ public class SegmentedLog {
     }
 
     public long getFirstLogIndex() {
-        if (startLogIndexSegmentMap.size() == 0) {
-            return 0;
-        }
-        Segment firstSegment = startLogIndexSegmentMap.firstEntry().getValue();
-        return firstSegment.getStartIndex();
+        return metaData.getFirstLogIndex();
     }
 
     public long getLastLogIndex() {
+        // 有两种情况segment为空
+        // 1、第一次初始化，firstLogIndex = 1，lastLogIndex = 0
+        // 2、snapshot刚完成，日志正好被清理掉，firstLogIndex = snapshotIndex + 1， lastLogIndex = snapshotIndex
         if (startLogIndexSegmentMap.size() == 0) {
-            return 0;
+            return getFirstLogIndex() - 1;
         }
         Segment lastSegment = startLogIndexSegmentMap.lastEntry().getValue();
         return lastSegment.getEndIndex();
-    }
-
-    public long getLastLogTerm() {
-        long lastLogIndex = this.getLastLogIndex();
-        if (lastLogIndex == 0) {
-            return 0;
-        }
-        return this.getEntryTerm(lastLogIndex);
     }
 
     public long append(List<RaftMessage.LogEntry> entries) {
@@ -187,7 +178,12 @@ public class SegmentedLog {
                 break;
             }
         }
-        long newActualFirstIndex = getFirstLogIndex();
+        long newActualFirstIndex;
+        if (startLogIndexSegmentMap.size() == 0) {
+            newActualFirstIndex = newFirstIndex;
+        } else {
+            newActualFirstIndex = getFirstLogIndex();
+        }
         updateMetaData(null, null, newActualFirstIndex);
         LOG.info("Truncating log from old first index {} to new first index {}",
                 oldFirstIndex, newActualFirstIndex);

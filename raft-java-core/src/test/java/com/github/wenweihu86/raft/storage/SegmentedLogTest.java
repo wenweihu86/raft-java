@@ -22,7 +22,7 @@ public class SegmentedLogTest {
         RaftOptions.dataDir = "./data";
         RaftOptions.maxSegmentFileSize = 32;
         SegmentedLog segmentedLog = new SegmentedLog();
-        Assert.assertTrue(segmentedLog.getFirstLogIndex() == 0);
+        Assert.assertTrue(segmentedLog.getFirstLogIndex() == 1);
 
         List<RaftMessage.LogEntry> entries = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
@@ -38,9 +38,6 @@ public class SegmentedLogTest {
         Assert.assertTrue(lastLogIndex == 9);
 
         segmentedLog.truncatePrefix(5);
-        long firstLogIndex = segmentedLog.getFirstLogIndex();
-        Assert.assertTrue(firstLogIndex == 5);
-
         FileUtils.deleteDirectory(new File(RaftOptions.dataDir));
     }
 }

@@ -33,7 +33,7 @@ public class RaftClientServiceProxy implements RaftClientService {
     // servers format is 10.1.1.1:8888,10.2.2.2:9999
     public RaftClientServiceProxy(String ipPorts) {
         rpcClientOptions.setConnectTimeoutMillis(1000); // 1s
-        rpcClientOptions.setReadTimeoutMillis(10000); // 10s
+        rpcClientOptions.setReadTimeoutMillis(3600000); // 1hour
         rpcClientOptions.setWriteTimeoutMillis(1000); // 1s
         clusterRPCClient = new RPCClient(ipPorts, rpcClientOptions);
         clusterRaftClientService = RPCProxy.getProxy(clusterRPCClient, RaftClientService.class);

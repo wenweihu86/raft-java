@@ -40,6 +40,14 @@ public class Snapshot {
         if (!file.exists()) {
             file.mkdirs();
         }
+    }
+
+    public void reload() {
+        if (snapshotDataFileMap != null) {
+            for (SnapshotDataFile file : snapshotDataFileMap.values()) {
+                RaftFileUtils.closeFile(file.randomAccessFile);
+            }
+        }
         this.snapshotDataFileMap = readSnapshotDataFiles();
         metaData = this.readMetaData();
         if (metaData == null) {
@@ -87,7 +95,6 @@ public class Snapshot {
                 .setLastIncludedIndex(lastIncludedIndex)
                 .setLastIncludedTerm(lastIncludedTerm)
                 .setConfiguration(configuration).build();
-        this.metaData = snapshotMetaData;
         String snapshotMetaFile = dir + File.separator + "metadata";
         RandomAccessFile randomAccessFile = null;
         try {
@@ -102,7 +109,7 @@ public class Snapshot {
             }
             file.createNewFile();
             randomAccessFile = new RandomAccessFile(file, "rw");
-            RaftFileUtils.writeProtoToFile(randomAccessFile, metaData);
+            RaftFileUtils.writeProtoToFile(randomAccessFile, snapshotMetaData);
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", snapshotMetaFile);
         } finally {
