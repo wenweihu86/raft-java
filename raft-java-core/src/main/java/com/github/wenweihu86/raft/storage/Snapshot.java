@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -60,9 +62,18 @@ public class Snapshot {
         }
     }
 
+    // 如果是软链接，需要打开实际文件句柄
     public TreeMap<String, SnapshotDataFile> readSnapshotDataFiles() {
         TreeMap<String, SnapshotDataFile> snapshotDataFileMap = new TreeMap<>();
         String snapshotDataDir = snapshotDir + File.separator + "data";
+        try {
+            Path snapshotDataPath = FileSystems.getDefault().getPath(snapshotDataDir);
+            snapshotDataPath = snapshotDataPath.toRealPath();
+            snapshotDataDir = snapshotDataPath.toString();
+        } catch (IOException ex) {
+            LOG.warn("readSnapshotDataFiles exception:", ex);
+            throw new RuntimeException(ex);
+        }
         List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(snapshotDataDir);
         for (String fileName : fileNames) {
             RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDataDir, fileName, "r");

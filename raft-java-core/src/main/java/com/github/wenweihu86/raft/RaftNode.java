@@ -100,7 +100,9 @@ public class RaftNode {
             }
         }
         lastAppliedIndex = commitIndex;
+    }
 
+    public void init() {
         for (RaftMessage.Server server : configuration.getServersList()) {
             if (!peerMap.containsKey(server.getServerId())
                     && server.getServerId() != localServer.getServerId()) {
@@ -124,9 +126,6 @@ public class RaftNode {
                 takeSnapshot();
             }
         }, RaftOptions.snapshotPeriodSeconds, RaftOptions.snapshotPeriodSeconds, TimeUnit.SECONDS);
-    }
-
-    public void init() {
         // start election
         resetElectionTimer();
     }
@@ -662,7 +661,7 @@ public class RaftNode {
         resetElectionTimer();
     }
 
-    private void takeSnapshot() {
+    public void takeSnapshot() {
         if (!snapshot.getIsInSnapshot().compareAndSet(false, true)) {
             LOG.info("already in snapshot, ignore takeSnapshot");
             return;

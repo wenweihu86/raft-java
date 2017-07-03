@@ -170,6 +170,7 @@ public class SegmentedLog {
                 try {
                     RaftFileUtils.closeFile(segment.getRandomAccessFile());
                     FileUtils.forceDelete(oldFile);
+                    totalSize -= segment.getFileSize();
                     startLogIndexSegmentMap.remove(segment.getStartIndex());
                 } catch (Exception ex2) {
                     LOG.warn("delete file exception:", ex2);
