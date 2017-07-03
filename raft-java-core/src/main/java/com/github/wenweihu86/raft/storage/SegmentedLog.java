@@ -263,16 +263,16 @@ public class SegmentedLog {
     }
 
     public void readSegments() {
-        List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(logDataDir);
-        for (String fileName: fileNames) {
-            String[] splitArray = fileName.split("-");
-            if (splitArray.length != 2) {
-                LOG.warn("segment filename[{}] is not valid", fileName);
-                continue;
-            }
-            Segment segment = new Segment();
-            segment.setFileName(fileName);
-            try {
+        try {
+            List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(logDataDir, logDataDir);
+            for (String fileName : fileNames) {
+                String[] splitArray = fileName.split("-");
+                if (splitArray.length != 2) {
+                    LOG.warn("segment filename[{}] is not valid", fileName);
+                    continue;
+                }
+                Segment segment = new Segment();
+                segment.setFileName(fileName);
                 if (splitArray[0].equals("open")) {
                     segment.setCanWrite(true);
                     segment.setStartIndex(Long.valueOf(splitArray[1]));
@@ -290,11 +290,10 @@ public class SegmentedLog {
                 segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, fileName, "rw"));
                 segment.setFileSize(segment.getRandomAccessFile().length());
                 startLogIndexSegmentMap.put(segment.getStartIndex(), segment);
-            } catch (IOException ioException) {
-                LOG.warn("open segment file error, file={}, msg={}",
-                        fileName, ioException.getMessage());
-                throw new RuntimeException("open segment file error");
             }
+        } catch(IOException ioException){
+            LOG.warn("readSegments exception:", ioException);
+            throw new RuntimeException("open segment file error");
         }
     }
 

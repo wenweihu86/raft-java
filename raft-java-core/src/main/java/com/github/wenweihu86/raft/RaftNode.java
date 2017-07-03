@@ -507,12 +507,13 @@ public class RaftNode {
     }
 
     private boolean installSnapshot(Peer peer) {
-        if (!snapshot.getIsInSnapshot().compareAndSet(false, true)) {
-            LOG.info("already in snapshot");
+        if (!snapshot.getIsTakeSnapshot().get()) {
+            LOG.info("already in take snapshot, please send install snapshot request later");
             return false;
         }
 
-        LOG.info("begin install snapshot");
+        LOG.info("begin send install snapshot request to server={}", peer.getServer().getServerId());
+        snapshot.getIsInstallSnapshot().set(true);
         boolean isSuccess = true;
         try {
             boolean isLastRequest = false;
@@ -561,9 +562,10 @@ public class RaftNode {
                 }
             }
         } finally {
-            snapshot.getIsInSnapshot().compareAndSet(true, false);
+            snapshot.getIsInstallSnapshot().set(false);
         }
-        LOG.info("install snapshot success={}", isSuccess);
+        LOG.info("end send install snapshot request to server={}, success={}",
+                peer.getServer().getServerId(), isSuccess);
         return isSuccess;
     }
 
@@ -662,11 +664,12 @@ public class RaftNode {
     }
 
     public void takeSnapshot() {
-        if (!snapshot.getIsInSnapshot().compareAndSet(false, true)) {
-            LOG.info("already in snapshot, ignore takeSnapshot");
+        if (snapshot.getIsInstallSnapshot().get()) {
+            LOG.info("already in install snapshot, ignore take snapshot");
             return;
         }
 
+        snapshot.getIsTakeSnapshot().compareAndSet(false, true);
         try {
             long localLastAppliedIndex;
             long lastAppliedTerm = 0;
@@ -738,7 +741,7 @@ public class RaftNode {
                 }
             }
         } finally {
-            snapshot.getIsInSnapshot().compareAndSet(true, false);
+            snapshot.getIsTakeSnapshot().compareAndSet(true, false);
         }
     }
 

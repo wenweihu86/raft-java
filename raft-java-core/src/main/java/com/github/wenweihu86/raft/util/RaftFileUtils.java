@@ -6,10 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.zip.CRC32;
 
 /**
@@ -20,27 +17,28 @@ public class RaftFileUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftFileUtils.class);
 
-    public static List<String> getSortedFilesInDirectory(String dirName) {
+    public static List<String> getSortedFilesInDirectory(
+            String dirName, String rootDirName) throws IOException {
+        List<String> fileList = new ArrayList<>();
+        File rootDir = new File(rootDirName);
         File dir = new File(dirName);
-        File[] files = dir.listFiles();
-        Arrays.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                if (o1.isDirectory() && o2.isFile()) {
-                    return -1;
-                }
-                if (o1.isFile() && o2.isDirectory()) {
-                    return 1;
-                }
-                return o2.getName().compareTo(o1.getName());
-            }
-        });
-
-        List<String> fileNames = new ArrayList<>(files.length);
-        for (File file : files) {
-            fileNames.add(file.getName());
+        if (!rootDir.isDirectory() || !dir.isDirectory()) {
+            return fileList;
         }
-        return fileNames;
+        String rootPath = rootDir.getCanonicalPath();
+        if (!rootPath.endsWith("/")) {
+            rootPath = rootPath + "/";
+        }
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                fileList.addAll(getSortedFilesInDirectory(file.getCanonicalPath(), rootPath));
+            } else {
+                fileList.add(file.getCanonicalPath().substring(rootPath.length()));
+            }
+        }
+        Collections.sort(fileList);
+        return fileList;
     }
 
     public static RandomAccessFile openFile(String dir, String fileName, String mode) {

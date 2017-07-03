@@ -190,22 +190,23 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             raftNode.getLock().unlock();
         }
 
-        if (!raftNode.getSnapshot().getIsInSnapshot().compareAndSet(false, true)) {
-            LOG.warn("alreay in snapshot");
+        if (raftNode.getSnapshot().getIsTakeSnapshot().get()) {
+            LOG.warn("alreay in take snapshot, do not handle install snapshot request now");
             return responseBuilder.build();
         }
 
+        raftNode.getSnapshot().getIsInstallSnapshot().set(true);
         RandomAccessFile randomAccessFile = null;
         raftNode.getSnapshot().getLock().lock();
         try {
             // write snapshot data to local
             String tmpSnapshotDir = raftNode.getSnapshot().getSnapshotDir() + ".tmp";
             File file = new File(tmpSnapshotDir);
-            if (file.exists() && request.getIsFirst()) {
-                file.delete();
-                file.mkdir();
-            }
             if (request.getIsFirst()) {
+                if (file.exists()) {
+                    file.delete();
+                }
+                file.mkdir();
                 LOG.info("begin accept install snapshot request from serverId={}", request.getServerId());
                 raftNode.getSnapshot().updateMetaData(tmpSnapshotDir,
                         request.getSnapshotMetaData().getLastIncludedIndex(),
@@ -221,6 +222,10 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
 
             String currentDataFileName = currentDataDirName + File.separator + request.getFileName();
             File currentDataFile = new File(currentDataFileName);
+            // 文件名可能是个相对路径，比如topic/0/message.txt
+            if (!currentDataFile.getParentFile().exists()) {
+                currentDataFile.getParentFile().mkdirs();
+            }
             if (!currentDataFile.exists()) {
                 currentDataFile.createNewFile();
             }
@@ -247,7 +252,6 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         } finally {
             RaftFileUtils.closeFile(randomAccessFile);
             raftNode.getSnapshot().getLock().unlock();
-            raftNode.getSnapshot().getIsInSnapshot().compareAndSet(true, false);
         }
 
         if (request.getIsLast() && responseBuilder.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
@@ -273,6 +277,10 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 raftNode.getLock().unlock();
             }
             LOG.info("end accept install snapshot request from serverId={}", request.getServerId());
+        }
+
+        if (request.getIsLast()) {
+            raftNode.getSnapshot().getIsInstallSnapshot().set(false);
         }
 
         return responseBuilder.build();

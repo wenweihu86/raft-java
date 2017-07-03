@@ -33,7 +33,10 @@ public class Snapshot {
     private String snapshotDir = RaftOptions.dataDir + File.separator + "snapshot";
     private RaftMessage.SnapshotMetaData metaData;
     private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
-    private AtomicBoolean isInSnapshot = new AtomicBoolean(false);
+    // 表示是否正在安装snapshot，leader向follower安装，leader和follower同时处于installSnapshot状态
+    private AtomicBoolean isInstallSnapshot = new AtomicBoolean(false);
+    // 表示节点自己是否在对状态机做snapshot
+    private AtomicBoolean isTakeSnapshot = new AtomicBoolean(false);
     private Lock lock = new ReentrantLock();
 
     public Snapshot() {
@@ -70,17 +73,17 @@ public class Snapshot {
             Path snapshotDataPath = FileSystems.getDefault().getPath(snapshotDataDir);
             snapshotDataPath = snapshotDataPath.toRealPath();
             snapshotDataDir = snapshotDataPath.toString();
+            List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(snapshotDataDir, snapshotDataDir);
+            for (String fileName : fileNames) {
+                RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDataDir, fileName, "r");
+                SnapshotDataFile snapshotFile = new SnapshotDataFile();
+                snapshotFile.fileName = fileName;
+                snapshotFile.randomAccessFile = randomAccessFile;
+                snapshotDataFileMap.put(fileName, snapshotFile);
+            }
         } catch (IOException ex) {
             LOG.warn("readSnapshotDataFiles exception:", ex);
             throw new RuntimeException(ex);
-        }
-        List<String> fileNames = RaftFileUtils.getSortedFilesInDirectory(snapshotDataDir);
-        for (String fileName : fileNames) {
-            RandomAccessFile randomAccessFile = RaftFileUtils.openFile(snapshotDataDir, fileName, "r");
-            SnapshotDataFile snapshotFile = new SnapshotDataFile();
-            snapshotFile.fileName = fileName;
-            snapshotFile.randomAccessFile = randomAccessFile;
-            snapshotDataFileMap.put(fileName, snapshotFile);
         }
         return snapshotDataFileMap;
     }
@@ -136,16 +139,16 @@ public class Snapshot {
         return snapshotDir;
     }
 
+    public AtomicBoolean getIsInstallSnapshot() {
+        return isInstallSnapshot;
+    }
+
+    public AtomicBoolean getIsTakeSnapshot() {
+        return isTakeSnapshot;
+    }
+
     public TreeMap<String, SnapshotDataFile> getSnapshotDataFileMap() {
         return snapshotDataFileMap;
-    }
-
-    public AtomicBoolean getIsInSnapshot() {
-        return isInSnapshot;
-    }
-
-    public void setIsInSnapshot(AtomicBoolean isInSnapshot) {
-        this.isInSnapshot = isInSnapshot;
     }
 
     public Lock getLock() {
