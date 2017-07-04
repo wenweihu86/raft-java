@@ -301,7 +301,8 @@ public class SegmentedLog {
         String fileName = logDir + File.separator + "metadata";
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-            RaftMessage.LogMetaData metadata = RaftFileUtils.readProtoFromFile(randomAccessFile, RaftMessage.LogMetaData.class);
+            RaftMessage.LogMetaData metadata = RaftFileUtils.readProtoFromFile(
+                    randomAccessFile, RaftMessage.LogMetaData.class);
             return metadata;
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);

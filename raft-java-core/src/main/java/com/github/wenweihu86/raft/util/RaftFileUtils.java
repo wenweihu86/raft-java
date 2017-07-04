@@ -48,7 +48,7 @@ public class RaftFileUtils {
             return new RandomAccessFile(file, mode);
         } catch (FileNotFoundException ex) {
             LOG.warn("file not fount, file={}", fileName);
-            throw new RuntimeException("file not found, file={}" + fileName);
+            throw new RuntimeException("file not found, file=" + fileName);
         }
     }
 

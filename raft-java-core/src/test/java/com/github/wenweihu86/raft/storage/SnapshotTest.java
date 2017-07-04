@@ -1,6 +1,7 @@
 package com.github.wenweihu86.raft.storage;
 
 import com.github.wenweihu86.raft.RaftOptions;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,5 +38,7 @@ public class SnapshotTest {
         System.out.println(snapshotFileMap.keySet());
         Assert.assertTrue(snapshotFileMap.size() == 2);
         Assert.assertTrue(snapshotFileMap.firstKey().equals("queue1.txt"));
+
+        Files.delete(link);
     }
 }

@@ -29,6 +29,9 @@ public class RaftOptions {
     // replicate最大等待超时时间，单位ms
     public static long maxAwaitTimeout = 1000;
 
+    // 与其他节点进行同步、选主等操作的线程池大小
+    public static int raftConsensusThreadNum = 20;
+
     // raft的log和snapshot父目录，绝对路径
     public static String dataDir = System.getProperty("com.github.wenweihu86.raft.data.dir");
 }

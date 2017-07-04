@@ -114,8 +114,8 @@ public class RaftNode {
 
         // init thread pool
         executorService = new ThreadPoolExecutor(
-                peerMap.size() * 2,
-                peerMap.size() * 4,
+                RaftOptions.raftConsensusThreadNum,
+                RaftOptions.raftConsensusThreadNum,
                 60,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>());
