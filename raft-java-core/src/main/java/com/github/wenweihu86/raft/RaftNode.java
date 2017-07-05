@@ -342,7 +342,7 @@ public class RaftNode {
 
     // in lock, 开始心跳，对leader有效
     private void startNewHeartbeat() {
-        LOG.debug("start new heartbeat");
+        LOG.debug("start new heartbeat, peers={}", peerMap.keySet());
         for (final Peer peer : peerMap.values()) {
             executorService.submit(new Runnable() {
                 @Override
@@ -370,6 +370,7 @@ public class RaftNode {
             lock.unlock();
         }
 
+        LOG.debug("is need snapshot={}, peer={}", isNeedInstallSnapshot, peer.getServer().getServerId());
         if (isNeedInstallSnapshot) {
             if (!installSnapshot(peer)) {
                 return;
@@ -507,14 +508,19 @@ public class RaftNode {
     }
 
     private boolean installSnapshot(Peer peer) {
-        if (!snapshot.getIsTakeSnapshot().get()) {
+        if (snapshot.getIsTakeSnapshot().get()) {
             LOG.info("already in take snapshot, please send install snapshot request later");
+            return false;
+        }
+        if (!snapshot.getIsInstallSnapshot().compareAndSet(false, true)) {
+            LOG.info("already in install snapshot");
             return false;
         }
 
         LOG.info("begin send install snapshot request to server={}", peer.getServer().getServerId());
-        snapshot.getIsInstallSnapshot().set(true);
         boolean isSuccess = true;
+        TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.openSnapshotDataFiles();
+        LOG.info("total snapshot files={}", snapshotDataFileMap.keySet());
         try {
             boolean isLastRequest = false;
             String lastFileName = null;
@@ -522,7 +528,7 @@ public class RaftNode {
             long lastLength = 0;
             while (!isLastRequest) {
                 RaftMessage.InstallSnapshotRequest request
-                        = buildInstallSnapshotRequest(lastFileName, lastOffset, lastLength);
+                        = buildInstallSnapshotRequest(snapshotDataFileMap, lastFileName, lastOffset, lastLength);
                 if (request == null) {
                     LOG.warn("snapshot request == null");
                     isSuccess = false;
@@ -562,7 +568,8 @@ public class RaftNode {
                 }
             }
         } finally {
-            snapshot.getIsInstallSnapshot().set(false);
+            snapshot.closeSnapshotDataFiles(snapshotDataFileMap);
+            snapshot.getIsInstallSnapshot().compareAndSet(true, false);
         }
         LOG.info("end send install snapshot request to server={}, success={}",
                 peer.getServer().getServerId(), isSuccess);
@@ -570,12 +577,12 @@ public class RaftNode {
     }
 
     private RaftMessage.InstallSnapshotRequest buildInstallSnapshotRequest(
+            TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap,
             String lastFileName, long lastOffset, long lastLength) {
         RaftMessage.InstallSnapshotRequest.Builder requestBuilder = RaftMessage.InstallSnapshotRequest.newBuilder();
 
         snapshot.getLock().lock();
         try {
-            TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap = snapshot.getSnapshotDataFileMap();
             if (lastFileName == null) {
                 lastFileName = snapshotDataFileMap.firstKey();
                 lastOffset = 0;
@@ -845,7 +852,7 @@ public class RaftNode {
         return state;
     }
 
-    public Map<Integer, Peer> getPeerMap() {
+    public ConcurrentMap<Integer, Peer> getPeerMap() {
         return peerMap;
     }
 

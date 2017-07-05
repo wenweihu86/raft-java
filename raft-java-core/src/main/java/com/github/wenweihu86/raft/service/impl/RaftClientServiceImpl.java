@@ -110,7 +110,7 @@ public class RaftClientServiceImpl implements RaftClientService {
             final Peer peer = new Peer(server);
             peer.setNextIndex(1);
             requestPeers.add(peer);
-            raftNode.getPeerMap().put(server.getServerId(), peer);
+            raftNode.getPeerMap().putIfAbsent(server.getServerId(), peer);
             raftNode.getExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {

@@ -109,10 +109,9 @@ public class SegmentedLog {
                                 segment.getStartIndex(), segment.getEndIndex());
                         String newFullFileName = logDataDir + File.separator + newFileName;
                         File newFile = new File(newFullFileName);
-                        newFile.createNewFile();
                         String oldFullFileName = logDataDir + File.separator + segment.getFileName();
                         File oldFile = new File(oldFullFileName);
-                        oldFile.renameTo(newFile);
+                        FileUtils.moveFile(oldFile, newFile);
                         segment.setFileName(newFileName);
                         segment.setRandomAccessFile(RaftFileUtils.openFile(logDataDir, newFileName, "r"));
                     }
@@ -152,7 +151,7 @@ public class SegmentedLog {
                 }
                 totalSize += entrySize;
             }  catch (IOException ex) {
-                throw new RuntimeException("meet exception, msg=" + ex.getMessage());
+                throw new RuntimeException("append raft log exception, msg=" + ex.getMessage());
             }
         }
         return newLastLogIndex;
@@ -165,6 +164,9 @@ public class SegmentedLog {
         long oldFirstIndex = getFirstLogIndex();
         while (!startLogIndexSegmentMap.isEmpty()) {
             Segment segment = startLogIndexSegmentMap.firstEntry().getValue();
+            if (segment.isCanWrite()) {
+                break;
+            }
             if (newFirstIndex > segment.getEndIndex()) {
                 File oldFile = new File(logDataDir + File.separator + segment.getFileName());
                 try {
@@ -183,7 +185,7 @@ public class SegmentedLog {
         if (startLogIndexSegmentMap.size() == 0) {
             newActualFirstIndex = newFirstIndex;
         } else {
-            newActualFirstIndex = getFirstLogIndex();
+            newActualFirstIndex = startLogIndexSegmentMap.firstKey();
         }
         updateMetaData(null, null, newActualFirstIndex);
         LOG.info("Truncating log from old first index {} to new first index {}",
@@ -327,6 +329,8 @@ public class SegmentedLog {
         File file = new File(fileName);
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
             RaftFileUtils.writeProtoToFile(randomAccessFile, metaData);
+            LOG.info("new segment meta info, currentTerm={}, votedFor={}, firstLogIndex={}",
+                    metaData.getCurrentTerm(), metaData.getVotedFor(), metaData.getFirstLogIndex());
         } catch (IOException ex) {
             LOG.warn("meta file not exist, name={}", fileName);
         }

@@ -34,7 +34,7 @@ public class SnapshotTest {
         Files.createSymbolicLink(link, target);
 
         Snapshot snapshot = new Snapshot();
-        TreeMap<String, Snapshot.SnapshotDataFile> snapshotFileMap = snapshot.readSnapshotDataFiles();
+        TreeMap<String, Snapshot.SnapshotDataFile> snapshotFileMap = snapshot.openSnapshotDataFiles();
         System.out.println(snapshotFileMap.keySet());
         Assert.assertTrue(snapshotFileMap.size() == 2);
         Assert.assertTrue(snapshotFileMap.firstKey().equals("queue1.txt"));

@@ -14,6 +14,7 @@ import java.io.RandomAccessFile;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -32,7 +33,6 @@ public class Snapshot {
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
     private String snapshotDir = RaftOptions.dataDir + File.separator + "snapshot";
     private RaftMessage.SnapshotMetaData metaData;
-    private TreeMap<String, SnapshotDataFile> snapshotDataFileMap;
     // 表示是否正在安装snapshot，leader向follower安装，leader和follower同时处于installSnapshot状态
     private AtomicBoolean isInstallSnapshot = new AtomicBoolean(false);
     // 表示节点自己是否在对状态机做snapshot
@@ -48,25 +48,18 @@ public class Snapshot {
     }
 
     public void reload() {
-        if (snapshotDataFileMap != null) {
-            for (SnapshotDataFile file : snapshotDataFileMap.values()) {
-                RaftFileUtils.closeFile(file.randomAccessFile);
-            }
-        }
-        this.snapshotDataFileMap = readSnapshotDataFiles();
         metaData = this.readMetaData();
         if (metaData == null) {
-            if (snapshotDataFileMap.size() > 0) {
-                LOG.error("No readable metadata file but found snapshot in {}", snapshotDir);
-                throw new RuntimeException("No readable metadata file but found snapshot");
-            }
             metaData = RaftMessage.SnapshotMetaData.newBuilder().build();
-            snapshotDataFileMap = new TreeMap<>();
         }
     }
 
-    // 如果是软链接，需要打开实际文件句柄
-    public TreeMap<String, SnapshotDataFile> readSnapshotDataFiles() {
+    /**
+     * 打开snapshot data目录下的文件，
+     * 如果是软链接，需要打开实际文件句柄
+     * @return 文件名以及文件句柄map
+     */
+    public TreeMap<String, SnapshotDataFile> openSnapshotDataFiles() {
         TreeMap<String, SnapshotDataFile> snapshotDataFileMap = new TreeMap<>();
         String snapshotDataDir = snapshotDir + File.separator + "data";
         try {
@@ -86,6 +79,16 @@ public class Snapshot {
             throw new RuntimeException(ex);
         }
         return snapshotDataFileMap;
+    }
+
+    public void closeSnapshotDataFiles(TreeMap<String, SnapshotDataFile> snapshotDataFileMap) {
+        for (Map.Entry<String, SnapshotDataFile> entry : snapshotDataFileMap.entrySet()) {
+            try {
+                entry.getValue().randomAccessFile.close();
+            } catch (IOException ex) {
+                LOG.warn("close snapshot files exception:", ex);
+            }
+        }
     }
 
     public RaftMessage.SnapshotMetaData readMetaData() {
@@ -145,10 +148,6 @@ public class Snapshot {
 
     public AtomicBoolean getIsTakeSnapshot() {
         return isTakeSnapshot;
-    }
-
-    public TreeMap<String, SnapshotDataFile> getSnapshotDataFileMap() {
-        return snapshotDataFileMap;
     }
 
     public Lock getLock() {
