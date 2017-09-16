@@ -31,7 +31,7 @@ public class Snapshot {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(Snapshot.class);
-    private String snapshotDir = RaftOptions.dataDir + File.separator + "snapshot";
+    private String snapshotDir;
     private RaftMessage.SnapshotMetaData metaData;
     // 表示是否正在安装snapshot，leader向follower安装，leader和follower同时处于installSnapshot状态
     private AtomicBoolean isInstallSnapshot = new AtomicBoolean(false);
@@ -39,7 +39,8 @@ public class Snapshot {
     private AtomicBoolean isTakeSnapshot = new AtomicBoolean(false);
     private Lock lock = new ReentrantLock();
 
-    public Snapshot() {
+    public Snapshot(String raftDataDir) {
+        this.snapshotDir = raftDataDir + File.separator + "snapshot";
         String snapshotDataDir = snapshotDir + File.separator + "data";
         File file = new File(snapshotDataDir);
         if (!file.exists()) {

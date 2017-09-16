@@ -33,15 +33,16 @@ public class ServerMain {
 
         // 初始化RPCServer
         RPCServer server = new RPCServer(localServer.getEndPoint().getPort());
-        // 应用状态机
-        ExampleStateMachine stateMachine = new ExampleStateMachine();
         // 设置Raft选项，比如：
         // just for test snapshot
-        RaftOptions.snapshotMinLogSize = 10 * 1024;
-        RaftOptions.snapshotPeriodSeconds = 30;
-        RaftOptions.maxSegmentFileSize = 1024 * 1024;
+        RaftOptions raftOptions = new RaftOptions();
+        raftOptions.setSnapshotMinLogSize(10 * 1024);
+        raftOptions.setSnapshotPeriodSeconds(30);
+        raftOptions.setMaxSegmentFileSize(1024 * 1024);
+        // 应用状态机
+        ExampleStateMachine stateMachine = new ExampleStateMachine(raftOptions.getDataDir());
         // 初始化RaftNode
-        RaftNode raftNode = new RaftNode(serverList, localServer, stateMachine);
+        RaftNode raftNode = new RaftNode(raftOptions, serverList, localServer, stateMachine);
         // 注册Raft节点之间相互调用的服务
         RaftConsensusService raftConsensusService = new RaftConsensusServiceImpl(raftNode);
         server.registerService(raftConsensusService);

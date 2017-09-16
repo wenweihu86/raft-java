@@ -1,6 +1,5 @@
 package com.github.wenweihu86.raft.example.server;
 
-import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.StateMachine;
 import com.github.wenweihu86.raft.example.server.service.ExampleMessage;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +24,11 @@ public class ExampleStateMachine implements StateMachine {
     }
 
     private RocksDB db;
+    private String raftDataDir;
+
+    public ExampleStateMachine(String raftDataDir) {
+        this.raftDataDir = raftDataDir;
+    }
 
     @Override
     public void writeSnapshot(String snapshotDir) {
@@ -45,7 +49,7 @@ public class ExampleStateMachine implements StateMachine {
             if (db != null) {
                 db.close();
             }
-            String dataDir = RaftOptions.dataDir + File.separator + "rocksdb_data";
+            String dataDir = raftDataDir + File.separator + "rocksdb_data";
             File dataFile = new File(dataDir);
             if (dataFile.exists()) {
                 FileUtils.deleteDirectory(dataFile);

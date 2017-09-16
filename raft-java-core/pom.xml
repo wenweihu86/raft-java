@@ -4,7 +4,7 @@
 
     <groupId>com.github.wenweihu86.raft</groupId>
     <artifactId>raft-java-core</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>raft-java-core</name>

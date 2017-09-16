@@ -1,6 +1,5 @@
 package com.github.wenweihu86.raft.storage;
 
-import com.github.wenweihu86.raft.RaftOptions;
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +18,7 @@ public class SnapshotTest {
 
     @Test
     public void testReadSnapshotDataFiles() throws IOException {
-        RaftOptions.dataDir = "./data";
+        String raftDataDir = "./data";
         File file = new File("./data/message");
         file.mkdirs();
         File file1 = new File("./data/message/queue1.txt");
@@ -33,12 +32,13 @@ public class SnapshotTest {
         Path target = FileSystems.getDefault().getPath("./data/message").toRealPath();
         Files.createSymbolicLink(link, target);
 
-        Snapshot snapshot = new Snapshot();
+        Snapshot snapshot = new Snapshot(raftDataDir);
         TreeMap<String, Snapshot.SnapshotDataFile> snapshotFileMap = snapshot.openSnapshotDataFiles();
         System.out.println(snapshotFileMap.keySet());
         Assert.assertTrue(snapshotFileMap.size() == 2);
         Assert.assertTrue(snapshotFileMap.firstKey().equals("queue1.txt"));
 
         Files.delete(link);
+        FileUtils.deleteDirectory(new File(raftDataDir));
     }
 }

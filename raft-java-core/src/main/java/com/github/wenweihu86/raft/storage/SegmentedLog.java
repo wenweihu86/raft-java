@@ -21,14 +21,18 @@ public class SegmentedLog {
 
     private static Logger LOG = LoggerFactory.getLogger(SegmentedLog.class);
 
-    private String logDir = RaftOptions.dataDir + File.separator + "log";
-    private String logDataDir = logDir + File.separator + "data";
+    private String logDir;
+    private String logDataDir;
+    private int maxSegmentFileSize;
     private RaftMessage.LogMetaData metaData;
     private TreeMap<Long, Segment> startLogIndexSegmentMap = new TreeMap<>();
     // segment log占用的内存大小，用于判断是否需要做snapshot
     private volatile long totalSize;
 
-    public SegmentedLog() {
+    public SegmentedLog(String raftDataDir, int maxSegmentFileSize) {
+        this.logDir = raftDataDir + File.separator + "log";
+        this.logDataDir = logDir + File.separator + "data";
+        this.maxSegmentFileSize = maxSegmentFileSize;
         File file = new File(logDataDir);
         if (!file.exists()) {
             file.mkdirs();
@@ -100,7 +104,7 @@ public class SegmentedLog {
                     Segment segment = startLogIndexSegmentMap.lastEntry().getValue();
                     if (!segment.isCanWrite()) {
                         isNeedNewSegmentFile = true;
-                    } else if (segment.getFileSize() + entrySize >= RaftOptions.maxSegmentFileSize) {
+                    } else if (segment.getFileSize() + entrySize >= maxSegmentFileSize) {
                         isNeedNewSegmentFile = true;
                         // 最后一个segment的文件close并改名
                         segment.getRandomAccessFile().close();

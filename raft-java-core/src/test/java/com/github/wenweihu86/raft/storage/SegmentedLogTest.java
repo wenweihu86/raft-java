@@ -1,6 +1,5 @@
 package com.github.wenweihu86.raft.storage;
 
-import com.github.wenweihu86.raft.RaftOptions;
 import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.google.protobuf.ByteString;
 import org.apache.commons.io.FileUtils;
@@ -19,9 +18,8 @@ public class SegmentedLogTest {
 
     @Test
     public void testTruncateSuffix() throws IOException {
-        RaftOptions.dataDir = "./data";
-        RaftOptions.maxSegmentFileSize = 32;
-        SegmentedLog segmentedLog = new SegmentedLog();
+        String raftDataDir = "./data";
+        SegmentedLog segmentedLog = new SegmentedLog(raftDataDir, 32);
         Assert.assertTrue(segmentedLog.getFirstLogIndex() == 1);
 
         List<RaftMessage.LogEntry> entries = new ArrayList<>();
@@ -38,6 +36,6 @@ public class SegmentedLogTest {
         Assert.assertTrue(lastLogIndex == 9);
 
         segmentedLog.truncatePrefix(5);
-        FileUtils.deleteDirectory(new File(RaftOptions.dataDir));
+        FileUtils.deleteDirectory(new File(raftDataDir));
     }
 }

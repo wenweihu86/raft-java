@@ -33,6 +33,7 @@ public class RaftNode {
     private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
     private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
 
+    private RaftOptions raftOptions;
     private RaftMessage.Configuration configuration;
     private ConcurrentMap<Integer, Peer> peerMap = new ConcurrentHashMap<>();
     private RaftMessage.Server localServer;
@@ -60,7 +61,11 @@ public class RaftNode {
     private ScheduledFuture electionScheduledFuture;
     private ScheduledFuture heartbeatScheduledFuture;
 
-    public RaftNode(List<RaftMessage.Server> servers, RaftMessage.Server localServer, StateMachine stateMachine) {
+    public RaftNode(RaftOptions raftOptions,
+                    List<RaftMessage.Server> servers,
+                    RaftMessage.Server localServer,
+                    StateMachine stateMachine) {
+        this.raftOptions = raftOptions;
         RaftMessage.Configuration.Builder confBuilder = RaftMessage.Configuration.newBuilder();
         for (RaftMessage.Server server : servers) {
             confBuilder.addServers(server);
@@ -71,8 +76,8 @@ public class RaftNode {
         this.stateMachine = stateMachine;
 
         // load log and snapshot
-        raftLog = new SegmentedLog();
-        snapshot = new Snapshot();
+        raftLog = new SegmentedLog(raftOptions.getDataDir(), raftOptions.getMaxSegmentFileSize());
+        snapshot = new Snapshot(raftOptions.getDataDir());
         snapshot.reload();
 
         currentTerm = raftLog.getMetaData().getCurrentTerm();
@@ -114,8 +119,8 @@ public class RaftNode {
 
         // init thread pool
         executorService = new ThreadPoolExecutor(
-                RaftOptions.raftConsensusThreadNum,
-                RaftOptions.raftConsensusThreadNum,
+                raftOptions.getRaftConsensusThreadNum(),
+                raftOptions.getRaftConsensusThreadNum(),
                 60,
                 TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>());
@@ -125,7 +130,7 @@ public class RaftNode {
             public void run() {
                 takeSnapshot();
             }
-        }, RaftOptions.snapshotPeriodSeconds, RaftOptions.snapshotPeriodSeconds, TimeUnit.SECONDS);
+        }, raftOptions.getSnapshotPeriodSeconds(), raftOptions.getSnapshotPeriodSeconds(), TimeUnit.SECONDS);
         // start election
         resetElectionTimer();
     }
@@ -161,10 +166,10 @@ public class RaftNode {
             // sync wait commitIndex >= newLastLogIndex
             long startTime = System.currentTimeMillis();
             while (lastAppliedIndex < newLastLogIndex) {
-                if (System.currentTimeMillis() - startTime >= RaftOptions.maxAwaitTimeout) {
+                if (System.currentTimeMillis() - startTime >= raftOptions.getMaxAwaitTimeout()) {
                     break;
                 }
-                commitIndexCondition.await(RaftOptions.maxAwaitTimeout, TimeUnit.MILLISECONDS);
+                commitIndexCondition.await(raftOptions.getMaxAwaitTimeout(), TimeUnit.MILLISECONDS);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -193,8 +198,8 @@ public class RaftNode {
 
     private int getElectionTimeoutMs() {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int randomElectionTimeout = RaftOptions.electionTimeoutMilliseconds
-                + random.nextInt(0, RaftOptions.electionTimeoutMilliseconds);
+        int randomElectionTimeout = raftOptions.getElectionTimeoutMilliseconds()
+                + random.nextInt(0, raftOptions.getElectionTimeoutMilliseconds());
         LOG.debug("new election time is after {} ms", randomElectionTimeout);
         return randomElectionTimeout;
     }
@@ -337,7 +342,7 @@ public class RaftNode {
             public void run() {
                 startNewHeartbeat();
             }
-        }, RaftOptions.heartbeatPeriodMilliseconds, TimeUnit.MILLISECONDS);
+        }, raftOptions.getHeartbeatPeriodMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     // in lock, 开始心跳，对leader有效
@@ -439,7 +444,7 @@ public class RaftNode {
                     if (ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
                         advanceCommitIndex();
                     } else {
-                        if (raftLog.getLastLogIndex() - peer.getMatchIndex() <= RaftOptions.catchupMargin) {
+                        if (raftLog.getLastLogIndex() - peer.getMatchIndex() <= raftOptions.getCatchupMargin()) {
                             LOG.debug("peer catch up the leader");
                             peer.setCatchUp(true);
                             // signal the caller thread
@@ -499,7 +504,7 @@ public class RaftNode {
     // in lock
     private long packEntries(long nextIndex, RaftMessage.AppendEntriesRequest.Builder requestBuilder) {
         long lastIndex = Math.min(raftLog.getLastLogIndex(),
-                nextIndex + RaftOptions.maxLogEntriesPerRequest - 1);
+                nextIndex + raftOptions.getMaxLogEntriesPerRequest() - 1);
         for (long index = nextIndex; index <= lastIndex; index++) {
             RaftMessage.LogEntry entry = raftLog.getEntry(index);
             requestBuilder.addEntries(entry);
@@ -592,10 +597,10 @@ public class RaftNode {
             long lastFileLength = lastFile.randomAccessFile.length();
             String currentFileName = lastFileName;
             long currentOffset = lastOffset + lastLength;
-            int currentDataSize = RaftOptions.maxSnapshotBytesPerRequest;
+            int currentDataSize = raftOptions.getMaxSnapshotBytesPerRequest();
             Snapshot.SnapshotDataFile currentDataFile = lastFile;
             if (lastOffset + lastLength < lastFileLength) {
-                if (lastOffset + lastLength + RaftOptions.maxSnapshotBytesPerRequest > lastFileLength) {
+                if (lastOffset + lastLength + raftOptions.getMaxSnapshotBytesPerRequest() > lastFileLength) {
                     currentDataSize = (int) (lastFileLength - (lastOffset + lastLength));
                 }
             } else {
@@ -609,7 +614,7 @@ public class RaftNode {
                 currentFileName = currentEntry.getKey();
                 currentOffset = 0;
                 int currentFileLenght = (int) currentEntry.getValue().randomAccessFile.length();
-                if (currentFileLenght < RaftOptions.maxSnapshotBytesPerRequest) {
+                if (currentFileLenght < raftOptions.getMaxSnapshotBytesPerRequest()) {
                     currentDataSize = currentFileLenght;
                 }
             }
@@ -683,7 +688,7 @@ public class RaftNode {
             RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
             lock.lock();
             try {
-                if (raftLog.getTotalSize() < RaftOptions.snapshotMinLogSize) {
+                if (raftLog.getTotalSize() < raftOptions.getSnapshotMinLogSize()) {
                     return;
                 }
                 if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {

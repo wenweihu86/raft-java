@@ -3,7 +3,6 @@ package com.github.wenweihu86.raft.service.impl;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
-import com.github.wenweihu86.raft.storage.Snapshot;
 import com.github.wenweihu86.raft.util.ConfigurationUtils;
 import com.github.wenweihu86.raft.util.RaftFileUtils;
 import com.google.protobuf.InvalidProtocolBufferException;
