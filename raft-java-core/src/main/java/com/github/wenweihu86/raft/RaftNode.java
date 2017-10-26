@@ -250,16 +250,19 @@ public class RaftNode {
             lock.unlock();
         }
 
+        RaftMessage.VoteRequest request = requestBuilder.build();
         peer.getRpcClient().asyncCall(
-                "RaftConsensusService.requestVote", requestBuilder.build(),
-                new VoteResponseCallback(peer));
+                "RaftConsensusService.requestVote", request,
+                new VoteResponseCallback(peer, request));
     }
 
     private class VoteResponseCallback implements RPCCallback<RaftMessage.VoteResponse> {
         private Peer peer;
+        private RaftMessage.VoteRequest request;
 
-        public VoteResponseCallback(Peer peer) {
+        public VoteResponseCallback(Peer peer, RaftMessage.VoteRequest request) {
             this.peer = peer;
+            this.request = request;
         }
 
         @Override
@@ -267,7 +270,7 @@ public class RaftNode {
             lock.lock();
             try {
                 peer.setVoteGranted(response.getGranted());
-                if (currentTerm != response.getTerm() || state != NodeState.STATE_CANDIDATE) {
+                if (currentTerm != request.getTerm() || state != NodeState.STATE_CANDIDATE) {
                     LOG.info("ignore requestVote RPC result");
                     return;
                 }
