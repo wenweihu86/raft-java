@@ -251,9 +251,8 @@ public class RaftNode {
         }
 
         RaftMessage.VoteRequest request = requestBuilder.build();
-        peer.getRpcClient().asyncCall(
-                "RaftConsensusService.requestVote", request,
-                new VoteResponseCallback(peer, request));
+        peer.getRaftConsensusServiceAsync().requestVote(
+                request, new VoteResponseCallback(peer, request));
     }
 
     private class VoteResponseCallback implements RPCCallback<RaftMessage.VoteResponse> {

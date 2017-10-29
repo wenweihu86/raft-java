@@ -2,6 +2,7 @@ package com.github.wenweihu86.raft;
 
 import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.service.RaftConsensusService;
+import com.github.wenweihu86.raft.service.RaftConsensusServiceAsync;
 import com.github.wenweihu86.rpc.client.EndPoint;
 import com.github.wenweihu86.rpc.client.RPCClient;
 import com.github.wenweihu86.rpc.client.RPCProxy;
@@ -13,6 +14,7 @@ public class Peer {
     private RaftMessage.Server server;
     private RPCClient rpcClient;
     private RaftConsensusService raftConsensusService;
+    private RaftConsensusServiceAsync raftConsensusServiceAsync;
     // 需要发送给follower的下一个日志条目的索引值，只对leader有效
     private long nextIndex;
     // 已复制日志的最高索引值
@@ -26,6 +28,7 @@ public class Peer {
                 server.getEndPoint().getHost(),
                 server.getEndPoint().getPort()));
         raftConsensusService = RPCProxy.getProxy(rpcClient, RaftConsensusService.class);
+        raftConsensusServiceAsync = RPCProxy.getProxy(rpcClient, RaftConsensusServiceAsync.class);
         isCatchUp = false;
     }
 
@@ -39,6 +42,10 @@ public class Peer {
 
     public RaftConsensusService getRaftConsensusService() {
         return raftConsensusService;
+    }
+
+    public RaftConsensusServiceAsync getRaftConsensusServiceAsync() {
+        return raftConsensusServiceAsync;
     }
 
     public long getNextIndex() {
