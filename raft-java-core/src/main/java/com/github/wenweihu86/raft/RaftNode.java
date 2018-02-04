@@ -786,7 +786,6 @@ public class RaftNode {
             return raftLog.getEntryTerm(lastLogIndex);
         } else {
             // log为空，lastLogIndex == lastSnapshotIndex
-            // TODO: 是否加锁？如何避免死锁？
             return snapshot.getMetaData().getLastIncludedTerm();
         }
     }
