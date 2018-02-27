@@ -163,6 +163,11 @@ public class RaftNode {
                 });
             }
 
+            if (raftOptions.isAsyncWrite()) {
+                // 主节点写成功后，就返回。
+                return true;
+            }
+
             // sync wait commitIndex >= newLastLogIndex
             long startTime = System.currentTimeMillis();
             while (lastAppliedIndex < newLastLogIndex) {

@@ -1,8 +1,14 @@
 package com.github.wenweihu86.raft;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
+ * raft配置选项
  * Created by wenweihu86 on 2017/5/2.
  */
+@Setter
+@Getter
 public class RaftOptions {
 
     // A follower would become a candidate if it doesn't receive any message
@@ -32,95 +38,10 @@ public class RaftOptions {
     // 与其他节点进行同步、选主等操作的线程池大小
     private int raftConsensusThreadNum = 20;
 
+    // 是否异步写数据；true表示主节点保存后就返回，然后异步同步给从节点；
+    // false表示主节点同步给大多数从节点后才返回。
+    private boolean asyncWrite = false;
+
     // raft的log和snapshot父目录，绝对路径
     private String dataDir = System.getProperty("com.github.wenweihu86.raft.data.dir");
-
-    public int getElectionTimeoutMilliseconds() {
-        return electionTimeoutMilliseconds;
-    }
-
-    public void setElectionTimeoutMilliseconds(int electionTimeoutMilliseconds) {
-        this.electionTimeoutMilliseconds = electionTimeoutMilliseconds;
-    }
-
-    public int getHeartbeatPeriodMilliseconds() {
-        return heartbeatPeriodMilliseconds;
-    }
-
-    public void setHeartbeatPeriodMilliseconds(int heartbeatPeriodMilliseconds) {
-        this.heartbeatPeriodMilliseconds = heartbeatPeriodMilliseconds;
-    }
-
-    public int getSnapshotPeriodSeconds() {
-        return snapshotPeriodSeconds;
-    }
-
-    public void setSnapshotPeriodSeconds(int snapshotPeriodSeconds) {
-        this.snapshotPeriodSeconds = snapshotPeriodSeconds;
-    }
-
-    public int getSnapshotMinLogSize() {
-        return snapshotMinLogSize;
-    }
-
-    public void setSnapshotMinLogSize(int snapshotMinLogSize) {
-        this.snapshotMinLogSize = snapshotMinLogSize;
-    }
-
-    public int getMaxSnapshotBytesPerRequest() {
-        return maxSnapshotBytesPerRequest;
-    }
-
-    public void setMaxSnapshotBytesPerRequest(int maxSnapshotBytesPerRequest) {
-        this.maxSnapshotBytesPerRequest = maxSnapshotBytesPerRequest;
-    }
-
-    public int getMaxLogEntriesPerRequest() {
-        return maxLogEntriesPerRequest;
-    }
-
-    public void setMaxLogEntriesPerRequest(int maxLogEntriesPerRequest) {
-        this.maxLogEntriesPerRequest = maxLogEntriesPerRequest;
-    }
-
-    public int getMaxSegmentFileSize() {
-        return maxSegmentFileSize;
-    }
-
-    public void setMaxSegmentFileSize(int maxSegmentFileSize) {
-        this.maxSegmentFileSize = maxSegmentFileSize;
-    }
-
-    public long getCatchupMargin() {
-        return catchupMargin;
-    }
-
-    public void setCatchupMargin(long catchupMargin) {
-        this.catchupMargin = catchupMargin;
-    }
-
-    public long getMaxAwaitTimeout() {
-        return maxAwaitTimeout;
-    }
-
-    public void setMaxAwaitTimeout(long maxAwaitTimeout) {
-        this.maxAwaitTimeout = maxAwaitTimeout;
-    }
-
-    public int getRaftConsensusThreadNum() {
-        return raftConsensusThreadNum;
-    }
-
-    public void setRaftConsensusThreadNum(int raftConsensusThreadNum) {
-        this.raftConsensusThreadNum = raftConsensusThreadNum;
-    }
-
-    public String getDataDir() {
-        return dataDir;
-    }
-
-    public void setDataDir(String dataDir) {
-        this.dataDir = dataDir;
-    }
-
 }
