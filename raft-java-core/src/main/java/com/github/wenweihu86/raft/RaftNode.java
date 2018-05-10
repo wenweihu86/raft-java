@@ -21,6 +21,10 @@ import java.util.concurrent.locks.*;
 
 /**
  * Created by wenweihu86 on 2017/5/2.
+ * 该类是raft核心类，主要有如下功能：
+ * 1、保存raft节点核心数据（节点状态信息、日志信息、snapshot等），
+ * 2、raft节点向别的raft发起rpc请求相关函数
+ * 3、raft节点定时器：主节点心跳定时器、发起选举定时器。
  */
 public class RaftNode {
 
@@ -447,7 +451,10 @@ public class RaftNode {
     }
 
     /**
-     * 客户端发起pre-vote请求
+     * 客户端发起pre-vote请求。
+     * pre-vote/vote是典型的二阶段实现。
+     * 作用是防止某一个节点断网后，不断的增加term发起投票；
+     * 当该节点网络恢复后，会导致集群其他节点的term增大，导致集群状态变更。
      */
     private void startPreVote() {
         lock.lock();
@@ -515,7 +522,7 @@ public class RaftNode {
      * @param peer 服务端节点信息
      */
     private void preVote(Peer peer) {
-        LOG.info("begin requestVote");
+        LOG.info("begin pre vote request");
         RaftMessage.VoteRequest.Builder requestBuilder = RaftMessage.VoteRequest.newBuilder();
         lock.lock();
         try {
@@ -538,7 +545,7 @@ public class RaftNode {
      * @param peer 服务端节点信息
      */
     private void requestVote(Peer peer) {
-        LOG.info("begin requestVote");
+        LOG.info("begin vote request");
         RaftMessage.VoteRequest.Builder requestBuilder = RaftMessage.VoteRequest.newBuilder();
         lock.lock();
         try {
@@ -575,7 +582,7 @@ public class RaftNode {
                     return;
                 }
                 if (response.getTerm() > currentTerm) {
-                    LOG.info("Received RequestVote response from server {} " +
+                    LOG.info("Received pre vote response from server {} " +
                                     "in term {} (this server's term was {})",
                             peer.getServer().getServerId(),
                             response.getTerm(),
@@ -583,7 +590,7 @@ public class RaftNode {
                     stepDown(response.getTerm());
                 } else {
                     if (response.getGranted()) {
-                        LOG.info("Got pre vote from server {} for term {}",
+                        LOG.info("get pre vote granted from server {} for term {}",
                                 peer.getServer().getServerId(), currentTerm);
                         int voteGrantedNum = 1;
                         for (RaftMessage.Server server : configuration.getServersList()) {
@@ -597,7 +604,7 @@ public class RaftNode {
                         }
                         LOG.info("preVoteGrantedNum={}", voteGrantedNum);
                         if (voteGrantedNum > configuration.getServersCount() / 2) {
-                            LOG.info("Got majority vote, serverId={} when pre vote, start vote",
+                            LOG.info("get majority pre vote, serverId={} when pre vote, start vote",
                                     localServer.getServerId());
                             startVote();
                         }
@@ -613,7 +620,7 @@ public class RaftNode {
 
         @Override
         public void fail(Throwable e) {
-            LOG.warn("requestVote with peer[{}:{}] failed",
+            LOG.warn("pre vote with peer[{}:{}] failed",
                     peer.getServer().getEndPoint().getHost(),
                     peer.getServer().getEndPoint().getPort());
             peer.setVoteGranted(new Boolean(false));
