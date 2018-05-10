@@ -26,6 +26,7 @@ public class RaftNode {
 
     public enum NodeState {
         STATE_FOLLOWER,
+        STATE_PRE_CANDIDATE,
         STATE_CANDIDATE,
         STATE_LEADER
     }
@@ -188,7 +189,243 @@ public class RaftNode {
         return true;
     }
 
-    // election timer, request vote
+    public void appendEntries(Peer peer) {
+        RaftMessage.AppendEntriesRequest.Builder requestBuilder = RaftMessage.AppendEntriesRequest.newBuilder();
+        long prevLogIndex;
+        long numEntries;
+
+        boolean isNeedInstallSnapshot = false;
+        lock.lock();
+        try {
+            long firstLogIndex = raftLog.getFirstLogIndex();
+            if (peer.getNextIndex() < firstLogIndex) {
+                isNeedInstallSnapshot = true;
+            }
+        } finally {
+            lock.unlock();
+        }
+
+        LOG.debug("is need snapshot={}, peer={}", isNeedInstallSnapshot, peer.getServer().getServerId());
+        if (isNeedInstallSnapshot) {
+            if (!installSnapshot(peer)) {
+                return;
+            }
+        }
+
+        long lastSnapshotIndex;
+        long lastSnapshotTerm;
+        snapshot.getLock().lock();
+        try {
+            lastSnapshotIndex = snapshot.getMetaData().getLastIncludedIndex();
+            lastSnapshotTerm = snapshot.getMetaData().getLastIncludedTerm();
+        } finally {
+            snapshot.getLock().unlock();
+        }
+
+        lock.lock();
+        try {
+            long firstLogIndex = raftLog.getFirstLogIndex();
+            Validate.isTrue(peer.getNextIndex() >= firstLogIndex);
+            prevLogIndex = peer.getNextIndex() - 1;
+            long prevLogTerm;
+            if (prevLogIndex == 0) {
+                prevLogTerm = 0;
+            } else if (prevLogIndex == lastSnapshotIndex) {
+                prevLogTerm = lastSnapshotTerm;
+            } else {
+                prevLogTerm = raftLog.getEntryTerm(prevLogIndex);
+            }
+            requestBuilder.setServerId(localServer.getServerId());
+            requestBuilder.setTerm(currentTerm);
+            requestBuilder.setPrevLogTerm(prevLogTerm);
+            requestBuilder.setPrevLogIndex(prevLogIndex);
+            numEntries = packEntries(peer.getNextIndex(), requestBuilder);
+            requestBuilder.setCommitIndex(Math.min(commitIndex, prevLogIndex + numEntries));
+        } finally {
+            lock.unlock();
+        }
+
+        RaftMessage.AppendEntriesRequest request = requestBuilder.build();
+        RaftMessage.AppendEntriesResponse response = peer.getRaftConsensusService().appendEntries(request);
+
+        lock.lock();
+        try {
+            if (response == null) {
+                LOG.warn("appendEntries with peer[{}:{}] failed",
+                        peer.getServer().getEndPoint().getHost(),
+                        peer.getServer().getEndPoint().getPort());
+                if (!ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
+                    peerMap.remove(peer.getServer().getServerId());
+                    peer.getRpcClient().stop();
+                }
+                return;
+            }
+            LOG.info("AppendEntries response[{}] from server {} " +
+                            "in term {} (my term is {})",
+                    response.getResCode(), peer.getServer().getServerId(),
+                    response.getTerm(), currentTerm);
+
+            if (response.getTerm() > currentTerm) {
+                stepDown(response.getTerm());
+            } else {
+                if (response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
+                    peer.setMatchIndex(prevLogIndex + numEntries);
+                    peer.setNextIndex(peer.getMatchIndex() + 1);
+                    if (ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
+                        advanceCommitIndex();
+                    } else {
+                        if (raftLog.getLastLogIndex() - peer.getMatchIndex() <= raftOptions.getCatchupMargin()) {
+                            LOG.debug("peer catch up the leader");
+                            peer.setCatchUp(true);
+                            // signal the caller thread
+                            catchUpCondition.signalAll();
+                        }
+                    }
+                } else {
+                    peer.setNextIndex(response.getLastLogIndex() + 1);
+                }
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    // in lock
+    public void stepDown(long newTerm) {
+        if (currentTerm > newTerm) {
+            LOG.error("can't be happened");
+            return;
+        }
+        if (currentTerm < newTerm) {
+            currentTerm = newTerm;
+            leaderId = 0;
+            votedFor = 0;
+            raftLog.updateMetaData(currentTerm, votedFor, null);
+        }
+        state = NodeState.STATE_FOLLOWER;
+        // stop heartbeat
+        if (heartbeatScheduledFuture != null && !heartbeatScheduledFuture.isDone()) {
+            heartbeatScheduledFuture.cancel(true);
+        }
+        resetElectionTimer();
+    }
+
+    public void takeSnapshot() {
+        if (snapshot.getIsInstallSnapshot().get()) {
+            LOG.info("already in install snapshot, ignore take snapshot");
+            return;
+        }
+
+        snapshot.getIsTakeSnapshot().compareAndSet(false, true);
+        try {
+            long localLastAppliedIndex;
+            long lastAppliedTerm = 0;
+            RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
+            lock.lock();
+            try {
+                if (raftLog.getTotalSize() < raftOptions.getSnapshotMinLogSize()) {
+                    return;
+                }
+                if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
+                    return;
+                }
+                localLastAppliedIndex = lastAppliedIndex;
+                if (lastAppliedIndex >= raftLog.getFirstLogIndex()
+                        && lastAppliedIndex <= raftLog.getLastLogIndex()) {
+                    lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
+                }
+                localConfiguration.mergeFrom(configuration);
+            } finally {
+                lock.unlock();
+            }
+
+            boolean success = false;
+            snapshot.getLock().lock();
+            try {
+                LOG.info("start taking snapshot");
+                // take snapshot
+                String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
+                snapshot.updateMetaData(tmpSnapshotDir, localLastAppliedIndex,
+                        lastAppliedTerm, localConfiguration.build());
+                String tmpSnapshotDataDir = tmpSnapshotDir + File.separator + "data";
+                stateMachine.writeSnapshot(tmpSnapshotDataDir);
+                // rename tmp snapshot dir to snapshot dir
+                try {
+                    File snapshotDirFile = new File(snapshot.getSnapshotDir());
+                    if (snapshotDirFile.exists()) {
+                        FileUtils.deleteDirectory(snapshotDirFile);
+                    }
+                    FileUtils.moveDirectory(new File(tmpSnapshotDir),
+                            new File(snapshot.getSnapshotDir()));
+                    LOG.info("end taking snapshot, result=success");
+                    success = true;
+                } catch (IOException ex) {
+                    LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
+                }
+            } finally {
+                snapshot.getLock().unlock();
+            }
+
+            if (success) {
+                // 重新加载snapshot
+                long lastSnapshotIndex = 0;
+                snapshot.getLock().lock();
+                try {
+                    snapshot.reload();
+                    lastSnapshotIndex = snapshot.getMetaData().getLastIncludedIndex();
+                } finally {
+                    snapshot.getLock().unlock();
+                }
+
+                // discard old log entries
+                lock.lock();
+                try {
+                    if (lastSnapshotIndex > 0 && raftLog.getFirstLogIndex() <= lastSnapshotIndex) {
+                        raftLog.truncatePrefix(lastSnapshotIndex + 1);
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
+        } finally {
+            snapshot.getIsTakeSnapshot().compareAndSet(true, false);
+        }
+    }
+
+    // in lock
+    public void applyConfiguration(RaftMessage.LogEntry entry) {
+        try {
+            RaftMessage.Configuration newConfiguration
+                    = RaftMessage.Configuration.parseFrom(entry.getData().toByteArray());
+            configuration = newConfiguration;
+            // update peerMap
+            for (RaftMessage.Server server : newConfiguration.getServersList()) {
+                if (!peerMap.containsKey(server.getServerId())
+                        && server.getServerId() != localServer.getServerId()) {
+                    Peer peer = new Peer(server);
+                    peer.setNextIndex(raftLog.getLastLogIndex() + 1);
+                    peerMap.put(server.getServerId(), peer);
+                }
+            }
+            LOG.info("new conf is {}, leaderId={}", PRINTER.print(newConfiguration), leaderId);
+        } catch (InvalidProtocolBufferException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public long getLastLogTerm() {
+        long lastLogIndex = raftLog.getLastLogIndex();
+        if (lastLogIndex >= raftLog.getFirstLogIndex()) {
+            return raftLog.getEntryTerm(lastLogIndex);
+        } else {
+            // log为空，lastLogIndex == lastSnapshotIndex
+            return snapshot.getMetaData().getLastIncludedTerm();
+        }
+    }
+
+    /**
+     * 选举定时器
+     */
     private void resetElectionTimer() {
         if (electionScheduledFuture != null && !electionScheduledFuture.isDone()) {
             electionScheduledFuture.cancel(true);
@@ -196,7 +433,7 @@ public class RaftNode {
         electionScheduledFuture = scheduledExecutorService.schedule(new Runnable() {
             @Override
             public void run() {
-                startNewElection();
+                startPreVote();
             }
         }, getElectionTimeoutMs(), TimeUnit.MILLISECONDS);
     }
@@ -209,8 +446,41 @@ public class RaftNode {
         return randomElectionTimeout;
     }
 
-    // 开始新的选举，对candidate有效
-    private void startNewElection() {
+    /**
+     * 客户端发起pre-vote请求
+     */
+    private void startPreVote() {
+        lock.lock();
+        try {
+            if (!ConfigurationUtils.containsServer(configuration, localServer.getServerId())) {
+                resetElectionTimer();
+                return;
+            }
+            LOG.info("Running pre-vote in term {}", currentTerm);
+            state = NodeState.STATE_PRE_CANDIDATE;
+        } finally {
+            lock.unlock();
+        }
+
+        for (RaftMessage.Server server : configuration.getServersList()) {
+            if (server.getServerId() == localServer.getServerId()) {
+                continue;
+            }
+            final Peer peer = peerMap.get(server.getServerId());
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    preVote(peer);
+                }
+            });
+        }
+        resetElectionTimer();
+    }
+
+    /**
+     * 客户端发起正式vote，对candidate有效
+     */
+    private void startVote() {
         lock.lock();
         try {
             if (!ConfigurationUtils.containsServer(configuration, localServer.getServerId())) {
@@ -238,9 +508,35 @@ public class RaftNode {
                 }
             });
         }
-        resetElectionTimer();
     }
 
+    /**
+     * 客户端发起pre-vote请求
+     * @param peer 服务端节点信息
+     */
+    private void preVote(Peer peer) {
+        LOG.info("begin requestVote");
+        RaftMessage.VoteRequest.Builder requestBuilder = RaftMessage.VoteRequest.newBuilder();
+        lock.lock();
+        try {
+            peer.setVoteGranted(null);
+            requestBuilder.setServerId(localServer.getServerId())
+                    .setTerm(currentTerm)
+                    .setLastLogIndex(raftLog.getLastLogIndex())
+                    .setLastLogTerm(getLastLogTerm());
+        } finally {
+            lock.unlock();
+        }
+
+        RaftMessage.VoteRequest request = requestBuilder.build();
+        peer.getRaftConsensusServiceAsync().preVote(
+                request, new PreVoteResponseCallback(peer, request));
+    }
+
+    /**
+     * 客户端发起正式vote请求
+     * @param peer 服务端节点信息
+     */
     private void requestVote(Peer peer) {
         LOG.info("begin requestVote");
         RaftMessage.VoteRequest.Builder requestBuilder = RaftMessage.VoteRequest.newBuilder();
@@ -258,6 +554,70 @@ public class RaftNode {
         RaftMessage.VoteRequest request = requestBuilder.build();
         peer.getRaftConsensusServiceAsync().requestVote(
                 request, new VoteResponseCallback(peer, request));
+    }
+
+    private class PreVoteResponseCallback implements RPCCallback<RaftMessage.VoteResponse> {
+        private Peer peer;
+        private RaftMessage.VoteRequest request;
+
+        public PreVoteResponseCallback(Peer peer, RaftMessage.VoteRequest request) {
+            this.peer = peer;
+            this.request = request;
+        }
+
+        @Override
+        public void success(RaftMessage.VoteResponse response) {
+            lock.lock();
+            try {
+                peer.setVoteGranted(response.getGranted());
+                if (currentTerm != request.getTerm() || state != NodeState.STATE_PRE_CANDIDATE) {
+                    LOG.info("ignore preVote RPC result");
+                    return;
+                }
+                if (response.getTerm() > currentTerm) {
+                    LOG.info("Received RequestVote response from server {} " +
+                                    "in term {} (this server's term was {})",
+                            peer.getServer().getServerId(),
+                            response.getTerm(),
+                            currentTerm);
+                    stepDown(response.getTerm());
+                } else {
+                    if (response.getGranted()) {
+                        LOG.info("Got pre vote from server {} for term {}",
+                                peer.getServer().getServerId(), currentTerm);
+                        int voteGrantedNum = 1;
+                        for (RaftMessage.Server server : configuration.getServersList()) {
+                            if (server.getServerId() == localServer.getServerId()) {
+                                continue;
+                            }
+                            Peer peer1 = peerMap.get(server.getServerId());
+                            if (peer1.isVoteGranted() != null && peer1.isVoteGranted() == true) {
+                                voteGrantedNum += 1;
+                            }
+                        }
+                        LOG.info("preVoteGrantedNum={}", voteGrantedNum);
+                        if (voteGrantedNum > configuration.getServersCount() / 2) {
+                            LOG.info("Got majority vote, serverId={} when pre vote, start vote",
+                                    localServer.getServerId());
+                            startVote();
+                        }
+                    } else {
+                        LOG.info("pre vote denied by server {} with term {}, my term is {}",
+                                peer.getServer().getServerId(), response.getTerm(), currentTerm);
+                    }
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        @Override
+        public void fail(Throwable e) {
+            LOG.warn("requestVote with peer[{}:{}] failed",
+                    peer.getServer().getEndPoint().getHost(),
+                    peer.getServer().getEndPoint().getPort());
+            peer.setVoteGranted(new Boolean(false));
+        }
     }
 
     private class VoteResponseCallback implements RPCCallback<RaftMessage.VoteResponse> {
@@ -364,107 +724,6 @@ public class RaftNode {
             });
         }
         resetHeartbeatTimer();
-    }
-
-    public void appendEntries(Peer peer) {
-        RaftMessage.AppendEntriesRequest.Builder requestBuilder = RaftMessage.AppendEntriesRequest.newBuilder();
-        long prevLogIndex;
-        long numEntries;
-
-        boolean isNeedInstallSnapshot = false;
-        lock.lock();
-        try {
-            long firstLogIndex = raftLog.getFirstLogIndex();
-            if (peer.getNextIndex() < firstLogIndex) {
-                isNeedInstallSnapshot = true;
-            }
-        } finally {
-            lock.unlock();
-        }
-
-        LOG.debug("is need snapshot={}, peer={}", isNeedInstallSnapshot, peer.getServer().getServerId());
-        if (isNeedInstallSnapshot) {
-            if (!installSnapshot(peer)) {
-                return;
-            }
-        }
-
-        long lastSnapshotIndex;
-        long lastSnapshotTerm;
-        snapshot.getLock().lock();
-        try {
-            lastSnapshotIndex = snapshot.getMetaData().getLastIncludedIndex();
-            lastSnapshotTerm = snapshot.getMetaData().getLastIncludedTerm();
-        } finally {
-            snapshot.getLock().unlock();
-        }
-
-        lock.lock();
-        try {
-            long firstLogIndex = raftLog.getFirstLogIndex();
-            Validate.isTrue(peer.getNextIndex() >= firstLogIndex);
-            prevLogIndex = peer.getNextIndex() - 1;
-            long prevLogTerm;
-            if (prevLogIndex == 0) {
-                prevLogTerm = 0;
-            } else if (prevLogIndex == lastSnapshotIndex) {
-                prevLogTerm = lastSnapshotTerm;
-            } else {
-                prevLogTerm = raftLog.getEntryTerm(prevLogIndex);
-            }
-            requestBuilder.setServerId(localServer.getServerId());
-            requestBuilder.setTerm(currentTerm);
-            requestBuilder.setPrevLogTerm(prevLogTerm);
-            requestBuilder.setPrevLogIndex(prevLogIndex);
-            numEntries = packEntries(peer.getNextIndex(), requestBuilder);
-            requestBuilder.setCommitIndex(Math.min(commitIndex, prevLogIndex + numEntries));
-        } finally {
-            lock.unlock();
-        }
-
-        RaftMessage.AppendEntriesRequest request = requestBuilder.build();
-        RaftMessage.AppendEntriesResponse response = peer.getRaftConsensusService().appendEntries(request);
-
-        lock.lock();
-        try {
-            if (response == null) {
-                LOG.warn("appendEntries with peer[{}:{}] failed",
-                        peer.getServer().getEndPoint().getHost(),
-                        peer.getServer().getEndPoint().getPort());
-                if (!ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
-                    peerMap.remove(peer.getServer().getServerId());
-                    peer.getRpcClient().stop();
-                }
-                return;
-            }
-            LOG.info("AppendEntries response[{}] from server {} " +
-                            "in term {} (my term is {})",
-                    response.getResCode(), peer.getServer().getServerId(),
-                    response.getTerm(), currentTerm);
-
-            if (response.getTerm() > currentTerm) {
-                stepDown(response.getTerm());
-            } else {
-                if (response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
-                    peer.setMatchIndex(prevLogIndex + numEntries);
-                    peer.setNextIndex(peer.getMatchIndex() + 1);
-                    if (ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
-                        advanceCommitIndex();
-                    } else {
-                        if (raftLog.getLastLogIndex() - peer.getMatchIndex() <= raftOptions.getCatchupMargin()) {
-                            LOG.debug("peer catch up the leader");
-                            peer.setCatchUp(true);
-                            // signal the caller thread
-                            catchUpCondition.signalAll();
-                        }
-                    }
-                } else {
-                    peer.setNextIndex(response.getLastLogIndex() + 1);
-                }
-            }
-        } finally {
-            lock.unlock();
-        }
     }
 
     // in lock, for leader
@@ -660,139 +919,6 @@ public class RaftNode {
         }
 
         return requestBuilder.build();
-    }
-
-    // in lock
-    public void stepDown(long newTerm) {
-        if (currentTerm > newTerm) {
-            LOG.error("can't be happened");
-            return;
-        }
-        if (currentTerm < newTerm) {
-            currentTerm = newTerm;
-            leaderId = 0;
-            votedFor = 0;
-            raftLog.updateMetaData(currentTerm, votedFor, null);
-        }
-        state = NodeState.STATE_FOLLOWER;
-        // stop heartbeat
-        if (heartbeatScheduledFuture != null && !heartbeatScheduledFuture.isDone()) {
-            heartbeatScheduledFuture.cancel(true);
-        }
-        resetElectionTimer();
-    }
-
-    public void takeSnapshot() {
-        if (snapshot.getIsInstallSnapshot().get()) {
-            LOG.info("already in install snapshot, ignore take snapshot");
-            return;
-        }
-
-        snapshot.getIsTakeSnapshot().compareAndSet(false, true);
-        try {
-            long localLastAppliedIndex;
-            long lastAppliedTerm = 0;
-            RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
-            lock.lock();
-            try {
-                if (raftLog.getTotalSize() < raftOptions.getSnapshotMinLogSize()) {
-                    return;
-                }
-                if (lastAppliedIndex <= snapshot.getMetaData().getLastIncludedIndex()) {
-                    return;
-                }
-                localLastAppliedIndex = lastAppliedIndex;
-                if (lastAppliedIndex >= raftLog.getFirstLogIndex()
-                        && lastAppliedIndex <= raftLog.getLastLogIndex()) {
-                    lastAppliedTerm = raftLog.getEntryTerm(lastAppliedIndex);
-                }
-                localConfiguration.mergeFrom(configuration);
-            } finally {
-                lock.unlock();
-            }
-
-            boolean success = false;
-            snapshot.getLock().lock();
-            try {
-                LOG.info("start taking snapshot");
-                // take snapshot
-                String tmpSnapshotDir = snapshot.getSnapshotDir() + ".tmp";
-                snapshot.updateMetaData(tmpSnapshotDir, localLastAppliedIndex,
-                        lastAppliedTerm, localConfiguration.build());
-                String tmpSnapshotDataDir = tmpSnapshotDir + File.separator + "data";
-                stateMachine.writeSnapshot(tmpSnapshotDataDir);
-                // rename tmp snapshot dir to snapshot dir
-                try {
-                    File snapshotDirFile = new File(snapshot.getSnapshotDir());
-                    if (snapshotDirFile.exists()) {
-                        FileUtils.deleteDirectory(snapshotDirFile);
-                    }
-                    FileUtils.moveDirectory(new File(tmpSnapshotDir),
-                            new File(snapshot.getSnapshotDir()));
-                    LOG.info("end taking snapshot, result=success");
-                    success = true;
-                } catch (IOException ex) {
-                    LOG.warn("move direct failed when taking snapshot, msg={}", ex.getMessage());
-                }
-            } finally {
-                snapshot.getLock().unlock();
-            }
-
-            if (success) {
-                // 重新加载snapshot
-                long lastSnapshotIndex = 0;
-                snapshot.getLock().lock();
-                try {
-                    snapshot.reload();
-                    lastSnapshotIndex = snapshot.getMetaData().getLastIncludedIndex();
-                } finally {
-                    snapshot.getLock().unlock();
-                }
-
-                // discard old log entries
-                lock.lock();
-                try {
-                    if (lastSnapshotIndex > 0 && raftLog.getFirstLogIndex() <= lastSnapshotIndex) {
-                        raftLog.truncatePrefix(lastSnapshotIndex + 1);
-                    }
-                } finally {
-                    lock.unlock();
-                }
-            }
-        } finally {
-            snapshot.getIsTakeSnapshot().compareAndSet(true, false);
-        }
-    }
-
-    // in lock
-    public void applyConfiguration(RaftMessage.LogEntry entry) {
-        try {
-            RaftMessage.Configuration newConfiguration
-                    = RaftMessage.Configuration.parseFrom(entry.getData().toByteArray());
-            configuration = newConfiguration;
-            // update peerMap
-            for (RaftMessage.Server server : newConfiguration.getServersList()) {
-                if (!peerMap.containsKey(server.getServerId())
-                        && server.getServerId() != localServer.getServerId()) {
-                    Peer peer = new Peer(server);
-                    peer.setNextIndex(raftLog.getLastLogIndex() + 1);
-                    peerMap.put(server.getServerId(), peer);
-                }
-            }
-            LOG.info("new conf is {}, leaderId={}", PRINTER.print(newConfiguration), leaderId);
-        } catch (InvalidProtocolBufferException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public long getLastLogTerm() {
-        long lastLogIndex = raftLog.getLastLogIndex();
-        if (lastLogIndex >= raftLog.getFirstLogIndex()) {
-            return raftLog.getEntryTerm(lastLogIndex);
-        } else {
-            // log为空，lastLogIndex == lastSnapshotIndex
-            return snapshot.getMetaData().getLastIncludedTerm();
-        }
     }
 
     public Lock getLock() {

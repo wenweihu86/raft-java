@@ -32,6 +32,38 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
     }
 
     @Override
+    public RaftMessage.VoteResponse preVote(RaftMessage.VoteRequest request) {
+        raftNode.getLock().lock();
+        try {
+            RaftMessage.VoteResponse.Builder responseBuilder = RaftMessage.VoteResponse.newBuilder();
+            responseBuilder.setGranted(false);
+            responseBuilder.setTerm(raftNode.getCurrentTerm());
+            if (!ConfigurationUtils.containsServer(raftNode.getConfiguration(), request.getServerId())) {
+                return responseBuilder.build();
+            }
+            if (request.getTerm() < raftNode.getCurrentTerm()) {
+                return responseBuilder.build();
+            }
+            boolean isLogOk = request.getLastLogTerm() > raftNode.getLastLogTerm()
+                    || (request.getLastLogTerm() == raftNode.getLastLogTerm()
+                    && request.getLastLogIndex() >= raftNode.getRaftLog().getLastLogIndex());
+            if (!isLogOk) {
+                return responseBuilder.build();
+            } else {
+                responseBuilder.setGranted(true);
+                responseBuilder.setTerm(raftNode.getCurrentTerm());
+            }
+            LOG.info("preVote request from server {} " +
+                            "in term {} (my term is {}), granted={}",
+                    request.getServerId(), request.getTerm(),
+                    raftNode.getCurrentTerm(), responseBuilder.getGranted());
+            return responseBuilder.build();
+        } finally {
+            raftNode.getLock().unlock();
+        }
+    }
+
+    @Override
     public RaftMessage.VoteResponse requestVote(RaftMessage.VoteRequest request) {
         raftNode.getLock().lock();
         try {
