@@ -14,7 +14,7 @@ Raft implementation for Java.<br>
 <dependency>
     <groupId>com.github.wenweihu86.raft</groupId>
     <artifactId>raft-java-core</artifactId>
-    <version>1.2.0</version>
+    <version>1.8.0</version>
 </dependency>
 ```
 
