@@ -18,6 +18,11 @@ public class ConcurrentClientMain {
     private static JsonFormat.Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
 
     public static void main(String[] args) {
+        if (args.length != 1) {
+            System.out.printf("Usage: ./run_concurrent_client.sh THREAD_NUM\n");
+            System.exit(-1);
+        }
+
         // parse args
         String ipPorts = args[0];
         RPCClient rpcClient = new RPCClient(ipPorts);

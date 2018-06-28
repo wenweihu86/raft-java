@@ -19,9 +19,15 @@ import java.util.List;
  */
 public class ServerMain {
     public static void main(String[] args) {
+        if (args.length != 3) {
+            System.out.printf("Usage: ./run_server.sh DATA_PATH CLUSTER CURRENT_NODE\n");
+            System.exit(-1);
+        }
         // parse args
+        // raft data dir
+        String dataPath = args[0];
         // peers, format is "host:port:serverId,host2:port2:serverId2"
-        String servers = args[0];
+        String servers = args[1];
         String[] splitArray = servers.split(",");
         List<RaftMessage.Server> serverList = new ArrayList<>();
         for (String serverString : splitArray) {
@@ -29,13 +35,14 @@ public class ServerMain {
             serverList.add(server);
         }
         // local server
-        RaftMessage.Server localServer = parseServer(args[1]);
+        RaftMessage.Server localServer = parseServer(args[2]);
 
         // 初始化RPCServer
         RPCServer server = new RPCServer(localServer.getEndPoint().getPort());
         // 设置Raft选项，比如：
         // just for test snapshot
         RaftOptions raftOptions = new RaftOptions();
+        raftOptions.setDataDir(dataPath);
         raftOptions.setSnapshotMinLogSize(10 * 1024);
         raftOptions.setSnapshotPeriodSeconds(30);
         raftOptions.setMaxSegmentFileSize(1024 * 1024);

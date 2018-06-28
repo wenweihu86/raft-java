@@ -11,6 +11,11 @@ import com.google.protobuf.util.JsonFormat;
  */
 public class ClientMain {
     public static void main(String[] args) {
+        if (args.length < 2) {
+            System.out.printf("Usage: ./run_server.sh CLUSTER KEY [VALUE]\n");
+            System.exit(-1);
+        }
+
         // parse args
         String ipPorts = args[0];
         String key = args[1];
