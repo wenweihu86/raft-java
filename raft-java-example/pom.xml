@@ -78,6 +78,7 @@
                     <descriptors>
                         <decriptor>src/main/assembly/assembly.xml</decriptor>
                     </descriptors>
+                    <tarLongFileMode>posix</tarLongFileMode>
                 </configuration>
                 <executions>
                     <execution>

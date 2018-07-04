@@ -4,7 +4,7 @@
 		  http://maven.apache.org/xsd/assembly-2.0.0.xsd">
     <id>deploy</id>
     <formats>
-        <format>zip</format>
+        <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
