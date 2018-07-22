@@ -33,7 +33,7 @@ cd -
 
 mkdir client
 cd client
-cp -f ../../target/$EXAMPLE_ZIP .
-tar -zxvf $EXAMPLE_ZIP
+cp -f ../../target/$EXAMPLE_TAR .
+tar -zxvf $EXAMPLE_TAR
 chmod +x ./bin/*.sh
 cd -
