@@ -1,9 +1,20 @@
 #!/bin/bash
-
 if [ $# -lt 2 ]; then
     echo "Usage: ./run_server.sh CLUSTER KEY [VALUE]"
     exit
 fi
+
+#begin adapt cygwin/mingw 
+UNAME_STR=$(uname -a)
+CURRENT_SYS=${var:0:5}
+var=$(uname -a)
+CURRENT_SYS=${var:0:5}
+if [ $CURRENT_SYS == "MINGW" ]; then
+	echo "--current system is mingw--"
+elif [ $CURRENT_SYS == "CYGWI" ]; then
+	echo "--current system is cygwin--"
+fi
+#end adapt cygwin/mingw
 
 JMX_PORT=18101
 GC_LOG=./logs/gc.log
@@ -26,7 +37,11 @@ JAVA_MEM_OPTS=" -server -Xms2g -Xmx2g -Xmn600m -XX:PermSize=128m \
 JAVA_GC_OPTS=" -verbose:gc -Xloggc:$GC_LOG \
 -XX:+PrintGCDetails -XX:+PrintGCDateStamps "
 
-JAVA_CP=" -cp conf:lib/* "
+if [ $CURRENT_SYS == "MINGW" ] || [ $CURRENT_SYS == "CYGWI" ]; then
+	JAVA_CP=" -cp conf;lib/* "
+else
+	JAVA_CP=" -cp conf:lib/* "
+fi
 
 JAVA_OPTS=" $JAVA_BASE_OPTS $JAVA_MEM_OPTS $JAVA_JMX_OPTS $JAVA_GC_OPTS $JAVA_CP"
 
