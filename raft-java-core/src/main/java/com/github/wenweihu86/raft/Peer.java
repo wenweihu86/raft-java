@@ -11,19 +11,30 @@ import com.github.wenweihu86.rpc.client.RPCProxy;
  * Created by wenweihu86 on 2017/5/5.
  */
 public class Peer {
+
+    private PeerId peerId;
+
     private RaftMessage.Server server;
+
     private RPCClient rpcClient;
+
     private RaftConsensusService raftConsensusService;
+
     private RaftConsensusServiceAsync raftConsensusServiceAsync;
+
     // 需要发送给follower的下一个日志条目的索引值，只对leader有效
     private long nextIndex;
+
     // 已复制日志的最高索引值
     private long matchIndex;
+
     private volatile Boolean voteGranted;
+
     private volatile boolean isCatchUp;
 
     public Peer(RaftMessage.Server server) {
         this.server = server;
+        this.peerId = new PeerId(server.getServerId());
         this.rpcClient = new RPCClient(new EndPoint(
                 server.getEndPoint().getHost(),
                 server.getEndPoint().getPort()));
@@ -38,6 +49,10 @@ public class Peer {
 
     public RPCClient getRpcClient() {
         return rpcClient;
+    }
+
+    public PeerId getPeerId() {
+        return peerId;
     }
 
     public RaftConsensusService getRaftConsensusService() {
