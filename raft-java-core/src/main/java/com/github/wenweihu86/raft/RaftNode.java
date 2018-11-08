@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.*;
 
 /**
@@ -46,7 +47,7 @@ public class RaftNode {
     private SegmentedLog raftLog;
     private Snapshot snapshot;
 
-    private NodeState state = NodeState.STATE_FOLLOWER;
+    private volatile NodeState state;
     // 服务器最后一次知道的任期号（初始化为 0，持续递增）
     private long currentTerm;
     // 在当前获得选票的候选人的Id
@@ -66,6 +67,8 @@ public class RaftNode {
     private ScheduledFuture electionScheduledFuture;
     private ScheduledFuture heartbeatScheduledFuture;
 
+    private AtomicBoolean hasInit = new AtomicBoolean(false);
+
     public RaftNode(RaftOptions raftOptions,
                     List<RaftMessage.Server> servers,
                     RaftMessage.Server localServer,
@@ -79,6 +82,13 @@ public class RaftNode {
 
         this.localServer = localServer;
         this.stateMachine = stateMachine;
+    }
+
+    public void init() {
+
+        if (!hasInit.compareAndSet(false, true)) {
+            throw new IllegalStateException("Raft Node has init before");
+        }
 
         // load log and snapshot
         raftLog = new SegmentedLog(raftOptions.getDataDir(), raftOptions.getMaxSegmentFileSize());
@@ -86,7 +96,9 @@ public class RaftNode {
         snapshot.reload();
 
         currentTerm = raftLog.getMetaData().getCurrentTerm();
+
         votedFor = raftLog.getMetaData().getVotedFor();
+
         commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
         // discard old log entries
         if (snapshot.getMetaData().getLastIncludedIndex() > 0
@@ -110,9 +122,10 @@ public class RaftNode {
             }
         }
         lastAppliedIndex = commitIndex;
-    }
 
-    public void init() {
+        // init state is FOLLOWER
+        state = NodeState.STATE_FOLLOWER;
+
         for (RaftMessage.Server server : configuration.getServersList()) {
             if (!peerMap.containsKey(server.getServerId())
                     && server.getServerId() != localServer.getServerId()) {
@@ -990,14 +1003,6 @@ public class RaftNode {
 
     public RaftMessage.Server getLocalServer() {
         return localServer;
-    }
-
-    public NodeState getState() {
-        return state;
-    }
-
-    public ConcurrentMap<Integer, Peer> getPeerMap() {
-        return peerMap;
     }
 
     public ExecutorService getExecutorService() {
