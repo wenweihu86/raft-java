@@ -1,6 +1,7 @@
 package com.github.wenweihu86.raft.service.impl;
 
 import com.github.wenweihu86.raft.Peer;
+import com.github.wenweihu86.raft.PeerId;
 import com.github.wenweihu86.raft.RaftNode;
 import com.github.wenweihu86.raft.proto.RaftMessage;
 import com.github.wenweihu86.raft.service.RaftClientService;
@@ -99,7 +100,7 @@ public class RaftClientServiceImpl implements RaftClientService {
             return responseBuilder.build();
         }
         for (RaftMessage.Server server : request.getServersList()) {
-            if (raftNode.getPeerMap().containsKey(server.getServerId())) {
+            if (raftNode.containsPeer(new PeerId(server.getServerId()))) {
                 LOG.warn("already be added/adding to configuration");
                 responseBuilder.setResMsg("already be added/adding to configuration");
                 return responseBuilder.build();
@@ -110,7 +111,7 @@ public class RaftClientServiceImpl implements RaftClientService {
             final Peer peer = new Peer(server);
             peer.setNextIndex(1);
             requestPeers.add(peer);
-            raftNode.getPeerMap().putIfAbsent(server.getServerId(), peer);
+            raftNode.addPeer(peer);
             raftNode.getExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {
@@ -163,7 +164,7 @@ public class RaftClientServiceImpl implements RaftClientService {
             try {
                 for (Peer peer : requestPeers) {
                     peer.getRpcClient().stop();
-                    raftNode.getPeerMap().remove(peer.getServer().getServerId());
+                    raftNode.removePeer(new PeerId(peer.getServer().getServerId()));
                 }
             } finally {
                 raftNode.getLock().unlock();
