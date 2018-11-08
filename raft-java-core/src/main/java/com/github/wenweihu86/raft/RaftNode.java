@@ -41,7 +41,7 @@ public class RaftNode {
 
     private RaftOptions raftOptions;
     private RaftMessage.Configuration configuration;
-    private ConcurrentMap<Integer, Peer> peerMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<PeerId, Peer> peerMap = new ConcurrentHashMap<>();
     private RaftMessage.Server localServer;
     private StateMachine stateMachine;
     private SegmentedLog raftLog;
@@ -131,7 +131,7 @@ public class RaftNode {
                     && server.getServerId() != localServer.getServerId()) {
                 Peer peer = new Peer(server);
                 peer.setNextIndex(raftLog.getLastLogIndex() + 1);
-                peerMap.put(server.getServerId(), peer);
+                peerMap.put(new PeerId(server.getServerId()), peer);
             }
         }
 
@@ -421,7 +421,7 @@ public class RaftNode {
                         && server.getServerId() != localServer.getServerId()) {
                     Peer peer = new Peer(server);
                     peer.setNextIndex(raftLog.getLastLogIndex() + 1);
-                    peerMap.put(server.getServerId(), peer);
+                    peerMap.put(new PeerId(server.getServerId()), peer);
                 }
             }
             LOG.info("new conf is {}, leaderId={}", PRINTER.print(newConfiguration), leaderId);
@@ -939,6 +939,18 @@ public class RaftNode {
         }
 
         return requestBuilder.build();
+    }
+
+    public void removePeer(PeerId peerId) {
+        peerMap.remove(peerId);
+    }
+
+    public boolean containsPeer(PeerId peerId) {
+        return peerMap.containsKey(peerId);
+    }
+
+    public void addPeer(Peer peer) {
+        peerMap.put(new PeerId(peer.getServer().getServerId()), peer);
     }
 
     public Lock getLock() {
