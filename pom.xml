@@ -4,10 +4,10 @@
 
     <groupId>com.github.wenweihu86.raft</groupId>
     <artifactId>raft-java-all</artifactId>
-    <version>1.8.0</version>
+    <version>1.9.0</version>
     <packaging>pom</packaging>
 
-    <name>raft-java-all</name>
+    <name>raft-java-parent</name>
     <url>http://maven.apache.org</url>
 
     <properties>

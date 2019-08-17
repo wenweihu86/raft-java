@@ -1,6 +1,6 @@
 package com.github.wenweihu86.raft.util;
 
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +82,7 @@ public class RaftFileUtils {
         }
     }
 
-    public static <T extends GeneratedMessageV3> T readProtoFromFile(RandomAccessFile raf, Class<T> clazz) {
+    public static <T extends Message> T readProtoFromFile(RandomAccessFile raf, Class<T> clazz) {
         try {
             long crc32FromFile = raf.readLong();
             int dataLen = raf.readInt();
@@ -111,7 +111,7 @@ public class RaftFileUtils {
         }
     }
 
-    public static  <T extends GeneratedMessageV3> void writeProtoToFile(RandomAccessFile raf, T message) {
+    public static  <T extends Message> void writeProtoToFile(RandomAccessFile raf, T message) {
         byte[] messageBytes = message.toByteArray();
         long crc32 = getCRC32(messageBytes);
         try {

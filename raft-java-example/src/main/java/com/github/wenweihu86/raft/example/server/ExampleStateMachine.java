@@ -1,7 +1,7 @@
 package com.github.wenweihu86.raft.example.server;
 
 import com.github.wenweihu86.raft.StateMachine;
-import com.github.wenweihu86.raft.example.server.service.ExampleMessage;
+import com.github.wenweihu86.raft.example.server.service.ExampleProto;
 import org.apache.commons.io.FileUtils;
 import org.rocksdb.Checkpoint;
 import org.rocksdb.Options;
@@ -70,23 +70,23 @@ public class ExampleStateMachine implements StateMachine {
     @Override
     public void apply(byte[] dataBytes) {
         try {
-            ExampleMessage.SetRequest request = ExampleMessage.SetRequest.parseFrom(dataBytes);
+            ExampleProto.SetRequest request = ExampleProto.SetRequest.parseFrom(dataBytes);
             db.put(request.getKey().getBytes(), request.getValue().getBytes());
         } catch (Exception ex) {
             LOG.warn("meet exception, msg={}", ex.getMessage());
         }
     }
 
-    public ExampleMessage.GetResponse get(ExampleMessage.GetRequest request) {
+    public ExampleProto.GetResponse get(ExampleProto.GetRequest request) {
         try {
-            ExampleMessage.GetResponse.Builder responseBuilder = ExampleMessage.GetResponse.newBuilder();
+            ExampleProto.GetResponse.Builder responseBuilder = ExampleProto.GetResponse.newBuilder();
             byte[] keyBytes = request.getKey().getBytes();
             byte[] valueBytes = db.get(keyBytes);
             if (valueBytes != null) {
                 String value = new String(valueBytes);
                 responseBuilder.setValue(value);
             }
-            ExampleMessage.GetResponse response = responseBuilder.build();
+            ExampleProto.GetResponse response = responseBuilder.build();
             return response;
         } catch (RocksDBException ex) {
             LOG.warn("read rockdb error, msg={}", ex.getMessage());

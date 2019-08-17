@@ -5,7 +5,7 @@ package com.github.wenweihu86.raft.example.server.service;
  */
 public interface ExampleService {
 
-    ExampleMessage.SetResponse set(ExampleMessage.SetRequest request);
+    ExampleProto.SetResponse set(ExampleProto.SetRequest request);
 
-    ExampleMessage.GetResponse get(ExampleMessage.GetRequest request);
+    ExampleProto.GetResponse get(ExampleProto.GetRequest request);
 }

@@ -1,10 +1,10 @@
 package com.github.wenweihu86.raft.example.client;
 
-import com.github.wenweihu86.raft.example.server.service.ExampleMessage;
+import com.baidu.brpc.client.BrpcProxy;
+import com.baidu.brpc.client.RpcClient;
+import com.github.wenweihu86.raft.example.server.service.ExampleProto;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
-import com.github.wenweihu86.rpc.client.RPCClient;
-import com.github.wenweihu86.rpc.client.RPCProxy;
-import com.google.protobuf.util.JsonFormat;
+import com.googlecode.protobuf.format.JsonFormat;
 
 /**
  * Created by wenweihu86 on 2017/5/14.
@@ -12,7 +12,7 @@ import com.google.protobuf.util.JsonFormat;
 public class ClientMain {
     public static void main(String[] args) {
         if (args.length < 2) {
-            System.out.printf("Usage: ./run_server.sh CLUSTER KEY [VALUE]\n");
+            System.out.printf("Usage: ./run_client.sh CLUSTER KEY [VALUE]\n");
             System.exit(-1);
         }
 
@@ -25,32 +25,24 @@ public class ClientMain {
         }
 
         // init rpc client
-        RPCClient rpcClient = new RPCClient(ipPorts);
-        ExampleService exampleService = RPCProxy.getProxy(rpcClient, ExampleService.class);
-        final JsonFormat.Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
+        RpcClient rpcClient = new RpcClient(ipPorts);
+        ExampleService exampleService = BrpcProxy.getProxy(rpcClient, ExampleService.class);
+        final JsonFormat jsonFormat = new JsonFormat();
 
         // set
         if (value != null) {
-            ExampleMessage.SetRequest setRequest = ExampleMessage.SetRequest.newBuilder()
+            ExampleProto.SetRequest setRequest = ExampleProto.SetRequest.newBuilder()
                     .setKey(key).setValue(value).build();
-            ExampleMessage.SetResponse setResponse = exampleService.set(setRequest);
-            try {
-                System.out.printf("set request, key=%s value=%s response=%s\n",
-                        key, value, printer.print(setResponse));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            ExampleProto.SetResponse setResponse = exampleService.set(setRequest);
+            System.out.printf("set request, key=%s value=%s response=%s\n",
+                    key, value, jsonFormat.printToString(setResponse));
         } else {
             // get
-            ExampleMessage.GetRequest getRequest = ExampleMessage.GetRequest.newBuilder()
+            ExampleProto.GetRequest getRequest = ExampleProto.GetRequest.newBuilder()
                     .setKey(key).build();
-            ExampleMessage.GetResponse getResponse = exampleService.get(getRequest);
-            try {
-                System.out.printf("get request, key=%s, response=%s\n",
-                        key, printer.print(getResponse));
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            ExampleProto.GetResponse getResponse = exampleService.get(getRequest);
+            System.out.printf("get request, key=%s, response=%s\n",
+                    key, jsonFormat.printToString(getResponse));
         }
 
         rpcClient.stop();

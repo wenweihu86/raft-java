@@ -1,13 +1,13 @@
 package com.github.wenweihu86.raft;
 
-import com.github.wenweihu86.raft.proto.RaftMessage;
+import com.baidu.brpc.client.RpcCallback;
+import com.github.wenweihu86.raft.proto.RaftProto;
 import com.github.wenweihu86.raft.storage.SegmentedLog;
 import com.github.wenweihu86.raft.util.ConfigurationUtils;
 import com.google.protobuf.ByteString;
 import com.github.wenweihu86.raft.storage.Snapshot;
-import com.github.wenweihu86.rpc.client.RPCCallback;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
+import com.googlecode.protobuf.format.JsonFormat;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -36,12 +36,12 @@ public class RaftNode {
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(RaftNode.class);
-    private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
+    private static final JsonFormat jsonFormat = new JsonFormat();
 
     private RaftOptions raftOptions;
-    private RaftMessage.Configuration configuration;
+    private RaftProto.Configuration configuration;
     private ConcurrentMap<Integer, Peer> peerMap = new ConcurrentHashMap<>();
-    private RaftMessage.Server localServer;
+    private RaftProto.Server localServer;
     private StateMachine stateMachine;
     private SegmentedLog raftLog;
     private Snapshot snapshot;
@@ -67,12 +67,12 @@ public class RaftNode {
     private ScheduledFuture heartbeatScheduledFuture;
 
     public RaftNode(RaftOptions raftOptions,
-                    List<RaftMessage.Server> servers,
-                    RaftMessage.Server localServer,
+                    List<RaftProto.Server> servers,
+                    RaftProto.Server localServer,
                     StateMachine stateMachine) {
         this.raftOptions = raftOptions;
-        RaftMessage.Configuration.Builder confBuilder = RaftMessage.Configuration.newBuilder();
-        for (RaftMessage.Server server : servers) {
+        RaftProto.Configuration.Builder confBuilder = RaftProto.Configuration.newBuilder();
+        for (RaftProto.Server server : servers) {
             confBuilder.addServers(server);
         }
         configuration = confBuilder.build();
@@ -94,7 +94,7 @@ public class RaftNode {
             raftLog.truncatePrefix(snapshot.getMetaData().getLastIncludedIndex() + 1);
         }
         // apply state machine
-        RaftMessage.Configuration snapshotConfiguration = snapshot.getMetaData().getConfiguration();
+        RaftProto.Configuration snapshotConfiguration = snapshot.getMetaData().getConfiguration();
         if (snapshotConfiguration.getServersCount() > 0) {
             configuration = snapshotConfiguration;
         }
@@ -102,10 +102,10 @@ public class RaftNode {
         stateMachine.readSnapshot(snapshotDataDir);
         for (long index = snapshot.getMetaData().getLastIncludedIndex() + 1;
              index <= commitIndex; index++) {
-            RaftMessage.LogEntry entry = raftLog.getEntry(index);
-            if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_DATA) {
+            RaftProto.LogEntry entry = raftLog.getEntry(index);
+            if (entry.getType() == RaftProto.EntryType.ENTRY_TYPE_DATA) {
                 stateMachine.apply(entry.getData().toByteArray());
-            } else if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_CONFIGURATION) {
+            } else if (entry.getType() == RaftProto.EntryType.ENTRY_TYPE_CONFIGURATION) {
                 applyConfiguration(entry);
             }
         }
@@ -113,7 +113,7 @@ public class RaftNode {
     }
 
     public void init() {
-        for (RaftMessage.Server server : configuration.getServersList()) {
+        for (RaftProto.Server server : configuration.getServersList()) {
             if (!peerMap.containsKey(server.getServerId())
                     && server.getServerId() != localServer.getServerId()) {
                 Peer peer = new Peer(server);
@@ -141,7 +141,7 @@ public class RaftNode {
     }
 
     // client set command
-    public boolean replicate(byte[] data, RaftMessage.EntryType entryType) {
+    public boolean replicate(byte[] data, RaftProto.EntryType entryType) {
         lock.lock();
         long newLastLogIndex = 0;
         try {
@@ -149,16 +149,16 @@ public class RaftNode {
                 LOG.debug("I'm not the leader");
                 return false;
             }
-            RaftMessage.LogEntry logEntry = RaftMessage.LogEntry.newBuilder()
+            RaftProto.LogEntry logEntry = RaftProto.LogEntry.newBuilder()
                     .setTerm(currentTerm)
                     .setType(entryType)
                     .setData(ByteString.copyFrom(data)).build();
-            List<RaftMessage.LogEntry> entries = new ArrayList<>();
+            List<RaftProto.LogEntry> entries = new ArrayList<>();
             entries.add(logEntry);
             newLastLogIndex = raftLog.append(entries);
             raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
 
-            for (RaftMessage.Server server : configuration.getServersList()) {
+            for (RaftProto.Server server : configuration.getServersList()) {
                 final Peer peer = peerMap.get(server.getServerId());
                 executorService.submit(new Runnable() {
                     @Override
@@ -194,7 +194,7 @@ public class RaftNode {
     }
 
     public void appendEntries(Peer peer) {
-        RaftMessage.AppendEntriesRequest.Builder requestBuilder = RaftMessage.AppendEntriesRequest.newBuilder();
+        RaftProto.AppendEntriesRequest.Builder requestBuilder = RaftProto.AppendEntriesRequest.newBuilder();
         long prevLogIndex;
         long numEntries;
 
@@ -249,15 +249,15 @@ public class RaftNode {
             lock.unlock();
         }
 
-        RaftMessage.AppendEntriesRequest request = requestBuilder.build();
-        RaftMessage.AppendEntriesResponse response = peer.getRaftConsensusService().appendEntries(request);
+        RaftProto.AppendEntriesRequest request = requestBuilder.build();
+        RaftProto.AppendEntriesResponse response = peer.getRaftConsensusServiceAsync().appendEntries(request);
 
         lock.lock();
         try {
             if (response == null) {
                 LOG.warn("appendEntries with peer[{}:{}] failed",
-                        peer.getServer().getEndPoint().getHost(),
-                        peer.getServer().getEndPoint().getPort());
+                        peer.getServer().getEndpoint().getHost(),
+                        peer.getServer().getEndpoint().getPort());
                 if (!ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
                     peerMap.remove(peer.getServer().getServerId());
                     peer.getRpcClient().stop();
@@ -272,7 +272,7 @@ public class RaftNode {
             if (response.getTerm() > currentTerm) {
                 stepDown(response.getTerm());
             } else {
-                if (response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
+                if (response.getResCode() == RaftProto.ResCode.RES_CODE_SUCCESS) {
                     peer.setMatchIndex(prevLogIndex + numEntries);
                     peer.setNextIndex(peer.getMatchIndex() + 1);
                     if (ConfigurationUtils.containsServer(configuration, peer.getServer().getServerId())) {
@@ -324,7 +324,7 @@ public class RaftNode {
         try {
             long localLastAppliedIndex;
             long lastAppliedTerm = 0;
-            RaftMessage.Configuration.Builder localConfiguration = RaftMessage.Configuration.newBuilder();
+            RaftProto.Configuration.Builder localConfiguration = RaftProto.Configuration.newBuilder();
             lock.lock();
             try {
                 if (raftLog.getTotalSize() < raftOptions.getSnapshotMinLogSize()) {
@@ -397,13 +397,13 @@ public class RaftNode {
     }
 
     // in lock
-    public void applyConfiguration(RaftMessage.LogEntry entry) {
+    public void applyConfiguration(RaftProto.LogEntry entry) {
         try {
-            RaftMessage.Configuration newConfiguration
-                    = RaftMessage.Configuration.parseFrom(entry.getData().toByteArray());
+            RaftProto.Configuration newConfiguration
+                    = RaftProto.Configuration.parseFrom(entry.getData().toByteArray());
             configuration = newConfiguration;
             // update peerMap
-            for (RaftMessage.Server server : newConfiguration.getServersList()) {
+            for (RaftProto.Server server : newConfiguration.getServersList()) {
                 if (!peerMap.containsKey(server.getServerId())
                         && server.getServerId() != localServer.getServerId()) {
                     Peer peer = new Peer(server);
@@ -411,7 +411,7 @@ public class RaftNode {
                     peerMap.put(server.getServerId(), peer);
                 }
             }
-            LOG.info("new conf is {}, leaderId={}", PRINTER.print(newConfiguration), leaderId);
+            LOG.info("new conf is {}, leaderId={}", jsonFormat.printToString(newConfiguration), leaderId);
         } catch (InvalidProtocolBufferException ex) {
             ex.printStackTrace();
         }
@@ -469,7 +469,7 @@ public class RaftNode {
             lock.unlock();
         }
 
-        for (RaftMessage.Server server : configuration.getServersList()) {
+        for (RaftProto.Server server : configuration.getServersList()) {
             if (server.getServerId() == localServer.getServerId()) {
                 continue;
             }
@@ -503,7 +503,7 @@ public class RaftNode {
             lock.unlock();
         }
 
-        for (RaftMessage.Server server : configuration.getServersList()) {
+        for (RaftProto.Server server : configuration.getServersList()) {
             if (server.getServerId() == localServer.getServerId()) {
                 continue;
             }
@@ -523,7 +523,7 @@ public class RaftNode {
      */
     private void preVote(Peer peer) {
         LOG.info("begin pre vote request");
-        RaftMessage.VoteRequest.Builder requestBuilder = RaftMessage.VoteRequest.newBuilder();
+        RaftProto.VoteRequest.Builder requestBuilder = RaftProto.VoteRequest.newBuilder();
         lock.lock();
         try {
             peer.setVoteGranted(null);
@@ -535,7 +535,7 @@ public class RaftNode {
             lock.unlock();
         }
 
-        RaftMessage.VoteRequest request = requestBuilder.build();
+        RaftProto.VoteRequest request = requestBuilder.build();
         peer.getRaftConsensusServiceAsync().preVote(
                 request, new PreVoteResponseCallback(peer, request));
     }
@@ -546,7 +546,7 @@ public class RaftNode {
      */
     private void requestVote(Peer peer) {
         LOG.info("begin vote request");
-        RaftMessage.VoteRequest.Builder requestBuilder = RaftMessage.VoteRequest.newBuilder();
+        RaftProto.VoteRequest.Builder requestBuilder = RaftProto.VoteRequest.newBuilder();
         lock.lock();
         try {
             peer.setVoteGranted(null);
@@ -558,22 +558,22 @@ public class RaftNode {
             lock.unlock();
         }
 
-        RaftMessage.VoteRequest request = requestBuilder.build();
+        RaftProto.VoteRequest request = requestBuilder.build();
         peer.getRaftConsensusServiceAsync().requestVote(
                 request, new VoteResponseCallback(peer, request));
     }
 
-    private class PreVoteResponseCallback implements RPCCallback<RaftMessage.VoteResponse> {
+    private class PreVoteResponseCallback implements RpcCallback<RaftProto.VoteResponse> {
         private Peer peer;
-        private RaftMessage.VoteRequest request;
+        private RaftProto.VoteRequest request;
 
-        public PreVoteResponseCallback(Peer peer, RaftMessage.VoteRequest request) {
+        public PreVoteResponseCallback(Peer peer, RaftProto.VoteRequest request) {
             this.peer = peer;
             this.request = request;
         }
 
         @Override
-        public void success(RaftMessage.VoteResponse response) {
+        public void success(RaftProto.VoteResponse response) {
             lock.lock();
             try {
                 peer.setVoteGranted(response.getGranted());
@@ -593,7 +593,7 @@ public class RaftNode {
                         LOG.info("get pre vote granted from server {} for term {}",
                                 peer.getServer().getServerId(), currentTerm);
                         int voteGrantedNum = 1;
-                        for (RaftMessage.Server server : configuration.getServersList()) {
+                        for (RaftProto.Server server : configuration.getServersList()) {
                             if (server.getServerId() == localServer.getServerId()) {
                                 continue;
                             }
@@ -621,23 +621,23 @@ public class RaftNode {
         @Override
         public void fail(Throwable e) {
             LOG.warn("pre vote with peer[{}:{}] failed",
-                    peer.getServer().getEndPoint().getHost(),
-                    peer.getServer().getEndPoint().getPort());
+                    peer.getServer().getEndpoint().getHost(),
+                    peer.getServer().getEndpoint().getPort());
             peer.setVoteGranted(new Boolean(false));
         }
     }
 
-    private class VoteResponseCallback implements RPCCallback<RaftMessage.VoteResponse> {
+    private class VoteResponseCallback implements RpcCallback<RaftProto.VoteResponse> {
         private Peer peer;
-        private RaftMessage.VoteRequest request;
+        private RaftProto.VoteRequest request;
 
-        public VoteResponseCallback(Peer peer, RaftMessage.VoteRequest request) {
+        public VoteResponseCallback(Peer peer, RaftProto.VoteRequest request) {
             this.peer = peer;
             this.request = request;
         }
 
         @Override
-        public void success(RaftMessage.VoteResponse response) {
+        public void success(RaftProto.VoteResponse response) {
             lock.lock();
             try {
                 peer.setVoteGranted(response.getGranted());
@@ -660,7 +660,7 @@ public class RaftNode {
                         if (votedFor == localServer.getServerId()) {
                             voteGrantedNum += 1;
                         }
-                        for (RaftMessage.Server server : configuration.getServersList()) {
+                        for (RaftProto.Server server : configuration.getServersList()) {
                             if (server.getServerId() == localServer.getServerId()) {
                                 continue;
                             }
@@ -687,8 +687,8 @@ public class RaftNode {
         @Override
         public void fail(Throwable e) {
             LOG.warn("requestVote with peer[{}:{}] failed",
-                    peer.getServer().getEndPoint().getHost(),
-                    peer.getServer().getEndPoint().getPort());
+                    peer.getServer().getEndpoint().getHost(),
+                    peer.getServer().getEndpoint().getPort());
             peer.setVoteGranted(new Boolean(false));
         }
     }
@@ -739,7 +739,7 @@ public class RaftNode {
         int peerNum = configuration.getServersList().size();
         long[] matchIndexes = new long[peerNum];
         int i = 0;
-        for (RaftMessage.Server server : configuration.getServersList()) {
+        for (RaftProto.Server server : configuration.getServersList()) {
             if (server.getServerId() != localServer.getServerId()) {
                 Peer peer = peerMap.get(server.getServerId());
                 matchIndexes[i++] = peer.getMatchIndex();
@@ -762,10 +762,10 @@ public class RaftNode {
         commitIndex = newCommitIndex;
         // 同步到状态机
         for (long index = oldCommitIndex + 1; index <= newCommitIndex; index++) {
-            RaftMessage.LogEntry entry = raftLog.getEntry(index);
-            if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_DATA) {
+            RaftProto.LogEntry entry = raftLog.getEntry(index);
+            if (entry.getType() == RaftProto.EntryType.ENTRY_TYPE_DATA) {
                 stateMachine.apply(entry.getData().toByteArray());
-            } else if (entry.getType() == RaftMessage.EntryType.ENTRY_TYPE_CONFIGURATION) {
+            } else if (entry.getType() == RaftProto.EntryType.ENTRY_TYPE_CONFIGURATION) {
                 applyConfiguration(entry);
             }
         }
@@ -775,11 +775,11 @@ public class RaftNode {
     }
 
     // in lock
-    private long packEntries(long nextIndex, RaftMessage.AppendEntriesRequest.Builder requestBuilder) {
+    private long packEntries(long nextIndex, RaftProto.AppendEntriesRequest.Builder requestBuilder) {
         long lastIndex = Math.min(raftLog.getLastLogIndex(),
                 nextIndex + raftOptions.getMaxLogEntriesPerRequest() - 1);
         for (long index = nextIndex; index <= lastIndex; index++) {
-            RaftMessage.LogEntry entry = raftLog.getEntry(index);
+            RaftProto.LogEntry entry = raftLog.getEntry(index);
             requestBuilder.addEntries(entry);
         }
         return lastIndex - nextIndex + 1;
@@ -805,7 +805,7 @@ public class RaftNode {
             long lastOffset = 0;
             long lastLength = 0;
             while (!isLastRequest) {
-                RaftMessage.InstallSnapshotRequest request
+                RaftProto.InstallSnapshotRequest request
                         = buildInstallSnapshotRequest(snapshotDataFileMap, lastFileName, lastOffset, lastLength);
                 if (request == null) {
                     LOG.warn("snapshot request == null");
@@ -818,8 +818,9 @@ public class RaftNode {
                 LOG.info("install snapshot request, fileName={}, offset={}, size={}, isFirst={}, isLast={}",
                         request.getFileName(), request.getOffset(), request.getData().toByteArray().length,
                         request.getIsFirst(), request.getIsLast());
-                RaftMessage.InstallSnapshotResponse response = peer.getRaftConsensusService().installSnapshot(request);
-                if (response != null && response.getResCode() == RaftMessage.ResCode.RES_CODE_SUCCESS) {
+                RaftProto.InstallSnapshotResponse response
+                        = peer.getRaftConsensusServiceAsync().installSnapshot(request);
+                if (response != null && response.getResCode() == RaftProto.ResCode.RES_CODE_SUCCESS) {
                     lastFileName = request.getFileName();
                     lastOffset = request.getOffset();
                     lastLength = request.getData().size();
@@ -854,10 +855,10 @@ public class RaftNode {
         return isSuccess;
     }
 
-    private RaftMessage.InstallSnapshotRequest buildInstallSnapshotRequest(
+    private RaftProto.InstallSnapshotRequest buildInstallSnapshotRequest(
             TreeMap<String, Snapshot.SnapshotDataFile> snapshotDataFileMap,
             String lastFileName, long lastOffset, long lastLength) {
-        RaftMessage.InstallSnapshotRequest.Builder requestBuilder = RaftMessage.InstallSnapshotRequest.newBuilder();
+        RaftProto.InstallSnapshotRequest.Builder requestBuilder = RaftProto.InstallSnapshotRequest.newBuilder();
 
         snapshot.getLock().lock();
         try {
@@ -980,15 +981,15 @@ public class RaftNode {
         return stateMachine;
     }
 
-    public RaftMessage.Configuration getConfiguration() {
+    public RaftProto.Configuration getConfiguration() {
         return configuration;
     }
 
-    public void setConfiguration(RaftMessage.Configuration configuration) {
+    public void setConfiguration(RaftProto.Configuration configuration) {
         this.configuration = configuration;
     }
 
-    public RaftMessage.Server getLocalServer() {
+    public RaftProto.Server getLocalServer() {
         return localServer;
     }
 

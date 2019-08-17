@@ -1,8 +1,7 @@
 package com.github.wenweihu86.raft.util;
 
-import com.github.wenweihu86.raft.proto.RaftMessage;
+import com.github.wenweihu86.raft.proto.RaftProto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,8 +10,8 @@ import java.util.List;
 public class ConfigurationUtils {
 
     // configuration不会太大，所以这里直接遍历了
-    public static boolean containsServer(RaftMessage.Configuration configuration, int serverId) {
-        for (RaftMessage.Server server : configuration.getServersList()) {
+    public static boolean containsServer(RaftProto.Configuration configuration, int serverId) {
+        for (RaftProto.Server server : configuration.getServersList()) {
             if (server.getServerId() == serverId) {
                 return true;
             }
@@ -20,12 +19,12 @@ public class ConfigurationUtils {
         return false;
     }
 
-    public static RaftMessage.Configuration removeServers(
-            RaftMessage.Configuration configuration, List<RaftMessage.Server> servers) {
-        RaftMessage.Configuration.Builder confBuilder = RaftMessage.Configuration.newBuilder();
-        for (RaftMessage.Server server : configuration.getServersList()) {
+    public static RaftProto.Configuration removeServers(
+            RaftProto.Configuration configuration, List<RaftProto.Server> servers) {
+        RaftProto.Configuration.Builder confBuilder = RaftProto.Configuration.newBuilder();
+        for (RaftProto.Server server : configuration.getServersList()) {
             boolean toBeRemoved = false;
-            for (RaftMessage.Server server1 : servers) {
+            for (RaftProto.Server server1 : servers) {
                 if (server.getServerId() == server1.getServerId()) {
                     toBeRemoved = true;
                     break;
@@ -38,8 +37,8 @@ public class ConfigurationUtils {
         return confBuilder.build();
     }
 
-    public static RaftMessage.Server getServer(RaftMessage.Configuration configuration, int serverId) {
-        for (RaftMessage.Server server : configuration.getServersList()) {
+    public static RaftProto.Server getServer(RaftProto.Configuration configuration, int serverId) {
+        for (RaftProto.Server server : configuration.getServersList()) {
             if (server.getServerId() == serverId) {
                 return server;
             }

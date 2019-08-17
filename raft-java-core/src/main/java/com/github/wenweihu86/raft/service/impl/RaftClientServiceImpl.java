@@ -2,11 +2,10 @@ package com.github.wenweihu86.raft.service.impl;
 
 import com.github.wenweihu86.raft.Peer;
 import com.github.wenweihu86.raft.RaftNode;
-import com.github.wenweihu86.raft.proto.RaftMessage;
+import com.github.wenweihu86.raft.proto.RaftProto;
 import com.github.wenweihu86.raft.service.RaftClientService;
 import com.github.wenweihu86.raft.util.ConfigurationUtils;
-import com.google.protobuf.InvalidProtocolBufferException;
-import com.google.protobuf.util.JsonFormat;
+import com.googlecode.protobuf.format.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +17,7 @@ import java.util.List;
  */
 public class RaftClientServiceImpl implements RaftClientService {
     private static final Logger LOG = LoggerFactory.getLogger(RaftClientServiceImpl.class);
-    private static final JsonFormat.Printer PRINTER = JsonFormat.printer().omittingInsignificantWhitespace();
+    private static final JsonFormat jsonFormat = new JsonFormat();
 
     private RaftNode raftNode;
 
@@ -27,25 +26,25 @@ public class RaftClientServiceImpl implements RaftClientService {
     }
 
     @Override
-    public RaftMessage.GetLeaderResponse getLeader(RaftMessage.GetLeaderRequest request) {
+    public RaftProto.GetLeaderResponse getLeader(RaftProto.GetLeaderRequest request) {
         LOG.info("receive getLeader request");
-        RaftMessage.GetLeaderResponse.Builder responseBuilder = RaftMessage.GetLeaderResponse.newBuilder();
-        responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
-        RaftMessage.EndPoint.Builder endPointBuilder = RaftMessage.EndPoint.newBuilder();
+        RaftProto.GetLeaderResponse.Builder responseBuilder = RaftProto.GetLeaderResponse.newBuilder();
+        responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_SUCCESS);
+        RaftProto.Endpoint.Builder endPointBuilder = RaftProto.Endpoint.newBuilder();
         raftNode.getLock().lock();
         try {
             int leaderId = raftNode.getLeaderId();
             if (leaderId == 0) {
-                responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_FAIL);
+                responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_FAIL);
             } else if (leaderId == raftNode.getLocalServer().getServerId()) {
-                endPointBuilder.setHost(raftNode.getLocalServer().getEndPoint().getHost());
-                endPointBuilder.setPort(raftNode.getLocalServer().getEndPoint().getPort());
+                endPointBuilder.setHost(raftNode.getLocalServer().getEndpoint().getHost());
+                endPointBuilder.setPort(raftNode.getLocalServer().getEndpoint().getPort());
             } else {
-                RaftMessage.Configuration configuration = raftNode.getConfiguration();
-                for (RaftMessage.Server server : configuration.getServersList()) {
+                RaftProto.Configuration configuration = raftNode.getConfiguration();
+                for (RaftProto.Server server : configuration.getServersList()) {
                     if (server.getServerId() == leaderId) {
-                        endPointBuilder.setHost(server.getEndPoint().getHost());
-                        endPointBuilder.setPort(server.getEndPoint().getPort());
+                        endPointBuilder.setHost(server.getEndpoint().getHost());
+                        endPointBuilder.setPort(server.getEndpoint().getPort());
                         break;
                     }
                 }
@@ -54,51 +53,43 @@ public class RaftClientServiceImpl implements RaftClientService {
             raftNode.getLock().unlock();
         }
         responseBuilder.setLeader(endPointBuilder.build());
-        RaftMessage.GetLeaderResponse response = responseBuilder.build();
-        try {
-            LOG.info("getLeader response={}", PRINTER.print(response));
-        } catch (InvalidProtocolBufferException e) {
-            e.printStackTrace();
-        }
+        RaftProto.GetLeaderResponse response = responseBuilder.build();
+        LOG.info("getLeader response={}", jsonFormat.printToString(response));
         return responseBuilder.build();
     }
 
     @Override
-    public RaftMessage.GetConfigurationResponse getConfiguration(RaftMessage.GetConfigurationRequest request) {
-        RaftMessage.GetConfigurationResponse.Builder responseBuilder
-                = RaftMessage.GetConfigurationResponse.newBuilder();
-        responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
+    public RaftProto.GetConfigurationResponse getConfiguration(RaftProto.GetConfigurationRequest request) {
+        RaftProto.GetConfigurationResponse.Builder responseBuilder
+                = RaftProto.GetConfigurationResponse.newBuilder();
+        responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_SUCCESS);
         raftNode.getLock().lock();
         try {
-            RaftMessage.Configuration configuration = raftNode.getConfiguration();
-            RaftMessage.Server leader = ConfigurationUtils.getServer(configuration, raftNode.getLeaderId());
+            RaftProto.Configuration configuration = raftNode.getConfiguration();
+            RaftProto.Server leader = ConfigurationUtils.getServer(configuration, raftNode.getLeaderId());
             responseBuilder.setLeader(leader);
             responseBuilder.addAllServers(configuration.getServersList());
         } finally {
             raftNode.getLock().unlock();
         }
-        RaftMessage.GetConfigurationResponse response = responseBuilder.build();
-        try {
-            LOG.info("getConfiguration request={} response={}",
-                    PRINTER.print(request), PRINTER.print(response));
-        } catch (InvalidProtocolBufferException ex) {
-            ex.printStackTrace();
-        }
+        RaftProto.GetConfigurationResponse response = responseBuilder.build();
+        LOG.info("getConfiguration request={} response={}",
+                jsonFormat.printToString(request), jsonFormat.printToString(response));
 
         return response;
     }
 
     @Override
-    public RaftMessage.AddPeersResponse addPeers(RaftMessage.AddPeersRequest request) {
-        RaftMessage.AddPeersResponse.Builder responseBuilder = RaftMessage.AddPeersResponse.newBuilder();
-        responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_FAIL);
+    public RaftProto.AddPeersResponse addPeers(RaftProto.AddPeersRequest request) {
+        RaftProto.AddPeersResponse.Builder responseBuilder = RaftProto.AddPeersResponse.newBuilder();
+        responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_FAIL);
         if (request.getServersCount() == 0
                 || request.getServersCount() % 2 != 0) {
             LOG.warn("added server's size can only multiple of 2");
             responseBuilder.setResMsg("added server's size can only multiple of 2");
             return responseBuilder.build();
         }
-        for (RaftMessage.Server server : request.getServersList()) {
+        for (RaftProto.Server server : request.getServersList()) {
             if (raftNode.getPeerMap().containsKey(server.getServerId())) {
                 LOG.warn("already be added/adding to configuration");
                 responseBuilder.setResMsg("already be added/adding to configuration");
@@ -106,7 +97,7 @@ public class RaftClientServiceImpl implements RaftClientService {
             }
         }
         List<Peer> requestPeers = new ArrayList<>(request.getServersCount());
-        for (RaftMessage.Server server : request.getServersList()) {
+        for (RaftProto.Server server : request.getServersList()) {
             final Peer peer = new Peer(server);
             peer.setNextIndex(1);
             requestPeers.add(peer);
@@ -145,20 +136,20 @@ public class RaftClientServiceImpl implements RaftClientService {
         if (catchUpNum == requestPeers.size()) {
             raftNode.getLock().lock();
             byte[] configurationData;
-            RaftMessage.Configuration newConfiguration;
+            RaftProto.Configuration newConfiguration;
             try {
-                newConfiguration = RaftMessage.Configuration.newBuilder(raftNode.getConfiguration())
+                newConfiguration = RaftProto.Configuration.newBuilder(raftNode.getConfiguration())
                         .addAllServers(request.getServersList()).build();
                 configurationData = newConfiguration.toByteArray();
             } finally {
                 raftNode.getLock().unlock();
             }
-            boolean success = raftNode.replicate(configurationData, RaftMessage.EntryType.ENTRY_TYPE_CONFIGURATION);
+            boolean success = raftNode.replicate(configurationData, RaftProto.EntryType.ENTRY_TYPE_CONFIGURATION);
             if (success) {
-                responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
+                responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_SUCCESS);
             }
         }
-        if (responseBuilder.getResCode() != RaftMessage.ResCode.RES_CODE_SUCCESS) {
+        if (responseBuilder.getResCode() != RaftProto.ResCode.RES_CODE_SUCCESS) {
             raftNode.getLock().lock();
             try {
                 for (Peer peer : requestPeers) {
@@ -170,21 +161,17 @@ public class RaftClientServiceImpl implements RaftClientService {
             }
         }
 
-        RaftMessage.AddPeersResponse response = responseBuilder.build();
-        try {
-            LOG.info("addPeers request={} resCode={}",
-                    PRINTER.print(request), response.getResCode());
-        } catch (InvalidProtocolBufferException ex) {
-            ex.printStackTrace();
-        }
+        RaftProto.AddPeersResponse response = responseBuilder.build();
+        LOG.info("addPeers request={} resCode={}",
+                jsonFormat.printToString(request), response.getResCode());
 
         return response;
     }
 
     @Override
-    public RaftMessage.RemovePeersResponse removePeers(RaftMessage.RemovePeersRequest request) {
-        RaftMessage.RemovePeersResponse.Builder responseBuilder = RaftMessage.RemovePeersResponse.newBuilder();
-        responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_FAIL);
+    public RaftProto.RemovePeersResponse removePeers(RaftProto.RemovePeersRequest request) {
+        RaftProto.RemovePeersResponse.Builder responseBuilder = RaftProto.RemovePeersResponse.newBuilder();
+        responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_FAIL);
 
         if (request.getServersCount() == 0
                 || request.getServersCount() % 2 != 0) {
@@ -196,7 +183,7 @@ public class RaftClientServiceImpl implements RaftClientService {
         // check request peers exist
         raftNode.getLock().lock();
         try {
-            for (RaftMessage.Server server : request.getServersList()) {
+            for (RaftProto.Server server : request.getServersList()) {
                 if (!ConfigurationUtils.containsServer(raftNode.getConfiguration(), server.getServerId())) {
                     return responseBuilder.build();
                 }
@@ -206,31 +193,23 @@ public class RaftClientServiceImpl implements RaftClientService {
         }
 
         raftNode.getLock().lock();
-        RaftMessage.Configuration newConfiguration;
+        RaftProto.Configuration newConfiguration;
         byte[] configurationData;
         try {
             newConfiguration = ConfigurationUtils.removeServers(
                     raftNode.getConfiguration(), request.getServersList());
-            try {
-                LOG.debug("newConfiguration={}", PRINTER.print(newConfiguration));
-            } catch (InvalidProtocolBufferException ex) {
-                ex.printStackTrace();
-            }
+            LOG.debug("newConfiguration={}", jsonFormat.printToString(newConfiguration));
             configurationData = newConfiguration.toByteArray();
         } finally {
             raftNode.getLock().unlock();
         }
-        boolean success = raftNode.replicate(configurationData, RaftMessage.EntryType.ENTRY_TYPE_CONFIGURATION);
+        boolean success = raftNode.replicate(configurationData, RaftProto.EntryType.ENTRY_TYPE_CONFIGURATION);
         if (success) {
-            responseBuilder.setResCode(RaftMessage.ResCode.RES_CODE_SUCCESS);
+            responseBuilder.setResCode(RaftProto.ResCode.RES_CODE_SUCCESS);
         }
 
-        try {
-            LOG.info("removePeers request={} resCode={}",
-                    PRINTER.print(request), responseBuilder.getResCode());
-        } catch (InvalidProtocolBufferException ex) {
-            ex.printStackTrace();
-        }
+        LOG.info("removePeers request={} resCode={}",
+                jsonFormat.printToString(request), responseBuilder.getResCode());
 
         return responseBuilder.build();
     }

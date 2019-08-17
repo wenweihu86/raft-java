@@ -4,7 +4,7 @@
 
     <groupId>com.github.wenweihu86.raft</groupId>
     <artifactId>raft-java-example</artifactId>
-    <version>1.8.0</version>
+    <version>1.9.0</version>
     <packaging>jar</packaging>
 
     <name>raft-java-example</name>
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.github.wenweihu86.raft</groupId>
             <artifactId>raft-java-core</artifactId>
-            <version>1.8.0</version>
+            <version>1.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.rocksdb</groupId>
@@ -108,6 +108,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.9.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

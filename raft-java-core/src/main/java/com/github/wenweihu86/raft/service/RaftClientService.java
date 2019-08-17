@@ -1,6 +1,6 @@
 package com.github.wenweihu86.raft.service;
 
-import com.github.wenweihu86.raft.proto.RaftMessage;
+import com.github.wenweihu86.raft.proto.RaftProto;
 
 /**
  * raft集群管理接口。
@@ -13,26 +13,26 @@ public interface RaftClientService {
      * @param request 请求
      * @return leader节点
      */
-    RaftMessage.GetLeaderResponse getLeader(RaftMessage.GetLeaderRequest request);
+    RaftProto.GetLeaderResponse getLeader(RaftProto.GetLeaderRequest request);
 
     /**
      * 获取raft集群所有节点信息。
      * @param request 请求
      * @return raft集群各节点地址，以及主从关系。
      */
-    RaftMessage.GetConfigurationResponse getConfiguration(RaftMessage.GetConfigurationRequest request);
+    RaftProto.GetConfigurationResponse getConfiguration(RaftProto.GetConfigurationRequest request);
 
     /**
      * 向raft集群添加节点。
      * @param request 要添加的节点信息。
      * @return 成功与否。
      */
-    RaftMessage.AddPeersResponse addPeers(RaftMessage.AddPeersRequest request);
+    RaftProto.AddPeersResponse addPeers(RaftProto.AddPeersRequest request);
 
     /**
      * 从raft集群删除节点
      * @param request 请求
      * @return 成功与否。
      */
-    RaftMessage.RemovePeersResponse removePeers(RaftMessage.RemovePeersRequest request);
+    RaftProto.RemovePeersResponse removePeers(RaftProto.RemovePeersRequest request);
 }

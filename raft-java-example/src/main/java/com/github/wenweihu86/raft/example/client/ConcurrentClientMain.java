@@ -1,10 +1,10 @@
 package com.github.wenweihu86.raft.example.client;
 
-import com.github.wenweihu86.raft.example.server.service.ExampleMessage;
+import com.baidu.brpc.client.BrpcProxy;
+import com.baidu.brpc.client.RpcClient;
+import com.github.wenweihu86.raft.example.server.service.ExampleProto;
 import com.github.wenweihu86.raft.example.server.service.ExampleService;
-import com.github.wenweihu86.rpc.client.RPCClient;
-import com.github.wenweihu86.rpc.client.RPCProxy;
-import com.google.protobuf.util.JsonFormat;
+import com.googlecode.protobuf.format.JsonFormat;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +15,7 @@ import java.util.concurrent.Future;
  * Created by wenweihu86 on 2017/5/14.
  */
 public class ConcurrentClientMain {
-    private static JsonFormat.Printer printer = JsonFormat.printer().omittingInsignificantWhitespace();
+    private static JsonFormat jsonFormat = new JsonFormat();
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -25,8 +25,8 @@ public class ConcurrentClientMain {
 
         // parse args
         String ipPorts = args[0];
-        RPCClient rpcClient = new RPCClient(ipPorts);
-        ExampleService exampleService = RPCProxy.getProxy(rpcClient, ExampleService.class);
+        RpcClient rpcClient = new RpcClient(ipPorts);
+        ExampleService exampleService = BrpcProxy.getProxy(rpcClient, ExampleService.class);
 
         ExecutorService readThreadPool = Executors.newFixedThreadPool(3);
         ExecutorService writeThreadPool = Executors.newFixedThreadPool(3);
@@ -50,15 +50,15 @@ public class ConcurrentClientMain {
             while (true) {
                 String key = UUID.randomUUID().toString();
                 String value = UUID.randomUUID().toString();
-                ExampleMessage.SetRequest setRequest = ExampleMessage.SetRequest.newBuilder()
+                ExampleProto.SetRequest setRequest = ExampleProto.SetRequest.newBuilder()
                         .setKey(key).setValue(value).build();
 
                 long startTime = System.currentTimeMillis();
-                ExampleMessage.SetResponse setResponse = exampleService.set(setRequest);
+                ExampleProto.SetResponse setResponse = exampleService.set(setRequest);
                 try {
                     if (setResponse != null) {
                         System.out.printf("set request, key=%s, value=%s, response=%s, elapseMS=%d\n",
-                                key, value, printer.print(setResponse), System.currentTimeMillis() - startTime);
+                                key, value, jsonFormat.printToString(setResponse), System.currentTimeMillis() - startTime);
                         readThreadPool.submit(new GetTask(exampleService, key));
                     } else {
                         System.out.printf("set request failed, key=%s value=%s\n", key, value);
@@ -81,14 +81,14 @@ public class ConcurrentClientMain {
 
         @Override
         public void run() {
-            ExampleMessage.GetRequest getRequest = ExampleMessage.GetRequest.newBuilder()
+            ExampleProto.GetRequest getRequest = ExampleProto.GetRequest.newBuilder()
                     .setKey(key).build();
             long startTime = System.currentTimeMillis();
-            ExampleMessage.GetResponse getResponse = exampleService.get(getRequest);
+            ExampleProto.GetResponse getResponse = exampleService.get(getRequest);
             try {
                 if (getResponse != null) {
                     System.out.printf("get request, key=%s, response=%s, elapseMS=%d\n",
-                            key, printer.print(getResponse), System.currentTimeMillis() - startTime);
+                            key, jsonFormat.printToString(getResponse), System.currentTimeMillis() - startTime);
                 } else {
                     System.out.printf("get request failed, key=%s\n", key);
                 }

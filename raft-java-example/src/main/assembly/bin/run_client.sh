@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ $# -lt 2 ]; then
-    echo "Usage: ./run_server.sh CLUSTER KEY [VALUE]"
+    echo "Usage: ./run_client.sh CLUSTER KEY [VALUE]"
     exit
 fi
 
