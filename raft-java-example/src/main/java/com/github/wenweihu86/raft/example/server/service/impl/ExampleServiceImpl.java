@@ -21,6 +21,7 @@ public class ExampleServiceImpl implements ExampleService {
 
     private RaftNode raftNode;
     private ExampleStateMachine stateMachine;
+    private ExampleService exampleService;
 
     public ExampleServiceImpl(RaftNode raftNode, ExampleStateMachine stateMachine) {
         this.raftNode = raftNode;
@@ -34,6 +35,10 @@ public class ExampleServiceImpl implements ExampleService {
         if (raftNode.getLeaderId() <= 0) {
             responseBuilder.setSuccess(false);
         } else if (raftNode.getLeaderId() != raftNode.getLocalServer().getServerId()) {
+            if (this.exampleService == null) {
+                RpcClient rpcClient = raftNode.getPeerMap().get(raftNode.getLeaderId()).createClient();
+                exampleService = BrpcProxy.getProxy(rpcClient, ExampleService.class);
+            }
             RpcClient rpcClient = raftNode.getPeerMap().get(raftNode.getLeaderId()).getRpcClient();
             ExampleService exampleService = BrpcProxy.getProxy(rpcClient, ExampleService.class);
             ExampleProto.SetResponse responseFromLeader = exampleService.set(request);

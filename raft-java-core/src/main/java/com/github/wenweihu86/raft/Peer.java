@@ -29,6 +29,12 @@ public class Peer {
         isCatchUp = false;
     }
 
+    public RpcClient createClient() {
+        return new RpcClient(new Endpoint(
+                server.getEndpoint().getHost(),
+                server.getEndpoint().getPort()));
+    }
+
     public RaftProto.Server getServer() {
         return server;
     }
@@ -73,4 +79,5 @@ public class Peer {
     public void setCatchUp(boolean catchUp) {
         isCatchUp = catchUp;
     }
+
 }
