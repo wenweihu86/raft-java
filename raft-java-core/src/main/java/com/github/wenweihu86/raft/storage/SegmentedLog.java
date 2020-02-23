@@ -213,7 +213,7 @@ public class SegmentedLog {
                     segment.getRandomAccessFile().close();
                     String fullFileName = logDataDir + File.separator + segment.getFileName();
                     FileUtils.forceDelete(new File(fullFileName));
-                    startLogIndexSegmentMap.remove(segment.getFileName());
+                    startLogIndexSegmentMap.remove(segment.getStartIndex());
                 } else if (newEndIndex < segment.getEndIndex()) {
                     int i = (int) (newEndIndex + 1 - segment.getStartIndex());
                     segment.setEndIndex(newEndIndex);
