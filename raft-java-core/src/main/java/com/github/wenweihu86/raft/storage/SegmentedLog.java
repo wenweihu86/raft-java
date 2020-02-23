@@ -191,7 +191,7 @@ public class SegmentedLog {
         } else {
             newActualFirstIndex = startLogIndexSegmentMap.firstKey();
         }
-        updateMetaData(null, null, newActualFirstIndex);
+        updateMetaData(null, null, newActualFirstIndex, null);
         LOG.info("Truncating log from old first index {} to new first index {}",
                 oldFirstIndex, newActualFirstIndex);
     }
@@ -316,7 +316,15 @@ public class SegmentedLog {
         }
     }
 
-    public void updateMetaData(Long currentTerm, Integer votedFor, Long firstLogIndex) {
+    /**
+     * 更新raft log meta data，
+     * 包括commitIndex， fix bug: https://github.com/wenweihu86/raft-java/issues/19
+     * @param currentTerm
+     * @param votedFor
+     * @param firstLogIndex
+     * @param commitIndex
+     */
+    public void updateMetaData(Long currentTerm, Integer votedFor, Long firstLogIndex, Long commitIndex) {
         RaftProto.LogMetaData.Builder builder = RaftProto.LogMetaData.newBuilder(this.metaData);
         if (currentTerm != null) {
             builder.setCurrentTerm(currentTerm);
@@ -326,6 +334,9 @@ public class SegmentedLog {
         }
         if (firstLogIndex != null) {
             builder.setFirstLogIndex(firstLogIndex);
+        }
+        if (commitIndex != null) {
+            builder.setCommitIndex(commitIndex);
         }
         this.metaData = builder.build();
 

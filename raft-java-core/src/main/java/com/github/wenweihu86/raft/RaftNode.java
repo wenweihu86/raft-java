@@ -87,7 +87,7 @@ public class RaftNode {
 
         currentTerm = raftLog.getMetaData().getCurrentTerm();
         votedFor = raftLog.getMetaData().getVotedFor();
-        commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), commitIndex);
+        commitIndex = Math.max(snapshot.getMetaData().getLastIncludedIndex(), raftLog.getMetaData().getCommitIndex());
         // discard old log entries
         if (snapshot.getMetaData().getLastIncludedIndex() > 0
                 && raftLog.getFirstLogIndex() <= snapshot.getMetaData().getLastIncludedIndex()) {
@@ -156,7 +156,7 @@ public class RaftNode {
             List<RaftProto.LogEntry> entries = new ArrayList<>();
             entries.add(logEntry);
             newLastLogIndex = raftLog.append(entries);
-            raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
+//            raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex());
 
             for (RaftProto.Server server : configuration.getServersList()) {
                 final Peer peer = peerMap.get(server.getServerId());
@@ -304,7 +304,7 @@ public class RaftNode {
             currentTerm = newTerm;
             leaderId = 0;
             votedFor = 0;
-            raftLog.updateMetaData(currentTerm, votedFor, null);
+            raftLog.updateMetaData(currentTerm, votedFor, null, null);
         }
         state = NodeState.STATE_FOLLOWER;
         // stop heartbeat
@@ -760,6 +760,7 @@ public class RaftNode {
         }
         long oldCommitIndex = commitIndex;
         commitIndex = newCommitIndex;
+        raftLog.updateMetaData(currentTerm, null, raftLog.getFirstLogIndex(), commitIndex);
         // 同步到状态机
         for (long index = oldCommitIndex + 1; index <= newCommitIndex; index++) {
             RaftProto.LogEntry entry = raftLog.getEntry(index);

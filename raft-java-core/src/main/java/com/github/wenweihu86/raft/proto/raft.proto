@@ -33,6 +33,7 @@ message LogMetaData {
     optional uint64 current_term = 1;
     optional uint32 voted_for = 2;
     optional uint64 first_log_index = 3;
+    optional uint64 commit_index = 4;
 }
 
 message SnapshotMetaData {

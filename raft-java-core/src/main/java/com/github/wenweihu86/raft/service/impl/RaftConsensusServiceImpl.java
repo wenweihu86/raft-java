@@ -84,7 +84,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
             if (raftNode.getVotedFor() == 0 && logIsOk) {
                 raftNode.stepDown(request.getTerm());
                 raftNode.setVotedFor(request.getServerId());
-                raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(), raftNode.getVotedFor(), null);
+                raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(), raftNode.getVotedFor(), null, null);
                 responseBuilder.setGranted(true);
                 responseBuilder.setTerm(raftNode.getCurrentTerm());
             }
@@ -174,8 +174,8 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
                 entries.add(entry);
             }
             raftNode.getRaftLog().append(entries);
-            raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(),
-                    null, raftNode.getRaftLog().getFirstLogIndex());
+//            raftNode.getRaftLog().updateMetaData(raftNode.getCurrentTerm(),
+//                    null, raftNode.getRaftLog().getFirstLogIndex());
             responseBuilder.setLastLogIndex(raftNode.getRaftLog().getLastLogIndex());
 
             advanceCommitIndex(request);
@@ -313,6 +313,7 @@ public class RaftConsensusServiceImpl implements RaftConsensusService {
         long newCommitIndex = Math.min(request.getCommitIndex(),
                 request.getPrevLogIndex() + request.getEntriesCount());
         raftNode.setCommitIndex(newCommitIndex);
+        raftNode.getRaftLog().updateMetaData(null,null, null, newCommitIndex);
         if (raftNode.getLastAppliedIndex() < raftNode.getCommitIndex()) {
             // apply state machine
             for (long index = raftNode.getLastAppliedIndex() + 1;
