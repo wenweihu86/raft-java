@@ -117,7 +117,7 @@
         <dependency>
             <groupId>com.baidu</groupId>
             <artifactId>brpc-java</artifactId>
-            <version>2.5.2</version>
+            <version>2.5.9</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
