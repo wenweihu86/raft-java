@@ -34,7 +34,6 @@ public class ExampleServiceImpl implements ExampleService {
     public ExampleServiceImpl(RaftNode raftNode, ExampleStateMachine stateMachine) {
         this.raftNode = raftNode;
         this.stateMachine = stateMachine;
-        onLeaderChangeEvent();
     }
 
     private void onLeaderChangeEvent() {

@@ -15,18 +15,18 @@ cd raft-java-example && sh deploy.sh <br>
 同时会创建一个client目录，用于测试raft集群读写功能。<br>
 部署成功后，测试写操作，通过如下脚本：
 cd env/client <br>
-./bin/run_client.sh "127.0.0.1:8051,127.0.0.1:8052,127.0.0.1:8053" hello world <br>
+./bin/run_client.sh "list://127.0.0.1:8051,127.0.0.1:8052,127.0.0.1:8053" hello world <br>
 测试读操作命令：<br>
-./bin/run_client.sh "127.0.0.1:8051,127.0.0.1:8052,127.0.0.1:8053" hello
+./bin/run_client.sh "list://127.0.0.1:8051,127.0.0.1:8052,127.0.0.1:8053" hello
 
 # 使用方法
 下面介绍如何在代码中使用raft-java依赖库来实现一套分布式存储系统。
-## 配置依赖
+## 配置依赖（暂未发不到maven中央仓库，需要手动install到本地）
 ```
 <dependency>
     <groupId>com.github.wenweihu86.raft</groupId>
     <artifactId>raft-java-core</artifactId>
-    <version>1.8.0</version>
+    <version>1.9.0</version>
 </dependency>
 ```
 
