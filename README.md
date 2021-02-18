@@ -21,7 +21,7 @@ cd env/client <br>
 
 # 使用方法
 下面介绍如何在代码中使用raft-java依赖库来实现一套分布式存储系统。
-## 配置依赖（暂未发不到maven中央仓库，需要手动install到本地）
+## 配置依赖（暂未发布到maven中央仓库，需要手动install到本地）
 ```
 <dependency>
     <groupId>com.github.wenweihu86.raft</groupId>
