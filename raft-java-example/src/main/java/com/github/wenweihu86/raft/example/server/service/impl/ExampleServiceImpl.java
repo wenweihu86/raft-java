@@ -14,6 +14,8 @@ import com.googlecode.protobuf.format.JsonFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -30,6 +32,9 @@ public class ExampleServiceImpl implements ExampleService {
     private int leaderId = -1;
     private RpcClient leaderRpcClient = null;
     private Lock leaderLock = new ReentrantLock();
+
+    // store the map of peer and its service
+    private Map<Peer, ExampleService> serviceMap = new HashMap<>();
 
     public ExampleServiceImpl(RaftNode raftNode, ExampleStateMachine stateMachine) {
         this.raftNode = raftNode;
@@ -64,10 +69,15 @@ public class ExampleServiceImpl implements ExampleService {
         if (raftNode.getLeaderId() <= 0) {
             responseBuilder.setSuccess(false);
         } else if (raftNode.getLeaderId() != raftNode.getLocalServer().getServerId()) {
-            onLeaderChangeEvent();
-            ExampleService exampleService = BrpcProxy.getProxy(leaderRpcClient, ExampleService.class);
-            ExampleProto.SetResponse responseFromLeader = exampleService.set(request);
-            responseBuilder.mergeFrom(responseFromLeader);
+            Peer leader = raftNode.getPeerMap().get(raftNode.getLeaderId());
+            String host = leader.getServer().getEndpoint().getHost();
+            int port = leader.getServer().getEndpoint().getPort();
+            ExampleService exampleService = serviceMap.get(leader);
+            // avoid rpc cline bind duplicate serviceInterface
+            if (exampleService == null) {
+                exampleService = BrpcProxy.getProxy(new RpcClient(new Endpoint(host, port)), ExampleService.class);
+                serviceMap.put(leader, exampleService);
+            }
         } else {
             // 数据同步写入raft集群
             byte[] data = request.toByteArray();
